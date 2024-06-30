@@ -1,0 +1,14 @@
+{
+  "version": "0.20.7",
+  "stacks": {
+    "024422c8-41ee-40bb-90bf-acf4037eb23d": {
+      "name": "024422c8-41ee-40bb-90bf-acf4037eb23d",
+      "constructPath": "024422c8-41ee-40bb-90bf-acf4037eb23d",
+      "workingDirectory": "stacks/024422c8-41ee-40bb-90bf-acf4037eb23d",
+      "synthesizedStackPath": "stacks/024422c8-41ee-40bb-90bf-acf4037eb23d/cdk.tf.json",
+      "stackMetadataPath": "stacks/024422c8-41ee-40bb-90bf-acf4037eb23d/metadata.json",
+      "annotations": [],
+      "dependencies": []
+    }
+  }
+}

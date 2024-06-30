@@ -1,0 +1,7 @@
+provider:
+  gcp:
+    accountId: "databoo"
+manager:
+  file:
+    backend: "local"
+    path: "configs"
