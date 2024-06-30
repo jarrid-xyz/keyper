@@ -5,32 +5,31 @@ import jarrid.keyper.key.Model
 import java.nio.file.Paths
 import java.util.*
 
-interface Backend {
-    companion object {
-        private val appConfig = Config()
-        private val dir: String = appConfig.get().manager.file.path
+abstract class Backend {
+    val rootDir = System.getProperty("projectRoot")
 
+    val dir: String
+        get() = appConfig.get().manager.file.path
+    private val appConfig: Config
+        get() = Config()
+
+    fun getPrefix(keyConfig: Model): String {
+        return joinPaths(dir, keyConfig.deploymentId.toString())
+    }
+
+    fun getFilename(keyConfig: Model): String {
+        return joinPaths(getPrefix(keyConfig), "${keyConfig.keyId!!}.json")
+    }
+
+    companion object {
         fun joinPaths(vararg paths: String): String {
             return Paths.get("", *paths).toString()
         }
-
-        fun getConfigsRoot(): String {
-            return dir
-        }
-
-        fun getPrefix(keyConfig: Model): String {
-            return joinPaths(dir, keyConfig.deploymentId.toString())
-        }
-
-        fun getFilename(keyConfig: Model): String {
-            return joinPaths(getPrefix(keyConfig), "${keyConfig.keyId!!}.json")
-        }
-
     }
 
-    suspend fun write(keyConfig: Model)
-    suspend fun getOrCreateDeploymentId(byDeploymentId: UUID?): UUID
-    suspend fun getDeploymentIds(): List<UUID>
-    suspend fun getConfigs(): List<Model>
-    suspend fun getConfigs(deploymentId: UUID): List<Model>
+    abstract suspend fun write(keyConfig: Model)
+    abstract suspend fun getOrCreateDeploymentId(byDeploymentId: UUID?): UUID
+    abstract suspend fun getDeploymentIds(): List<UUID>
+    abstract suspend fun getConfigs(): List<Model>
+    abstract suspend fun getConfigs(deploymentId: UUID): List<Model>
 }

@@ -3,14 +3,17 @@ package jarrid.keyper.key
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
+import jarrid.keyper.utils.file.Local
 import jarrid.keyper.utils.model.NewTimestamp
 import jarrid.keyper.utils.model.NewUUID
+import kotlinx.coroutines.test.runTest
 import java.time.Clock
 import java.util.*
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+
 
 class ManagerImplTest {
 
@@ -26,7 +29,7 @@ class ManagerImplTest {
     }
 
     @Test
-    fun testConvert() {
+    fun testConvert() = runTest {
         val keyId = UUID.randomUUID()
         val deploymentId = UUID.randomUUID()
         every { NewUUID.get() } returnsMany listOf(keyId, deploymentId)
@@ -49,7 +52,8 @@ class ManagerImplTest {
             val payload = case["payload"] as Payload
             val usage = case["usage"] as Usage
             val expected = case["expected"] as Model
-            val actual = convert(payload, usage)
+            val backend = Local()
+            val actual = Manager.convert(payload, usage, backend)
             assertEquals(expected, actual)
         }
     }

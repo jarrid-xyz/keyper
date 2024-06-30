@@ -13,7 +13,7 @@ data class Payload(
 
 interface Manager {
     companion object {
-        @JvmStatic
+        
         suspend fun convert(payload: Payload, usage: Usage, backend: Backend): Model {
             when (usage) {
                 Usage.CREATE_KEY -> {

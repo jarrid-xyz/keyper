@@ -42,8 +42,8 @@ dependencies {
     implementation("com.github.f4b6a3:uuid-creator:5.3.7")
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.0")
 
-
     testImplementation("io.mockk:mockk:1.13.11")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
 }
 
 testing {
@@ -84,6 +84,10 @@ val projectRoot: File = rootDir
 
 tasks.named<JavaExec>("run") {
     systemProperty("projectRoot", projectRoot.absolutePath)
+}
+
+tasks.named<Test>("test") {
+    systemProperty("projectRoot", "test")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
