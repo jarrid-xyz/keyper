@@ -1,3 +1,5 @@
+package jarrid.keyper.cli.deploy
+
 import jarrid.keyper.cli.DeploySubcommand
 
 class Destroy :
