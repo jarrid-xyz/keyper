@@ -56,3 +56,6 @@ cdktf.out/
 
 # Ignore key artifacts
 configs/
+
+# Ingore creds
+**key.json

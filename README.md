@@ -59,3 +59,41 @@ in [cdktf]((https://developer.hashicorp.com/terraform/cdktf))
 ```bash
 keyper deploy apply --usage CREATE_KEY --backend LOCAL --stack GCP
 ```
+
+## Deployment
+
+### GCP
+
+Set gcp provider configuration in `lib/src/main/resources/app.yaml`
+
+1. Create Service Account for Terraform
+   ```bash
+   SERVICE=keyper
+   PROJECT_ID=$(gcloud config get-value project)
+   gcloud iam service-accounts create $SERVICE-cdktf-sa
+   ```
+2. Add `roles/cloudkms.admin` to the sa
+   ```bash
+   SERVICE=keyper
+   PROJECT_ID=$(gcloud config get-value project)
+   gcloud projects add-iam-policy-binding $PROJECT_ID \
+   --member "serviceAccount:$SERVICE-cdktf-sa@$PROJECT_ID.iam.gserviceaccount.com" \
+   --role "roles/cloudkms.admin"
+   ```
+   You can also verify it by running:
+   ```bash
+   gcloud projects get-iam-policy $PROJECT_ID \
+    --flatten="bindings[].members" \
+    --filter="bindings.members:serviceAccount:$SERVICE-cdktf-sa@$PROJECT_ID.iam.gserviceaccount.com"
+   ```
+3. Create and download the key
+
+   **Make sure you don't commit `.cdktf-sa-key.json` to github.**
+   ```bash
+   gcloud iam service-accounts keys create .cdktf-sa-key.json \
+    --iam-account "$SERVICE-cdktf-sa@$PROJECT_ID.iam.gserviceaccount.com"
+   ```
+
+4. Set ENV `GOOGLE_APPLICATION_CREDENTIALS` to path
+
+That's it. Enjoy.
