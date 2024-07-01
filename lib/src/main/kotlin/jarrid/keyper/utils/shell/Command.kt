@@ -5,7 +5,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 class Command : Klogging {
-    private val cdktfPath: String = System.getenv("CDKTF_PATH")
+    private val cdktfPath: String = System.getenv("CDKTF_PATH") ?: "/usr/bin"
 
     suspend fun run(command: String, envVars: Map<String, String>? = null): String {
         val builder = ProcessBuilder("/bin/sh", "-c", command)

@@ -60,6 +60,27 @@ in [cdktf]((https://developer.hashicorp.com/terraform/cdktf))
 keyper deploy apply --usage CREATE_KEY --backend LOCAL --stack GCP
 ```
 
+## Development
+
+### Compile Cli Jar
+
+```bash
+# build jar
+./gradlew build 
+
+# give permission to run the jar
+chmod +x ./lib/build/libs/lib-standalone.jar
+
+# use jar as keyper cli
+ java -jar ./lib/build/libs/lib-standalone.jar key -h
+ 
+# wrap it into keyper
+alias keyper="java -jar ./lib/build/libs/lib-standalone.jar"
+
+# try
+keyper -h
+```
+
 ## Deployment
 
 ### GCP
