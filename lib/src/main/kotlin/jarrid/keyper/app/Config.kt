@@ -14,7 +14,7 @@ import jarrid.keyper.utils.file.Backend as FileBackend
 @Serializable
 data class CloudProviderConfig(
     val accountId: String,
-    val region: String = "us-east-1"
+    val region: String
 )
 
 @Serializable

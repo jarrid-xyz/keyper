@@ -4,6 +4,7 @@ import com.github.f4b6a3.uuid.codec.base.Base62Codec
 import com.hashicorp.cdktf.TerraformStack
 import jarrid.keyper.app.Config
 import jarrid.keyper.key.Model
+import kotlinx.coroutines.runBlocking
 import software.constructs.Construct
 import java.util.*
 
@@ -20,10 +21,11 @@ abstract class KeyStack(
         }
 
         fun getSanitizedName(uuid: UUID): String {
-            return "key-${base62Encode(uuid)}"
+            return "jarrid-keyper-key-$uuid"
         }
 
         private fun base62Encode(uuid: UUID): String {
+            // shorter uuid encoding option
             val encoder = Base62Codec()
             val encoded = encoder.encode(uuid)
             return encoded
@@ -31,10 +33,12 @@ abstract class KeyStack(
     }
 
     init {
-        useProvider()
+        runBlocking {
+            useProvider()
+        }
     }
 
     abstract fun convert(configs: List<Model>): StackTfvars
-    abstract fun useProvider()
+    abstract suspend fun useProvider()
     abstract suspend fun create(tfvar: StackTfvars): Any
 }

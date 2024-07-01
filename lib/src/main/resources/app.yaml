@@ -1,6 +1,7 @@
 provider:
   gcp:
     accountId: "databoo"
+    region: us-east1
 manager:
   file:
     backend: "local"

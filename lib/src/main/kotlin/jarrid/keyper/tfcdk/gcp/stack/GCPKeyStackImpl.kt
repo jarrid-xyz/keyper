@@ -23,19 +23,11 @@ class GCPKeyStackImpl(
     private val region: String
         get() = appConfig.provider.gcp!!.region
 
-//    private val projectId = getProjectId()
-//    private val region = getRegion()
-//    private fun getProjectId(): String {
-//        return appConfig.provider.gcp!!.accountId
-//    }
-//
-//    private fun getRegion(): String {
-//        return appConfig.provider.gcp!!.region
-//    }
-
-
-    override fun useProvider() {
+    override suspend fun useProvider() {
+        val keyJsonPath = System.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+        logger.info("GCP provider credentials is set to $keyJsonPath")
         GoogleProvider.Builder.create(this, "Google")
+            .credentials(keyJsonPath)
             .project(projectId)
             .region(region)
             .build()
@@ -43,8 +35,8 @@ class GCPKeyStackImpl(
 
     private fun getLabels(key: Key): Map<String, String> {
         return mapOf(
-            "keyId" to key.keyId.toString(),
-            "deploymentId" to terraformId.toString()
+            "key-id" to key.keyId.toString(),
+            "deployment-id" to terraformId.toString()
         )
     }
 
@@ -63,7 +55,7 @@ class GCPKeyStackImpl(
         return KmsCryptoKey(
             this, key.keyName, KmsCryptoKeyConfig.builder()
                 .name(key.keyName)
-                .keyRing(keyRing.name)
+                .keyRing(keyRing.id)
                 .rotationPeriod(key.rotationPeriod)
                 .labels(getLabels(key))
                 .build()
