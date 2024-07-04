@@ -18,7 +18,7 @@ class Command : Klogging {
             }
         }
 
-        logger.info("Run command: ${builder.command()}, with env: $env")
+        logger.info("Run command: ${builder.command()}")
         val process = builder.start()
         val out = StringBuilder()
         BufferedReader(InputStreamReader(process.inputStream)).use { reader ->
