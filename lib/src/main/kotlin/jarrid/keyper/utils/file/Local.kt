@@ -52,7 +52,7 @@ class Local : Backend(), Klogging {
         try {
             return ls(dir).map { UUID.fromString(it) }
         } catch (e: IllegalArgumentException) {
-            logger.error(e, "Config dir: $dir doesn't exist, create new deploymentId")
+            logger.warn("Config dir: $dir doesn't exist, create new deploymentId")
         }
         return emptyList()
     }

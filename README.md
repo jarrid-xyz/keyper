@@ -81,6 +81,46 @@ alias keyper="java -jar ./lib/build/libs/lib-standalone.jar"
 keyper -h
 ```
 
+### Docker
+
+We've also built a docker image where we've packaged everything you need for you and you can use it as a cli directly.
+
+If you'd like to build and test it out locally:
+
+```bash
+docker build . -t keyper
+```
+
+Otherwise, to run cli commands:
+
+```bash
+docker pull ghcr.io/apiobuild/keyper
+```
+
+Note, if you get permission denied, try to log out from ghcr.io first:
+
+```bash
+docker logout ghcr.io
+```
+
+Run the packaged cli directly from docker:
+
+```bash
+# create key
+docker run -it --rm --name keyper-cli \
+  -v ./configs:/home/keyper/configs \
+  -v ./cdktf.out:/home/keyper/cdktf.out \
+  ghcr.io/apiobuild/keyper key --backend LOCAL --stack GCP --usage CREATE_KEY
+
+# run plan
+docker run -it --rm --name keyper-cli \
+  -v ./configs:/home/keyper/configs \
+  -v ./cdktf.out:/home/keyper/cdktf.out \
+  -v ./.cdktf-sa-key.json:/home/keyper/gcp.json \
+  -e GOOGLE_APPLICATION_CREDENTIALS="/home/keyper/gcp.json" \
+  ghcr.io/apiobuild/keyper deploy plan
+```
+
 ## Deployment
 
 ### GCP
