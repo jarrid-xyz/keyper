@@ -53,7 +53,8 @@ class ManagerImplTest {
             val usage = case["usage"] as Usage
             val expected = case["expected"] as Model
             val backend = Local()
-            val actual = Manager.convert(payload, usage, backend)
+            val manager = ManagerImpl(payload = payload, backend = backend)
+            val actual = manager.convert(payload, usage)
             assertEquals(expected, actual)
         }
     }

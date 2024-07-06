@@ -2,11 +2,13 @@ package jarrid.keyper.utils.file
 
 import jarrid.keyper.app.Config
 import jarrid.keyper.key.Model
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
 
 abstract class Backend {
-    val rootDir = System.getProperty("projectRoot")
+    private val rootDirPath: String = System.getProperty("projectRoot")
+    val rootDir: Path = Paths.get(rootDirPath)
 
     val dir: String
         get() = appConfig.get().manager.file.path
@@ -17,7 +19,7 @@ abstract class Backend {
         return joinPaths(dir, keyConfig.deploymentId.toString())
     }
 
-    fun getFilename(keyConfig: Model): String {
+    fun getFileName(keyConfig: Model): String {
         return joinPaths(getPrefix(keyConfig), "${keyConfig.keyId!!}.json")
     }
 
@@ -28,8 +30,7 @@ abstract class Backend {
     }
 
     abstract suspend fun write(keyConfig: Model)
-    abstract suspend fun getOrCreateDeploymentId(byDeploymentId: UUID?): UUID
+    abstract suspend fun getOrCreateDeploymentId(byDeploymentId: UUID?, force: Boolean = true): UUID?
     abstract suspend fun getDeploymentIds(): List<UUID>
     abstract suspend fun getConfigs(): List<Model>
-    abstract suspend fun getConfigs(deploymentId: UUID): List<Model>
 }

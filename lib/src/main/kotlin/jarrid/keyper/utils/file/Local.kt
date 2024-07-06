@@ -5,41 +5,40 @@ import jarrid.keyper.key.Model
 import jarrid.keyper.utils.json.decode
 import jarrid.keyper.utils.json.encode
 import jarrid.keyper.utils.model.NewUUID
-import java.io.File
+import java.nio.file.Files
 import java.util.*
 
 class Local : Backend(), Klogging {
-    private fun ls(dir: String): List<String> {
-        val dirFile = File(rootDir, dir)
-        if (!dirFile.isDirectory) {
+    fun ls(dir: String): List<String> {
+        val dirPath = rootDir.resolve(dir)
+        if (!Files.isDirectory(dirPath)) {
             throw IllegalArgumentException("Dir: $dir doesn't exist or is not a directory. Root dir: $rootDir")
         }
-        return dirFile.list()?.toList() ?: emptyList()
+        return Files.list(dirPath).map { it.fileName.toString() }.toList()
     }
 
-    private fun getConfig(path: String): Model {
-        val file = File(rootDir, path)
-        val string = file.readText()
+    fun getConfig(path: String): Model {
+        val filePath = rootDir.resolve(path)
+        val string = Files.readString(filePath)
         return decode(string)
     }
 
-
-    private suspend fun createDir(keyConfig: Model) {
+    suspend fun createDir(keyConfig: Model) {
         val prefix = getPrefix(keyConfig)
-        val dir = File(rootDir, prefix)
-        if (dir.exists()) {
+        val dirPath = rootDir.resolve(prefix)
+        if (Files.exists(dirPath)) {
             logger.info("Skipped: dir exists for prefix: $prefix")
             return
         }
-        dir.mkdirs()
+        Files.createDirectories(dirPath)
         logger.info("Created dir for prefix: $prefix")
     }
 
-    private suspend fun writeFile(keyConfig: Model) {
+    suspend fun writeFile(keyConfig: Model) {
         val encoded = encode(keyConfig)
-        val fileName = getFilename(keyConfig)
-        val file = File(rootDir, fileName)
-        file.writeText(encoded)
+        val fileName = getFileName(keyConfig)
+        val filePath = rootDir.resolve(fileName)
+        Files.writeString(filePath, encoded)
         logger.info("Write to file: $fileName")
     }
 
@@ -76,29 +75,30 @@ class Local : Backend(), Klogging {
         return out
     }
 
-    override suspend fun getConfigs(deploymentId: UUID): List<Model> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getOrCreateDeploymentId(byDeploymentId: UUID?): UUID {
+    override suspend fun getOrCreateDeploymentId(byDeploymentId: UUID?, force: Boolean): UUID? {
         val deploymentIds = getDeploymentIds()
-        var deploymentId: UUID = NewUUID.get()
+        var deploymentId: UUID? = null
         when (deploymentIds.size) {
             0 -> {
-                return deploymentId
+                logger.info("Existing deploymentId not found.")
+                if (force) {
+                    deploymentId = NewUUID.get()
+                    logger.info("Create new deploymentId: $deploymentId")
+                }
             }
 
             1 -> {
                 deploymentId = deploymentIds[0]
                 logger.info("Found existing deploymentId: $deploymentId")
-                return deploymentId
             }
 
             else -> {
-                if (byDeploymentId in deploymentIds) {
-                    logger.error("Invalid: deploymentId: $byDeploymentId doesn't exist. Create new deploymentId: $deploymentId")
-                } else {
-                    deploymentId = byDeploymentId!!
+                if (byDeploymentId !in deploymentIds) {
+                    logger.error("Invalid: deploymentId: $byDeploymentId doesn't exist.")
+                    if (force) {
+                        deploymentId = NewUUID.get()
+                        logger.info("Create new deploymentId: $deploymentId")
+                    }
                 }
             }
         }

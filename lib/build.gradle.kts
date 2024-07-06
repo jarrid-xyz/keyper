@@ -41,9 +41,14 @@ dependencies {
     implementation("com.github.ajalt.clikt:clikt:4.2.2")
     implementation("com.github.f4b6a3:uuid-creator:5.3.7")
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.0")
+    implementation("com.google.cloud:google-cloud-kms:2.49.0")
 
     testImplementation("io.mockk:mockk:1.13.11")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+    testImplementation("com.google.jimfs:jimfs:1.3.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.0-M2")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.11.0-M2")
+
 }
 
 testing {
