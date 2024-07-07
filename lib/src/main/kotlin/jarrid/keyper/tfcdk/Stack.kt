@@ -31,7 +31,7 @@ class Stack(
             val constructor = stack.primaryConstructor
                 ?: throw IllegalArgumentException("KeyStack class must have a primary constructor")
             val keyStack = constructor.call(app, deploymentId)
-            var tfvar = keyStack.convert(configs)
+            val tfvar = keyStack.convert(configs)
             keyStack.create(tfvar)
             logger.info("Run terraform synth for deploymentId: $deploymentId")
             app.synth()

@@ -5,7 +5,7 @@ import jarrid.keyper.utils.file.Backend
 
 class ManagerImpl(
     private val payload: Payload,
-    override val backend: Backend
+    backend: Backend
 ) : Klogging, Manager(backend = backend) {
     override suspend fun createKey(): Model {
         return run(payload, Usage.CREATE_KEY)

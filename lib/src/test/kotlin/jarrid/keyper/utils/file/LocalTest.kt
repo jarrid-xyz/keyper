@@ -227,13 +227,13 @@ class LocalTest {
     companion object {
         @JvmStatic
         @AfterAll
-        fun tearDownClass(): Unit {
+        fun tearDownClass() {
             unmockkAll()
         }
 
         @JvmStatic
         @BeforeAll
-        fun setUpClass(): Unit {
+        fun setUpClass() {
             mockkStatic(NewUUID::class)
             mockkStatic(NewTimestamp::class)
         }
