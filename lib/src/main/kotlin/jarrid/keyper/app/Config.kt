@@ -52,9 +52,17 @@ enum class Stack {
     @SerialName("gcp")
     GCP {
         override fun get(): KClass<out KeyStack> = GCPKeyStackImpl::class
+        override fun getConfig(config: AppConfig): CloudProviderConfig? = config.provider.gcp
     };
 
+//    @SerialName("aws")
+//    AWS {
+//        override fun get(): KClass<out KeyStack> = AWSKeyStackImpl::class
+//        override fun getConfig(config: AppConfig): CloudProviderConfig? = provider.aws
+//    };
+
     abstract fun get(): KClass<out KeyStack>
+    abstract fun getConfig(config: AppConfig): CloudProviderConfig?
 }
 
 @Serializable

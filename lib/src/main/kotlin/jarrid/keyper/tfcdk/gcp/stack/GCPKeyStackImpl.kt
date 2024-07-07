@@ -18,10 +18,8 @@ class GCPKeyStackImpl(
 ) : Klogging, KeyStack(scope, terraformId) {
 
     // TODO: there's better ways
-    private val projectId: String
-        get() = appConfig.provider.gcp!!.accountId
-    private val region: String
-        get() = appConfig.provider.gcp!!.region
+    private val projectId: String = provider.accountId
+    private val region: String = provider.region
 
     override suspend fun useProvider() {
         val keyJsonPath = System.getenv("GOOGLE_APPLICATION_CREDENTIALS")

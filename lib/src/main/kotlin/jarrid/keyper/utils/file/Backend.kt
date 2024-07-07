@@ -32,5 +32,6 @@ abstract class Backend {
     abstract suspend fun write(keyConfig: Model)
     abstract suspend fun getOrCreateDeploymentId(byDeploymentId: UUID?, force: Boolean = true): UUID?
     abstract suspend fun getDeploymentIds(): List<UUID>
+    abstract suspend fun getConfig(byDeploymentId: UUID? = null, keyId: UUID): Model?
     abstract suspend fun getConfigs(): List<Model>
 }

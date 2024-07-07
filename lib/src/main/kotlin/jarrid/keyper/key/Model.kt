@@ -9,17 +9,8 @@ import java.util.*
 enum class Usage {
     CREATE_KEY,
     SHARE_KEY,
-    ENCRYPT_DATA,
-}
-
-enum class KeyManagerProvider {
-    AWS,
-    GCP,
-}
-
-enum class KeyReferenceType {
-    ARN,
-    JARRID_MANAGED
+    ENCRYPT,
+    DECRYPT
 }
 
 
@@ -36,8 +27,3 @@ data class Model(
     @Contextual val context: Map<String, @Contextual Any>? = null,
 )
 
-data class Reference(
-    val keyManagerProvider: KeyManagerProvider,
-    val keyReferenceType: KeyReferenceType,
-    var keyReference: String,
-)
