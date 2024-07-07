@@ -22,11 +22,7 @@ abstract class KeyStack(
             val keyConfigOptions: Map<String, Any>? = config.context?.get("options") as? Map<String, Any>
             return keyConfigOptions?.get(option) as? String
         }
-
-        fun getSanitizedName(uuid: UUID): String {
-            return "jarrid-keyper-key-$uuid"
-        }
-
+        
         private fun base62Encode(uuid: UUID): String {
             // shorter uuid encoding option
             val encoder = Base62Codec()

@@ -6,6 +6,7 @@ import com.google.cloud.kms.v1.KeyManagementServiceClient
 import com.google.protobuf.ByteString
 import jarrid.keyper.app.Backend
 import jarrid.keyper.app.Stack
+import jarrid.keyper.key.Name
 import java.util.*
 
 class Encrypt(
@@ -18,7 +19,11 @@ class Encrypt(
         val key = getKeyConfig(keyId)
         KeyManagementServiceClient.create().use { client ->
             // Build the key name
-            val keyName = CryptoKeyName.of(projectId, region, key.deploymentId.toString(), key.keyId.toString())
+            val keyName =
+                CryptoKeyName.of(
+                    projectId, region, Name.getSanitizedName(key.deploymentId!!),
+                    Name.getSanitizedName(key.keyId!!)
+                )
 
             // Convert plaintext to ByteString
             val plaintextByteString = ByteString.copyFromUtf8(plaintext)
