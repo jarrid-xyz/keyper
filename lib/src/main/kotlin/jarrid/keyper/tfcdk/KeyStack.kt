@@ -3,6 +3,7 @@ package jarrid.keyper.tfcdk
 import com.github.f4b6a3.uuid.codec.base.Base62Codec
 import com.hashicorp.cdktf.TerraformStack
 import jarrid.keyper.app.Config
+import jarrid.keyper.app.Stack
 import jarrid.keyper.key.Model
 import kotlinx.coroutines.runBlocking
 import software.constructs.Construct
@@ -13,17 +14,15 @@ abstract class KeyStack(
     terraformId: UUID,
 ) : TerraformStack(scope, terraformId.toString()) {
     companion object {
-        val appConfig = Config().get()
+        val stack: Stack = Stack.GCP
+        private val appConfig = Config().get()
+        val provider = stack.getConfig(appConfig)!!
 
         fun getKeyConfigOptions(config: Model, option: String): String? {
             val keyConfigOptions: Map<String, Any>? = config.context?.get("options") as? Map<String, Any>
             return keyConfigOptions?.get(option) as? String
         }
-
-        fun getSanitizedName(uuid: UUID): String {
-            return "jarrid-keyper-key-$uuid"
-        }
-
+        
         private fun base62Encode(uuid: UUID): String {
             // shorter uuid encoding option
             val encoder = Base62Codec()

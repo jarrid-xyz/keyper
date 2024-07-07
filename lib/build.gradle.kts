@@ -41,9 +41,14 @@ dependencies {
     implementation("com.github.ajalt.clikt:clikt:4.2.2")
     implementation("com.github.f4b6a3:uuid-creator:5.3.7")
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.0")
+    implementation("com.google.cloud:google-cloud-kms:2.49.0")
 
     testImplementation("io.mockk:mockk:1.13.11")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+    testImplementation("com.google.jimfs:jimfs:1.3.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.0-M2")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.11.0-M2")
+
 }
 
 testing {
@@ -74,20 +79,11 @@ tasks {
             .map { if (it.isDirectory) it else zipTree(it) } +
                 sourcesMain.output
         from(contents)
+        exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA") // Exclude signature files
     }
     build {
         dependsOn(fatJar) // Trigger fat jar creation during build
     }
-}
-
-val projectRoot: File = rootDir
-
-tasks.named<JavaExec>("run") {
-    systemProperty("projectRoot", projectRoot.absolutePath)
-}
-
-tasks.named<Test>("test") {
-    systemProperty("projectRoot", "test")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -100,5 +96,3 @@ java {
 application {
     mainClass.set("MainKt")
 }
-
-extra["projectRoot"] = rootDir

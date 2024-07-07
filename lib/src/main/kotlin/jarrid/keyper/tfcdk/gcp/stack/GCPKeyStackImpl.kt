@@ -7,6 +7,7 @@ import com.hashicorp.cdktf.providers.google.kms_key_ring.KmsKeyRingConfig
 import com.hashicorp.cdktf.providers.google.provider.GoogleProvider
 import io.klogging.Klogging
 import jarrid.keyper.key.Model
+import jarrid.keyper.key.Name
 import jarrid.keyper.tfcdk.KeyStack
 import jarrid.keyper.tfcdk.StackTfvars
 import software.constructs.Construct
@@ -17,19 +18,13 @@ class GCPKeyStackImpl(
     private val terraformId: UUID,
 ) : Klogging, KeyStack(scope, terraformId) {
 
-    // TODO: there's better ways
-    private val projectId: String
-        get() = appConfig.provider.gcp!!.accountId
-    private val region: String
-        get() = appConfig.provider.gcp!!.region
-
     override suspend fun useProvider() {
         val keyJsonPath = System.getenv("GOOGLE_APPLICATION_CREDENTIALS")
         logger.info("GCP provider credentials is set to $keyJsonPath")
         GoogleProvider.Builder.create(this, "Google")
             .credentials(keyJsonPath)
-            .project(projectId)
-            .region(region)
+            .project(provider.accountId)
+            .region(provider.region)
             .build()
     }
 
@@ -45,7 +40,7 @@ class GCPKeyStackImpl(
         return KmsKeyRing(
             this, keyRing.keyRingName, KmsKeyRingConfig.builder()
                 .name(keyRing.keyRingName)
-                .location(region)
+                .location(provider.region)
                 .build()
         )
     }
@@ -81,7 +76,7 @@ class GCPKeyStackImpl(
         val keys: List<Key> = configs.map { config ->
             val keyId = config.keyId!!
             Key(
-                keyName = getSanitizedName(keyId),
+                keyName = Name.getSanitizedName(keyId),
                 keyId = keyId,
                 rotationPeriod = getKeyConfigOptions(config, "rotationPeriod")
 
@@ -89,10 +84,10 @@ class GCPKeyStackImpl(
         }
         return Tfvars(
             deploymentId = terraformId,
-            region = region,
+            region = provider.region,
             keyRings = listOf(
                 KeyRing(
-                    keyRingName = getSanitizedName(terraformId),
+                    keyRingName = Name.getSanitizedName(terraformId),
                     keys = keys
                 )
             )

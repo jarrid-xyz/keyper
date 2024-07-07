@@ -1,45 +1,43 @@
 package jarrid.keyper.cli
 
+import com.github.ajalt.clikt.core.NoOpCliktCommand
 import com.github.ajalt.clikt.parameters.options.associate
 import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.required
-import com.github.ajalt.clikt.parameters.types.enum
 import jarrid.keyper.api.KeyServiceImpl
 import jarrid.keyper.api.Options
 import jarrid.keyper.key.Usage
-import kotlinx.coroutines.runBlocking
 
-class Key :
-    BaseSubcommand(help = "Key module generates key configs in json based on usage specified. For more information, visit: https://jarrid.xyz") {
+abstract class KeySubcommand(help: String = "") :
+    BaseSubcommand(help = help) {
+    abstract val usage: Usage?
+//    private val usage: Usage? by option(
+//        help = "Specify usage"
+//    ).enum<Usage>()
 
-    private val usage: Usage by option(
-        help = "Specify usage"
-    ).enum<Usage>().required()
-
-    private val context: Map<String, String> by option(
+    val context: Map<String, String> by option(
         "-c", "--context",
         help = "Provide additional context as key:value map"
     ).associate()
 
-    override fun run() = runBlocking {
-        logger.info(
-            "Running Key command with the following options: " +
-                    "Usage: $usage, Backend: $backend, Stack: $stack, " +
-                    "Context: $context"
-        )
-        runAsync()
-    }
 
-    private suspend fun runAsync() {
+    suspend fun runAsync() {
         val service = KeyServiceImpl(
             options = Options(
                 stack = stack,
                 backend = backend
             )
         )
+        if (usage == null) {
+            throw IllegalArgumentException("Must specify usage")
+        }
         when (usage) {
             Usage.CREATE_KEY -> service.createSymmetricKey(context)
             else -> TODO()
         }
     }
 }
+
+class Key :
+    NoOpCliktCommand(
+        help = "Key module allow you to create, update, delete and list keys. For more information, visit: https://jarrid.xyz"
+    )

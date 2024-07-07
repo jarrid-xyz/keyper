@@ -16,5 +16,4 @@ abstract class Service(
 ) {
     val backend: Backend = options.backend.get()
     val stack: KClass<out KeyStack> = options.stack.get()
-
 }

@@ -3,6 +3,7 @@ package jarrid.keyper.key
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
+import jarrid.keyper.app.Config
 import jarrid.keyper.utils.file.Local
 import jarrid.keyper.utils.model.NewTimestamp
 import jarrid.keyper.utils.model.NewUUID
@@ -52,8 +53,9 @@ class ManagerImplTest {
             val payload = case["payload"] as Payload
             val usage = case["usage"] as Usage
             val expected = case["expected"] as Model
-            val backend = Local()
-            val actual = Manager.convert(payload, usage, backend)
+            val backend = Local(Config())
+            val manager = ManagerImpl(payload = payload, backend = backend)
+            val actual = manager.convert(payload, usage)
             assertEquals(expected, actual)
         }
     }

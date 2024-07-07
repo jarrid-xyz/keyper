@@ -6,3 +6,4 @@ manager:
   file:
     backend: "local"
     path: "configs"
+out_dir: "/home/keyper"

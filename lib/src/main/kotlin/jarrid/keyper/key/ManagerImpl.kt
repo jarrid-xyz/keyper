@@ -5,10 +5,10 @@ import jarrid.keyper.utils.file.Backend
 
 class ManagerImpl(
     private val payload: Payload,
-    private val backend: Backend
-) : Klogging, Manager {
+    backend: Backend
+) : Klogging, Manager(backend = backend) {
     override suspend fun createKey(): Model {
-        return Manager.run(payload, Usage.CREATE_KEY, backend)
+        return run(payload, Usage.CREATE_KEY)
     }
 
     override suspend fun shareKey() {

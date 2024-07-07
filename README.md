@@ -4,10 +4,10 @@ Keyper is a suite of key manage APIs to simplify key creation, management, encry
 and secured way. Operations are file based and can be easily automated, tracked, audited and managed via file based
 processes such as [GitOps](https://github.com/topics/gitops).
 
-The library has two main modules:
+The library has three main modules:
 
-1. [Key Module](#key-module): Create key configs as json file, this helps you manage different key implementations
-   in a simple, trackable and readable ways.
+1. [Key Module](#key-module): Create key configs as json file, helps you manage different key implementations
+   in a simple, trackable and readable ways. Encrypt and decrypt data using key configs.
 2. [Deploy Module](#deploy-module): Take the existing key configs (in json files), plan and deploy
    via [terraform](https://www.terraform.io/) accordingly. It
    takes advantage of terraform's existing functionalities such as state management, dependency resolution, drift
@@ -22,14 +22,24 @@ backend. In the future, we plan to support remote storage such as [GitHub](https
 as [s3](https://aws.amazon.com/s3/)
 and [GCS](https://cloud.google.com/storage).
 
-### Create Key:
+### Key Management
 
 Create a key config for data encryption
 
 Example:
 
 ```bash
-keyper key --usage CREATE_KEY --backend LOCAL --stack GCP
+keyper key create --backend LOCAL --stack GCP # create key
+keyper key list # list keys
+```
+
+### Encrypt/Decrypt
+
+```bash
+keyper data encrypt --backend LOCAL --stack GCP --key-id "<key-id>" --plaintext "<>"
+# should return: Encrypted value: <...>
+keyper data decrypt --backend LOCAL --stack GCP --key-id "<key-id>" --ciphertext "<>"
+# should return: Decrypted value: <...>
 ```
 
 ## Deploy Module
@@ -57,7 +67,7 @@ underneath. It's the equivalent of [`terraform apply`](https://developer.hashico
 in [cdktf]((https://developer.hashicorp.com/terraform/cdktf))
 
 ```bash
-keyper deploy apply --usage CREATE_KEY --backend LOCAL --stack GCP
+keyper deploy applydocke
 ```
 
 ## Development
@@ -110,7 +120,7 @@ Run the packaged cli directly from docker:
 docker run -it --rm --name keyper-cli \
   -v ./configs:/home/keyper/configs \
   -v ./cdktf.out:/home/keyper/cdktf.out \
-  ghcr.io/apiobuild/keyper key --backend LOCAL --stack GCP --usage CREATE_KEY
+  ghcr.io/apiobuild/keyper:main key create --backend LOCAL --stack GCP 
 
 # run plan
 docker run -it --rm --name keyper-cli \
@@ -118,7 +128,7 @@ docker run -it --rm --name keyper-cli \
   -v ./cdktf.out:/home/keyper/cdktf.out \
   -v ./.cdktf-sa-key.json:/home/keyper/gcp.json \
   -e GOOGLE_APPLICATION_CREDENTIALS="/home/keyper/gcp.json" \
-  ghcr.io/apiobuild/keyper deploy plan
+  ghcr.io/apiobuild/keyper:main deploy plan
 ```
 
 ## Deployment

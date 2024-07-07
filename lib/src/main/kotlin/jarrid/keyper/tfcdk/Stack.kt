@@ -3,6 +3,7 @@ package jarrid.keyper.tfcdk
 import com.hashicorp.cdktf.App
 import com.hashicorp.cdktf.AppConfig
 import io.klogging.Klogging
+import jarrid.keyper.app.Config
 import jarrid.keyper.key.Model
 import jarrid.keyper.utils.file.Backend
 import kotlin.reflect.KClass
@@ -12,10 +13,13 @@ class Stack(
     private val backend: Backend,
     private val stack: KClass<out KeyStack>
 ) : Klogging {
-    private val rootDir = System.getProperty("projectRoot")
-    private fun getAppConfig(): AppConfig {
+    private val appConfig = Config().get()
+    private val root: String = appConfig.outDir
+
+    private suspend fun getAppConfig(): AppConfig {
+        logger.info("Current root: $root")
         return AppConfig.builder()
-            .outdir(Backend.joinPaths(rootDir, "cdktf.out"))
+            .outdir(Backend.joinPaths(root, "cdktf.out"))
             .build()
     }
 
@@ -27,7 +31,7 @@ class Stack(
             val constructor = stack.primaryConstructor
                 ?: throw IllegalArgumentException("KeyStack class must have a primary constructor")
             val keyStack = constructor.call(app, deploymentId)
-            var tfvar = keyStack.convert(configs)
+            val tfvar = keyStack.convert(configs)
             keyStack.create(tfvar)
             logger.info("Run terraform synth for deploymentId: $deploymentId")
             app.synth()

@@ -11,43 +11,44 @@ data class Payload(
     val context: Map<String, Any>? = null
 )
 
-interface Manager {
-    companion object {
-        
-        suspend fun convert(payload: Payload, usage: Usage, backend: Backend): Model {
-            when (usage) {
-                Usage.CREATE_KEY -> {
-                    return Model(
-                        usage = usage,
-                        keyId = NewUUID.get(),
-                        created = NewTimestamp.get(),
-                        deploymentId = backend.getOrCreateDeploymentId(payload.deploymentId),
-                        ttl = 7,
-                        context = payload.context,
-                    )
-                }
-
-                Usage.SHARE_KEY -> {
-                    TODO()
-                }
-
-                Usage.ENCRYPT_DATA -> {
-                    TODO()
-                }
+abstract class Manager(backend: Backend) {
+    open val backend: Backend = backend
+    suspend fun convert(payload: Payload, usage: Usage): Model {
+        when (usage) {
+            Usage.CREATE_KEY -> {
+                return Model(
+                    usage = usage,
+                    keyId = NewUUID.get(),
+                    created = NewTimestamp.get(),
+                    deploymentId = backend.getOrCreateDeploymentId(payload.deploymentId),
+                    ttl = 7,
+                    context = payload.context,
+                )
             }
-        }
 
-        @JvmStatic
-        suspend fun run(payload: Payload, usage: Usage, backend: Backend): Model {
-            val config: Model = convert(payload, usage, backend)
-            backend.write(config)
-            return config
+            Usage.SHARE_KEY -> {
+                TODO()
+            }
+
+            Usage.ENCRYPT -> {
+                TODO()
+            }
+
+            Usage.DECRYPT -> {
+                TODO()
+            }
         }
     }
 
-    suspend fun createKey(): Model
-    suspend fun shareKey()
-    suspend fun encrypt()
-    suspend fun getKey()
-    suspend fun decrypt()
+    suspend fun run(payload: Payload, usage: Usage): Model {
+        val config: Model = convert(payload, usage)
+        backend.write(config)
+        return config
+    }
+
+    abstract suspend fun createKey(): Model
+    abstract suspend fun shareKey()
+    abstract suspend fun encrypt()
+    abstract suspend fun getKey()
+    abstract suspend fun decrypt()
 }

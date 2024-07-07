@@ -8,6 +8,8 @@ import jarrid.keyper.utils.file.Local
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.io.InputStream
+import java.nio.file.Path
+import java.nio.file.Paths
 import kotlin.reflect.KClass
 import jarrid.keyper.utils.file.Backend as FileBackend
 
@@ -27,7 +29,7 @@ data class ProviderConfig(
 enum class Backend {
     @SerialName("local")
     LOCAL {
-        override fun get(): FileBackend = Local()
+        override fun get(): FileBackend = Local(Config())
     },
 
     @SerialName("s3")
@@ -52,9 +54,17 @@ enum class Stack {
     @SerialName("gcp")
     GCP {
         override fun get(): KClass<out KeyStack> = GCPKeyStackImpl::class
+        override fun getConfig(config: AppConfig): CloudProviderConfig? = config.provider.gcp
     };
 
+//    @SerialName("aws")
+//    AWS {
+//        override fun get(): KClass<out KeyStack> = AWSKeyStackImpl::class
+//        override fun getConfig(config: AppConfig): CloudProviderConfig? = provider.aws
+//    };
+
     abstract fun get(): KClass<out KeyStack>
+    abstract fun getConfig(config: AppConfig): CloudProviderConfig?
 }
 
 @Serializable
@@ -71,7 +81,9 @@ data class File(
 @Serializable
 data class AppConfig(
     val provider: ProviderConfig,
-    val manager: File
+    val manager: File,
+    @SerialName("out_dir")
+    val outDir: String = "./"
 )
 
 class Config(path: String = "/app.yaml") {
@@ -87,4 +99,6 @@ class Config(path: String = "/app.yaml") {
     fun get(): AppConfig {
         return config
     }
+
+    val outDir: Path = Paths.get(config.outDir)
 }

@@ -12,4 +12,8 @@ class KeyServiceImpl(options: Options) : Klogging, Service(options) {
         logger.info("Created key config: $config")
         return config.keyId!!
     }
+
+    suspend fun encrypt(keyId: UUID, plaintext: String): String {
+        TODO()
+    }
 }
