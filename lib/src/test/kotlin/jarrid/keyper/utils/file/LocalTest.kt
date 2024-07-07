@@ -9,17 +9,16 @@ import jarrid.keyper.utils.json.encode
 import jarrid.keyper.utils.model.NewTimestamp
 import jarrid.keyper.utils.model.NewUUID
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance.Lifecycle
 import java.nio.file.FileSystem
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 
+@TestInstance(Lifecycle.PER_CLASS)
 class LocalTest {
 
     private lateinit var local: Local
@@ -89,58 +88,73 @@ class LocalTest {
         val expectedDeploymentId: UUID?
     )
 
-    @Test
-    fun testGetOrCreateDeploymentId() = runBlocking {
-        val keyConfig1 = getNewKeyConfig()
-        val keyConfig2 = getNewKeyConfig()
-        every { NewUUID.get() } returnsMany listOf(deploymentId)
-        val cases = listOf(
-            GetOrCreateDeploymentIdTestCase(
-                keyConfigs = emptyList(),
-                force = false,
-                expectedDeploymentId = null
-            ),
-            GetOrCreateDeploymentIdTestCase(
-                keyConfigs = emptyList(),
-                force = true,
-                expectedDeploymentId = deploymentId
-            ),
-            GetOrCreateDeploymentIdTestCase(
-                keyConfigs = listOf(
-                    keyConfig1,
-                ),
-                force = false,
-                expectedDeploymentId = keyConfig1.deploymentId
-            ),
-            GetOrCreateDeploymentIdTestCase(
-                keyConfigs = listOf(
-                    keyConfig1,
-                ),
-                force = true,
-                expectedDeploymentId = keyConfig1.deploymentId
-            ),
-            GetOrCreateDeploymentIdTestCase(
-                keyConfigs = listOf(
-                    keyConfig1,
-                    keyConfig2,
-                ),
-                force = false,
-                expectedDeploymentId = null
-            ),
-            GetOrCreateDeploymentIdTestCase(
-                byDeploymentId = NewUUID.get(),
-                keyConfigs = emptyList(),
-                force = true,
-                expectedDeploymentId = deploymentId
-            )
-        )
+    @Nested
+    inner class TestsWithStaticMocks {
 
-        for (case in cases) {
-            for (keyConfig in case.keyConfigs) {
-                local.write(keyConfig)
+        @BeforeEach
+        fun setUpMocks() {
+            mockkStatic(NewUUID::class)
+            mockkStatic(NewTimestamp::class)
+        }
+
+        @AfterEach
+        fun tearDownMocks() {
+            unmockkAll()
+        }
+
+        @Test
+        fun testGetOrCreateDeploymentId() = runBlocking {
+            val keyConfig1 = getNewKeyConfig()
+            val keyConfig2 = getNewKeyConfig()
+            every { NewUUID.get() } returnsMany listOf(deploymentId)
+            val cases = listOf(
+                GetOrCreateDeploymentIdTestCase(
+                    keyConfigs = emptyList(),
+                    force = false,
+                    expectedDeploymentId = null
+                ),
+                GetOrCreateDeploymentIdTestCase(
+                    keyConfigs = emptyList(),
+                    force = true,
+                    expectedDeploymentId = deploymentId
+                ),
+                GetOrCreateDeploymentIdTestCase(
+                    keyConfigs = listOf(
+                        keyConfig1,
+                    ),
+                    force = false,
+                    expectedDeploymentId = keyConfig1.deploymentId
+                ),
+                GetOrCreateDeploymentIdTestCase(
+                    keyConfigs = listOf(
+                        keyConfig1,
+                    ),
+                    force = true,
+                    expectedDeploymentId = keyConfig1.deploymentId
+                ),
+                GetOrCreateDeploymentIdTestCase(
+                    keyConfigs = listOf(
+                        keyConfig1,
+                        keyConfig2,
+                    ),
+                    force = false,
+                    expectedDeploymentId = null
+                ),
+                GetOrCreateDeploymentIdTestCase(
+                    byDeploymentId = NewUUID.get(),
+                    keyConfigs = emptyList(),
+                    force = true,
+                    expectedDeploymentId = deploymentId
+                )
+            )
+
+            for (case in cases) {
+                for (keyConfig in case.keyConfigs) {
+                    local.write(keyConfig)
+                }
+                val actual = local.getOrCreateDeploymentId(byDeploymentId = case.byDeploymentId, force = case.force)
+                assertEquals(case.expectedDeploymentId, actual)
             }
-            val actual = local.getOrCreateDeploymentId(byDeploymentId = case.byDeploymentId, force = case.force)
-            assertEquals(case.expectedDeploymentId, actual)
         }
     }
 
@@ -154,6 +168,54 @@ class LocalTest {
         // Verify that the configs are returned correctly
         assertEquals(1, configs.size)
         assertEquals(keyConfig, configs[0])
+    }
+
+    data class GetConfigByIdTestCase(
+        val byDeploymentId: UUID? = null,
+        val runWrite: Boolean = false,
+        val keyId: UUID,
+        val expected: Model? = null,
+    )
+
+    @Test
+    fun testGetConfigById() = runBlocking {
+        val cases = listOf(
+            GetConfigByIdTestCase(
+                keyId = NewUUID.get(),
+            ),
+            GetConfigByIdTestCase(
+                runWrite = true,
+                keyId = NewUUID.get(),
+            ),
+            GetConfigByIdTestCase(
+                runWrite = true,
+                keyId = keyId,
+                expected = keyConfig,
+            ),
+            GetConfigByIdTestCase(
+                runWrite = true,
+                byDeploymentId = deploymentId,
+                keyId = keyId,
+                expected = keyConfig,
+            ),
+            GetConfigByIdTestCase(
+                runWrite = true,
+                byDeploymentId = NewUUID.get(),
+                keyId = keyId,
+            ),
+            GetConfigByIdTestCase(
+                runWrite = true,
+                byDeploymentId = deploymentId,
+                keyId = NewUUID.get(),
+            ),
+        )
+        for (case in cases) {
+            if (case.runWrite) {
+                local.write(keyConfig)
+            }
+            val actual = local.getConfig(byDeploymentId = case.byDeploymentId, keyId = case.keyId)
+            assertEquals(actual, case.expected)
+        }
     }
 
     companion object {

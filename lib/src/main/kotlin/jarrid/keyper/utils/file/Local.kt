@@ -9,18 +9,12 @@ import java.nio.file.Files
 import java.util.*
 
 class Local : Backend(), Klogging {
-    fun ls(dir: String): List<String> {
+    private fun ls(dir: String): List<String> {
         val dirPath = rootDir.resolve(dir)
         if (!Files.isDirectory(dirPath)) {
             throw IllegalArgumentException("Dir: $dir doesn't exist or is not a directory. Root dir: $rootDir")
         }
         return Files.list(dirPath).map { it.fileName.toString() }.toList()
-    }
-
-    fun getConfig(path: String): Model {
-        val filePath = rootDir.resolve(path)
-        val string = Files.readString(filePath)
-        return decode(string)
     }
 
     suspend fun createDir(keyConfig: Model) {
@@ -54,6 +48,30 @@ class Local : Backend(), Klogging {
             logger.warn("Config dir: $dir doesn't exist, create new deploymentId")
         }
         return emptyList()
+    }
+
+    private fun getConfig(path: String): Model {
+        val filePath = rootDir.resolve(path)
+        val string = Files.readString(filePath)
+        return decode(string)
+    }
+
+
+    override suspend fun getConfig(byDeploymentId: UUID?, keyId: UUID): Model? {
+        val configs = getConfigs()
+        for (config in configs) {
+            if (keyId == config.keyId) {
+                if (byDeploymentId != null) {
+                    if (byDeploymentId == config.deploymentId) {
+                        return config
+                    }
+                } else {
+                    return config
+                }
+            }
+        }
+        logger.info("Key with deploymentId: $byDeploymentId, keyId: $keyId not found")
+        return null
     }
 
     override suspend fun getConfigs(): List<Model> {
