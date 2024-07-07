@@ -1,6 +1,7 @@
 package jarrid.keyper.cli
 
 import com.github.ajalt.clikt.core.subcommands
+import jarrid.keyper.cli.data.Decrypt
 import jarrid.keyper.cli.data.Encrypt
 import jarrid.keyper.cli.deploy.Apply
 import jarrid.keyper.cli.deploy.Destroy
@@ -23,7 +24,8 @@ fun main(args: Array<String>) {
                 Destroy()
             ),
             Data().subcommands(
-                Encrypt()
+                Encrypt(),
+                Decrypt()
             )
         ).main(args)
 }
