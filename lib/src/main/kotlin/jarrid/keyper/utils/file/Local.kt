@@ -1,14 +1,29 @@
 package jarrid.keyper.utils.file
 
 import io.klogging.Klogging
+import jarrid.keyper.app.Config
 import jarrid.keyper.key.Model
 import jarrid.keyper.utils.json.decode
 import jarrid.keyper.utils.json.encode
 import jarrid.keyper.utils.model.NewUUID
 import java.nio.file.Files
+import java.nio.file.Path
 import java.util.*
 
-class Local : Backend(), Klogging {
+
+class Local(config: Config) : Backend, Klogging {
+    private val appConfig = config.get()
+    val rootDir: Path = config.outDir
+    private val dir: String = appConfig.manager.file.path
+
+    fun getPrefix(keyConfig: Model): String {
+        return Backend.joinPaths(dir, keyConfig.deploymentId.toString())
+    }
+
+    fun getFileName(keyConfig: Model): String {
+        return Backend.joinPaths(getPrefix(keyConfig), "${keyConfig.keyId!!}.json")
+    }
+
     private fun ls(dir: String): List<String> {
         val dirPath = rootDir.resolve(dir)
         if (!Files.isDirectory(dirPath)) {
@@ -19,20 +34,18 @@ class Local : Backend(), Klogging {
 
     suspend fun createDir(keyConfig: Model) {
         val prefix = getPrefix(keyConfig)
-        val dirPath = rootDir.resolve(prefix)
-        if (Files.exists(dirPath)) {
+        if (Files.exists(rootDir.resolve(prefix))) {
             logger.info("Skipped: dir exists for prefix: $prefix")
             return
         }
-        Files.createDirectories(dirPath)
+        Files.createDirectories(rootDir.resolve(prefix))
         logger.info("Created dir for prefix: $prefix")
     }
 
     suspend fun writeFile(keyConfig: Model) {
         val encoded = encode(keyConfig)
         val fileName = getFileName(keyConfig)
-        val filePath = rootDir.resolve(fileName)
-        Files.writeString(filePath, encoded)
+        Files.writeString(rootDir.resolve(fileName), encoded)
         logger.info("Write to file: $fileName")
     }
 
@@ -45,7 +58,7 @@ class Local : Backend(), Klogging {
         try {
             return ls(dir).map { UUID.fromString(it) }
         } catch (e: IllegalArgumentException) {
-            logger.warn("Config dir: $dir doesn't exist, create new deploymentId")
+            logger.warn("Config dir: $dir doesn't exist at $rootDir, create new deploymentId")
         }
         return emptyList()
     }
@@ -78,7 +91,7 @@ class Local : Backend(), Klogging {
         val deploymentIds = getDeploymentIds()
         val pairs: MutableList<Pair<UUID, String>> = mutableListOf()
         for (deploymentId in deploymentIds) {
-            val configIds = ls(joinPaths(dir, deploymentId.toString()))
+            val configIds = ls(Backend.joinPaths(dir, deploymentId.toString()))
             for (configId in configIds) {
                 pairs.add(Pair(deploymentId, configId))
             }
@@ -87,7 +100,7 @@ class Local : Backend(), Klogging {
         for (pair in pairs) {
             val deploymentId: UUID = pair.first
             val configId: String = pair.second
-            val config = getConfig(joinPaths(dir, deploymentId.toString(), configId))
+            val config = getConfig(Backend.joinPaths(dir, deploymentId.toString(), configId))
             out.add(config)
         }
         return out

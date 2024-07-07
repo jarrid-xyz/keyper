@@ -79,20 +79,11 @@ tasks {
             .map { if (it.isDirectory) it else zipTree(it) } +
                 sourcesMain.output
         from(contents)
+        exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA") // Exclude signature files
     }
     build {
         dependsOn(fatJar) // Trigger fat jar creation during build
     }
-}
-
-val projectRoot: File = rootDir
-
-tasks.named<JavaExec>("run") {
-    systemProperty("projectRoot", projectRoot.absolutePath)
-}
-
-tasks.named<Test>("test") {
-    systemProperty("projectRoot", "test")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -105,5 +96,3 @@ java {
 application {
     mainClass.set("MainKt")
 }
-
-extra["projectRoot"] = rootDir

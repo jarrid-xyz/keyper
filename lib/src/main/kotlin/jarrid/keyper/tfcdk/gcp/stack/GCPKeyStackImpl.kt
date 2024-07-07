@@ -17,17 +17,13 @@ class GCPKeyStackImpl(
     private val terraformId: UUID,
 ) : Klogging, KeyStack(scope, terraformId) {
 
-    // TODO: there's better ways
-    private val projectId: String = provider.accountId
-    private val region: String = provider.region
-
     override suspend fun useProvider() {
         val keyJsonPath = System.getenv("GOOGLE_APPLICATION_CREDENTIALS")
         logger.info("GCP provider credentials is set to $keyJsonPath")
         GoogleProvider.Builder.create(this, "Google")
             .credentials(keyJsonPath)
-            .project(projectId)
-            .region(region)
+            .project(provider.accountId)
+            .region(provider.region)
             .build()
     }
 
@@ -43,7 +39,7 @@ class GCPKeyStackImpl(
         return KmsKeyRing(
             this, keyRing.keyRingName, KmsKeyRingConfig.builder()
                 .name(keyRing.keyRingName)
-                .location(region)
+                .location(provider.region)
                 .build()
         )
     }
@@ -87,7 +83,7 @@ class GCPKeyStackImpl(
         }
         return Tfvars(
             deploymentId = terraformId,
-            region = region,
+            region = provider.region,
             keyRings = listOf(
                 KeyRing(
                     keyRingName = getSanitizedName(terraformId),

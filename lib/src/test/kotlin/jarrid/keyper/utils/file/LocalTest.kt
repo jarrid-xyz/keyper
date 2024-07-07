@@ -3,6 +3,7 @@ package jarrid.keyper.utils.file
 import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
 import io.mockk.*
+import jarrid.keyper.app.Config
 import jarrid.keyper.key.Model
 import jarrid.keyper.key.Usage
 import jarrid.keyper.utils.json.encode
@@ -44,7 +45,6 @@ class LocalTest {
         )
     }
 
-
     @BeforeEach
     fun setUp() {
         // Create an in-memory file system with read-write permissions
@@ -52,11 +52,17 @@ class LocalTest {
         rootDir = fileSystem.getPath("/mock/root")
         Files.createDirectories(rootDir)
 
-        // Create a spy of the Local class
-        local = spyk(Local()) {
-            every { rootDir } returns this@LocalTest.rootDir
-        }
+        // Mock Config to return the in-memory file system rootDir
+        val configMock = spyk(Config())
+        every { configMock.outDir } returns rootDir
 
+        // Initialize the Local instance with the mocked Config
+        local = spyk(Local(configMock))
+
+        // Set up necessary mocks and stubs
+        coEvery { local.rootDir } returns rootDir
+
+        // Initialize paths for the test
         prefixDirPath = local.getPrefix(keyConfig)
         configFilePath = local.getFileName(keyConfig)
     }
@@ -214,7 +220,7 @@ class LocalTest {
                 local.write(keyConfig)
             }
             val actual = local.getConfig(byDeploymentId = case.byDeploymentId, keyId = case.keyId)
-            assertEquals(actual, case.expected)
+            assertEquals(case.expected, actual)
         }
     }
 
