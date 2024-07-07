@@ -38,7 +38,8 @@ keyper key list # list keys
 ```bash
 keyper data encrypt --backend LOCAL --stack GCP --key-id "<key-id>" --plaintext "<>"
 # should return: Encrypted value: <...>
-
+keyper data decrypt --backend LOCAL --stack GCP --key-id "<key-id>" --ciphertext "<>"
+# should return: Decrypted value: <...>
 ```
 
 ## Deploy Module
