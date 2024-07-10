@@ -7,16 +7,16 @@ import jarrid.keyper.app.Stack
 import jarrid.keyper.key.Model
 import java.util.*
 
-abstract class Base(backend: Backend, stack: Stack, deploymentId: UUID?, keyId: UUID) : Klogging {
-
-    val keyId: UUID = keyId
-    val backend: Backend = backend
-    val stack: Stack = stack
+abstract class Base(
+    val backend: Backend,
+    val stack: Stack,
+    val deploymentId: UUID?,
+    val keyId: UUID
+) : Klogging {
 
     private val appConfig = Config().get()
     private val provider = stack.getConfig(appConfig)!!
     private val useBackend = backend.get()
-    private val deploymentId: UUID? = deploymentId
     val projectId = provider.accountId
     val region = provider.region
 
