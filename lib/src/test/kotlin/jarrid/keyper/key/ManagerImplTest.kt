@@ -9,7 +9,6 @@ import jarrid.keyper.utils.model.NewTimestamp
 import jarrid.keyper.utils.model.NewUUID
 import kotlinx.coroutines.test.runTest
 import java.time.Clock
-import java.util.*
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -31,8 +30,8 @@ class ManagerImplTest {
 
     @Test
     fun testConvert() = runTest {
-        val keyId = UUID.randomUUID()
-        val deploymentId = UUID.randomUUID()
+        val keyId = NewUUID.get()
+        val deploymentId = NewUUID.get()
         every { NewUUID.get() } returnsMany listOf(keyId, deploymentId)
         val now = Clock.systemUTC().instant()
         every { NewTimestamp.get() } returns now

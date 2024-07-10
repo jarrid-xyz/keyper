@@ -28,8 +28,7 @@ abstract class Base(backend: Backend, stack: Stack, deploymentId: UUID?, keyId: 
 
     suspend fun getKeyConfig(byDeploymentId: UUID? = null): Model {
         val deploymentId = getDeploymentId()
-        val keyConfig = useBackend.getConfig(byDeploymentId = deploymentId, keyId = keyId)
-            ?: throw IllegalArgumentException("Key with deploymentId: $byDeploymentId, keyId: $keyId not found")
+        val keyConfig = useBackend.getConfig(deploymentId = deploymentId, keyId = keyId)
         return keyConfig
     }
 }

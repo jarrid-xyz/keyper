@@ -4,7 +4,6 @@ import com.hashicorp.cdktf.App
 import com.hashicorp.cdktf.AppConfig
 import io.klogging.Klogging
 import jarrid.keyper.app.Config
-import jarrid.keyper.key.Model
 import jarrid.keyper.utils.file.Backend
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
@@ -24,18 +23,19 @@ class Stack(
     }
 
     private suspend fun create(): List<App> {
-        val configs: List<Model> = backend.getConfigs()
-        val apps = configs.groupBy { config -> config.deploymentId }.map { (deploymentId, configs) ->
-            logger.info("Create terraform stack for deploymentId: $deploymentId")
+        val deployments = backend.getDeploymentStacks()
+        val apps: MutableList<App> = mutableListOf()
+        for (deployment in deployments) {
+            logger.info("Create terraform stack for deploymentId: $deployment.deploymentId")
             val app = App(getAppConfig())
             val constructor = stack.primaryConstructor
                 ?: throw IllegalArgumentException("KeyStack class must have a primary constructor")
-            val keyStack = constructor.call(app, deploymentId)
-            val tfvar = keyStack.convert(configs)
+            val keyStack = constructor.call(app, deployment.deploymentId)
+            val tfvar = keyStack.convert(deployment.keys)
             keyStack.create(tfvar)
-            logger.info("Run terraform synth for deploymentId: $deploymentId")
+            logger.info("Run terraform synth for deploymentId: ${deployment.deploymentId}")
             app.synth()
-            logger.info("Finished terraform synth for deploymentId: $deploymentId")
+            logger.info("Finished terraform synth for deploymentId: ${deployment.deploymentId}")
             app
         }
         return apps
