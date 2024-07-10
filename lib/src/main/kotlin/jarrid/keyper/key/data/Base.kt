@@ -21,12 +21,12 @@ abstract class Base(backend: Backend, stack: Stack, deploymentId: UUID?, keyId: 
     val region = provider.region
 
     private suspend fun getDeploymentId(): UUID {
-        return useBackend.getOrCreateDeploymentId(byDeploymentId = deploymentId, force = false)
+        return useBackend.getOrCreateDeploymentId(deploymentId, force = false)
             ?: throw IllegalArgumentException("DeploymentId not created or not found")
     }
 
 
-    suspend fun getKeyConfig(byDeploymentId: UUID? = null): Model {
+    suspend fun getKeyConfig(): Model {
         val deploymentId = getDeploymentId()
         val keyConfig = useBackend.getConfig(deploymentId = deploymentId, keyId = keyId)
         return keyConfig
