@@ -10,6 +10,6 @@ class Plan :
     }
 
     override suspend fun runAsync() {
-        command.cdktf("diff")
+        command.cdktf("diff $cdktfArgsCmd")
     }
 }
