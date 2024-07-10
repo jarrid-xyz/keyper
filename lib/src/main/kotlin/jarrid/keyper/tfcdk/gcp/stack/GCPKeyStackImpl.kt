@@ -6,17 +6,17 @@ import com.hashicorp.cdktf.providers.google.kms_key_ring.KmsKeyRing
 import com.hashicorp.cdktf.providers.google.kms_key_ring.KmsKeyRingConfig
 import com.hashicorp.cdktf.providers.google.provider.GoogleProvider
 import io.klogging.Klogging
+import jarrid.keyper.key.DeploymentStack
 import jarrid.keyper.key.Model
 import jarrid.keyper.key.Name
 import jarrid.keyper.tfcdk.KeyStack
 import jarrid.keyper.tfcdk.StackTfvars
 import software.constructs.Construct
-import java.util.*
 
 class GCPKeyStackImpl(
     scope: Construct,
-    private val terraformId: UUID,
-) : Klogging, KeyStack(scope, terraformId) {
+    private val stackName: String,
+) : Klogging, KeyStack(scope, stackName = stackName) {
 
     override suspend fun useProvider() {
         val keyJsonPath = System.getenv("GOOGLE_APPLICATION_CREDENTIALS")
@@ -28,10 +28,11 @@ class GCPKeyStackImpl(
             .build()
     }
 
-    private fun getLabels(key: Key): Map<String, String> {
+    private fun getLabels(key: Model): Map<String, String> {
         return mapOf(
+            "stack-name" to stackName,
             "key-id" to key.keyId.toString(),
-            "deployment-id" to terraformId.toString()
+            "deployment-id" to key.deploymentId.toString()
         )
     }
 
@@ -52,7 +53,7 @@ class GCPKeyStackImpl(
                 .name(key.keyName)
                 .keyRing(keyRing.id)
                 .rotationPeriod(key.rotationPeriod)
-                .labels(getLabels(key))
+                .labels(key.labels)
                 .build()
         )
     }
@@ -72,25 +73,34 @@ class GCPKeyStackImpl(
         return out
     }
 
-    override fun convert(configs: List<Model>): Tfvars {
-        val keys: List<Key> = configs.map { config ->
-            val keyId = config.keyId!!
-            Key(
-                keyName = Name.getSanitizedName(keyId),
-                keyId = keyId,
-                rotationPeriod = getKeyConfigOptions(config, "rotationPeriod")
-
-            )
-        }
-        return Tfvars(
-            deploymentId = terraformId,
-            region = provider.region,
-            keyRings = listOf(
+    override fun convert(configs: List<DeploymentStack>): Tfvars {
+        val keyRings: MutableList<KeyRing> = mutableListOf()
+        for (config in configs) {
+            val tfKeys: MutableList<Key> = mutableListOf()
+            for (key in config.keys) {
+                val keyId = key.keyId!!
+                tfKeys.add(
+                    Key(
+                        keyName = Name.getSanitizedName(keyId),
+                        keyId = keyId,
+                        rotationPeriod = getKeyConfigOptions(key, "rotationPeriod"),
+                        labels = getLabels(key)
+                    )
+                )
+            }
+            keyRings.add(
                 KeyRing(
-                    keyRingName = Name.getSanitizedName(terraformId),
-                    keys = keys
+                    keyRingName = Name.getSanitizedName(config.deploymentId),
+                    deploymentId = config.deploymentId,
+                    keys = tfKeys
                 )
             )
+        }
+
+        return Tfvars(
+            stackName = stackName,
+            region = provider.region,
+            keyRings = keyRings
         )
     }
 }

@@ -10,7 +10,8 @@ import kotlin.reflect.full.primaryConstructor
 
 class Stack(
     private val backend: Backend,
-    private val stack: KClass<out KeyStack>
+    private val stack: KClass<out KeyStack>,
+    private val stackName: String = "default"
 ) : Klogging {
     private val appConfig = Config().get()
     private val root: String = appConfig.outDir
@@ -22,23 +23,20 @@ class Stack(
             .build()
     }
 
-    private suspend fun create(): List<App> {
+    private suspend fun create(): App {
         val deployments = backend.getDeploymentStacks()
-        val apps: MutableList<App> = mutableListOf()
-        for (deployment in deployments) {
-            logger.info("Create terraform stack for deploymentId: $deployment.deploymentId")
-            val app = App(getAppConfig())
-            val constructor = stack.primaryConstructor
-                ?: throw IllegalArgumentException("KeyStack class must have a primary constructor")
-            val keyStack = constructor.call(app, deployment.deploymentId)
-            val tfvar = keyStack.convert(deployment.keys)
-            keyStack.create(tfvar)
-            logger.info("Run terraform synth for deploymentId: ${deployment.deploymentId}")
-            app.synth()
-            logger.info("Finished terraform synth for deploymentId: ${deployment.deploymentId}")
-            app
-        }
-        return apps
+        val app = App(getAppConfig())
+        val constructor = stack.primaryConstructor
+            ?: throw IllegalArgumentException("KeyStack class must have a primary constructor")
+        val keyStack = constructor.call(app, stackName)
+
+        val tfvars = keyStack.convert(deployments)
+        keyStack.create(tfvars)
+
+        logger.info("Run terraform synth for deployments: $deployments")
+        app.synth()
+        logger.info("Finished terraform synth.")
+        return app
     }
 
     suspend fun run() {

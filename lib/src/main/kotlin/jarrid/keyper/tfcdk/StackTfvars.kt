@@ -1,8 +1,6 @@
 package jarrid.keyper.tfcdk
 
-import java.util.*
-
 interface StackTfvars {
+    val stackName: String
     val region: String
-    val deploymentId: UUID
 }
