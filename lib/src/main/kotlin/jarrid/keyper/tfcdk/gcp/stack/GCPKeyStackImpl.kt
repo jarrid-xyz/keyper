@@ -1,5 +1,7 @@
 package jarrid.keyper.tfcdk.gcp.stack
 
+import com.hashicorp.cdktf.LocalBackend
+import com.hashicorp.cdktf.LocalBackendConfig
 import com.hashicorp.cdktf.providers.google.kms_crypto_key.KmsCryptoKey
 import com.hashicorp.cdktf.providers.google.kms_crypto_key.KmsCryptoKeyConfig
 import com.hashicorp.cdktf.providers.google.kms_key_ring.KmsKeyRing
@@ -15,8 +17,17 @@ import software.constructs.Construct
 
 class GCPKeyStackImpl(
     scope: Construct,
-    private val stackName: String,
-) : Klogging, KeyStack(scope, stackName = stackName) {
+) : Klogging, KeyStack(scope) {
+
+    override suspend fun useBackend() {
+        // Configure the local backend
+        LocalBackend(
+            this, LocalBackendConfig.builder()
+                .path("terraform.tfstate")
+                .build()
+        )
+
+    }
 
     override suspend fun useProvider() {
         val keyJsonPath = System.getenv("GOOGLE_APPLICATION_CREDENTIALS")

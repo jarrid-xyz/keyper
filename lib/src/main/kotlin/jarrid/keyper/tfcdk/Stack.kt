@@ -28,7 +28,7 @@ class Stack(
         val app = App(getAppConfig())
         val constructor = stack.primaryConstructor
             ?: throw IllegalArgumentException("KeyStack class must have a primary constructor")
-        val keyStack = constructor.call(app, stackName)
+        val keyStack = constructor.call(app)
 
         val tfvars = keyStack.convert(deployments)
         keyStack.create(tfvars)

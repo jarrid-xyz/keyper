@@ -13,7 +13,7 @@ import java.util.*
 
 abstract class KeyStack(
     scope: Construct,
-    stackName: String,
+    val stackName: String = "default",
 ) : TerraformStack(scope, stackName) {
     companion object {
         val stack: Stack = Stack.GCP
@@ -35,11 +35,13 @@ abstract class KeyStack(
 
     init {
         runBlocking {
+            useBackend()
             useProvider()
         }
     }
 
     abstract fun convert(configs: List<DeploymentStack>): Tfvars
+    abstract suspend fun useBackend()
     abstract suspend fun useProvider()
     abstract suspend fun create(tfvar: StackTfvars): Any
 }
