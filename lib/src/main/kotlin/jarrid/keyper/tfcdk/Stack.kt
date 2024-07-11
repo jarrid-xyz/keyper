@@ -11,7 +11,6 @@ import kotlin.reflect.full.primaryConstructor
 class Stack(
     private val backend: Backend,
     private val stack: KClass<out KeyStack>,
-    private val stackName: String = "default"
 ) : Klogging {
     private val appConfig = Config().get()
     private val root: String = appConfig.outDir
