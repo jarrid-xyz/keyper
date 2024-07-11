@@ -2,11 +2,14 @@ package jarrid.keyper.utils.file
 
 import io.klogging.Klogging
 import jarrid.keyper.app.Config
+import jarrid.keyper.key.DeploymentStack
 import jarrid.keyper.key.Model
 import jarrid.keyper.utils.json.decode
 import jarrid.keyper.utils.json.encode
 import jarrid.keyper.utils.model.NewUUID
+import jarrid.keyper.utils.model.stripFileTypeAndToUUID
 import java.nio.file.Files
+import java.nio.file.NoSuchFileException
 import java.nio.file.Path
 import java.util.*
 
@@ -63,45 +66,41 @@ class Local(config: Config) : Backend, Klogging {
         return emptyList()
     }
 
-    private fun getConfig(path: String): Model {
-        val filePath = rootDir.resolve(path)
-        val string = Files.readString(filePath)
-        return decode(string)
+    override suspend fun getConfig(deploymentId: UUID, keyId: UUID): Model {
+        val config: Model
+        val path = Backend.joinPaths(dir, deploymentId.toString(), keyId.toString())
+        val filePath = rootDir.resolve("$path.json")
+        try {
+            val string = Files.readString(filePath)
+            config = decode(string)
+
+        } catch (e: NoSuchFileException) {
+            throw KeyConfigNotFound(deploymentId, keyId)
+        }
+        return config
     }
 
-
-    override suspend fun getConfig(byDeploymentId: UUID?, keyId: UUID): Model? {
-        val configs = getConfigs()
-        for (config in configs) {
-            if (keyId == config.keyId) {
-                if (byDeploymentId != null) {
-                    if (byDeploymentId == config.deploymentId) {
-                        return config
-                    }
-                } else {
-                    return config
-                }
-            }
-        }
-        logger.info("Key with deploymentId: $byDeploymentId, keyId: $keyId not found")
-        return null
-    }
-
-    override suspend fun getConfigs(): List<Model> {
-        val deploymentIds = getDeploymentIds()
-        val pairs: MutableList<Pair<UUID, String>> = mutableListOf()
-        for (deploymentId in deploymentIds) {
-            val configIds = ls(Backend.joinPaths(dir, deploymentId.toString()))
-            for (configId in configIds) {
-                pairs.add(Pair(deploymentId, configId))
-            }
-        }
+    private suspend fun getConfigs(deploymentId: UUID): List<Model> {
         val out: MutableList<Model> = mutableListOf()
-        for (pair in pairs) {
-            val deploymentId: UUID = pair.first
-            val configId: String = pair.second
-            val config = getConfig(Backend.joinPaths(dir, deploymentId.toString(), configId))
+        val configIds = ls(Backend.joinPaths(dir, deploymentId.toString()))
+        for (configId in configIds) {
+            val config = getConfig(deploymentId, configId.stripFileTypeAndToUUID(".json"))
             out.add(config)
+        }
+        return out
+    }
+
+    override suspend fun getDeploymentStacks(): List<DeploymentStack> {
+        val out: MutableList<DeploymentStack> = mutableListOf()
+        val deploymentIds = getDeploymentIds()
+        for (deploymentId in deploymentIds) {
+            val configs = getConfigs(deploymentId)
+            out.add(
+                DeploymentStack(
+                    deploymentId = deploymentId,
+                    keys = configs
+                )
+            )
         }
         return out
     }

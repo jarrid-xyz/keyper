@@ -27,3 +27,7 @@ data class Model(
     @Contextual val context: Map<String, @Contextual Any>? = null,
 )
 
+data class DeploymentStack(
+    val deploymentId: UUID,
+    val keys: List<Model>
+)

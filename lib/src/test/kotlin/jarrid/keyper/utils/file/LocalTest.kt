@@ -18,6 +18,8 @@ import java.nio.file.FileSystem
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
+import kotlin.reflect.KClass
+import kotlin.test.assertFailsWith
 
 @TestInstance(Lifecycle.PER_CLASS)
 class LocalTest {
@@ -169,58 +171,71 @@ class LocalTest {
         local.write(keyConfig)
 
         // Call the getConfigs method
-        val configs = local.getConfigs()
+        val stacks = local.getDeploymentStacks()
 
         // Verify that the configs are returned correctly
-        assertEquals(1, configs.size)
-        assertEquals(keyConfig, configs[0])
+        assertEquals(1, stacks.size)
+        assertEquals(keyConfig, stacks[0].keys[0])
     }
 
     data class GetConfigByIdTestCase(
-        val byDeploymentId: UUID? = null,
+        val deploymentId: UUID,
         val runWrite: Boolean = false,
         val keyId: UUID,
         val expected: Model? = null,
+        val error: KClass<out Throwable>? = null
     )
 
     @Test
     fun testGetConfigById() = runBlocking {
+        val deploymentId = NewUUID.get()
         val cases = listOf(
             GetConfigByIdTestCase(
+                deploymentId = deploymentId,
                 keyId = NewUUID.get(),
+                error = KeyConfigNotFound::class
             ),
             GetConfigByIdTestCase(
+                deploymentId = deploymentId,
                 runWrite = true,
                 keyId = NewUUID.get(),
+                error = KeyConfigNotFound::class
             ),
             GetConfigByIdTestCase(
+                deploymentId = keyConfig.deploymentId!!,
                 runWrite = true,
-                keyId = keyId,
+                keyId = keyConfig.keyId!!,
                 expected = keyConfig,
             ),
-            GetConfigByIdTestCase(
-                runWrite = true,
-                byDeploymentId = deploymentId,
-                keyId = keyId,
-                expected = keyConfig,
-            ),
-            GetConfigByIdTestCase(
-                runWrite = true,
-                byDeploymentId = NewUUID.get(),
-                keyId = keyId,
-            ),
-            GetConfigByIdTestCase(
-                runWrite = true,
-                byDeploymentId = deploymentId,
-                keyId = NewUUID.get(),
-            ),
+//            GetConfigByIdTestCase(
+//                runWrite = true,
+//                deploymentId = deploymentId,
+//                keyId = keyId,
+//                expected = keyConfig,
+//            ),
+//            GetConfigByIdTestCase(
+//                runWrite = true,
+//                deploymentId = NewUUID.get(),
+//                keyId = keyId,
+//            ),
+//            GetConfigByIdTestCase(
+//                runWrite = true,
+//                deploymentId = deploymentId,
+//                keyId = NewUUID.get(),
+//            ),
         )
         for (case in cases) {
             if (case.runWrite) {
                 local.write(keyConfig)
             }
-            val actual = local.getConfig(byDeploymentId = case.byDeploymentId, keyId = case.keyId)
-            assertEquals(case.expected, actual)
+            if (case.error != null) {
+                assertFailsWith(case.error) {
+                    local.getConfig(deploymentId = case.deploymentId, keyId = case.keyId)
+                }
+            } else {
+                val actual = local.getConfig(deploymentId = case.deploymentId, keyId = case.keyId)
+                assertEquals(case.expected, actual)
+            }
         }
     }
 

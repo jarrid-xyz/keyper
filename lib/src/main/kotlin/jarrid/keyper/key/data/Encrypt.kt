@@ -16,7 +16,7 @@ class Encrypt(
     keyId: UUID
 ) : Base(backend, stack, deploymentId, keyId) {
     suspend fun run(plaintext: String): String {
-        val key = getKeyConfig(keyId)
+        val key = getKeyConfig()
         KeyManagementServiceClient.create().use { client ->
             // Build the key name
             val keyName =
