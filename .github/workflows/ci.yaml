@@ -31,6 +31,7 @@ jobs:
         run: ./gradlew build
 
   docker:
+    runs-on: ubuntu-latest
     steps:
       #      - name: Set up QEMU
       #        uses: docker/setup-qemu-action@v3
@@ -49,6 +50,7 @@ jobs:
           tags: jarrid/keyper:latest
 
   mkdocs:
+    runs-on: ubuntu-latest
     steps:    
       - uses: actions/cache@v4
         with:
