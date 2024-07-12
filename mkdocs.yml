@@ -1,0 +1,65 @@
+site_name: Keyper
+site_url: https://jarrid.xyz/keyper/docsmkdocs serve
+theme:
+  name: material
+  logo: assets/images/favicon.ico
+  favicon: assets/images/favicon.ico
+  
+  features:
+    - navigation.tabs
+    - navigation.footer
+
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+        # Palette toggle for dark mode
+    - scheme: dark
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+nav:
+  - Keyper:
+    - index.md
+    - development.md
+    - integration.md
+  - Crypto Key: crypto-key/index.md
+  - Deploy: 
+    - deploy/index.md
+    - deploy/cli.md
+    - deploy/gcp.md
+  - Data: 
+    - data/index.md
+    - data/secure-data-flow.md
+
+markdown_extensions:
+  - attr_list
+  - toc:
+      toc_depth: 3
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+extra:
+  generator: false
+  analytics:
+    provider: google
+    property: G-2VNWJJB7P7
+  social:
+    - icon: fontawesome/brands/github 
+      link: https://github.com/apiobuild?q=jarrid&type=all&language=&sort=
+    - icon: fontawesome/brands/instagram 
+      link: https://www.instagram.com/jarrid.xyz
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/company/apiobuild/
+    - icon: fontawesome/solid/envelope
+      link: mailto:luluc@jarrid.xyz 
+
+extra_css:
+  - stylesheets/extra.css

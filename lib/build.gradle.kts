@@ -16,6 +16,9 @@ plugins {
     kotlin("plugin.serialization") version "2.0.0"
 
     application
+
+    // Apply the Dokka plugin for generating documentation.
+    id("org.jetbrains.dokka") version "1.9.20"
 }
 
 repositories {
@@ -83,6 +86,10 @@ tasks {
     }
     build {
         dependsOn(fatJar) // Trigger fat jar creation during build
+    }
+
+    dokkaHtml {
+        outputDirectory.set(file("build/dokka"))
     }
 }
 
