@@ -58,6 +58,7 @@ jobs:
           tags: jarrid/keyper:latest
 
   mkdocs:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
