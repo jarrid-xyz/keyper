@@ -105,7 +105,7 @@ tasks {
         pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
             footerMessage = "(c) 2024 Jarrid"
         }
-        outputDirectory.set(file("$rootDir/mkdocs/kdoc"))
+        outputDirectory.set(file("$rootDir/docs/kdoc"))
     }
 }
 
