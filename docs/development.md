@@ -55,7 +55,7 @@ docker build . -t keyper
 Otherwise, to run CLI commands:
 
 ```bash
-docker pull ghcr.io/apiobuild/keyper
+docker pull ghcr.io/jarrid-xyz/keyper
 ```
 
 Note, if you get permission denied, try to log out from ghcr.io first:
@@ -71,7 +71,7 @@ Run the packaged CLI directly from docker:
 docker run -it --rm --name keyper-cli \
   -v ./configs:/home/keyper/configs \
   -v ./cdktf.out:/home/keyper/cdktf.out \
-  ghcr.io/apiobuild/keyper:main key create --backend LOCAL --stack GCP 
+  ghcr.io/jarrid-xyz/keyper:main key create --backend LOCAL --stack GCP 
 
 # run plan
 docker run -it --rm --name keyper-cli \
@@ -79,9 +79,9 @@ docker run -it --rm --name keyper-cli \
   -v ./cdktf.out:/home/keyper/cdktf.out \
   -v ./.cdktf-sa-key.json:/home/keyper/gcp.json \
   -e GOOGLE_APPLICATION_CREDENTIALS="/home/keyper/gcp.json" \
-  ghcr.io/apiobuild/keyper:main deploy plan
+  ghcr.io/jarrid-xyz/keyper:main deploy plan
 ```
 
 ### Published Docker Image
 
-If you don't wish to build your own, you can pull our latest [docker images are published on Github](https://github.com/apiobuild/jarrid-keyper/pkgs/container/keyper){:target=_blank}.
+If you don't wish to build your own, you can pull our latest [docker images are published on Github](https://github.com/jarrid-xyz/keyper/pkgs/container/keyper){:target=_blank}.

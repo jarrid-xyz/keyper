@@ -6,8 +6,7 @@ hide:
 
 ## About
 
-[Keyper](https://github.com/apiobuild/jarrid-keyper/){:target="_blank"} by [Jarrid](https://jarrid.xyz){:target="_
-blank"} is a suite of crypto key management APIs to simplify key creation, management, deployment, encryption/decryption
+[Keyper](https://github.com/jarrid-xyz/keyper/){:target="_blank"} by [Jarrid](https://jarrid.xyz){:target="_blank"} is a suite of crypto key management APIs to simplify key creation, management, deployment, encryption/decryption
 in a standardized and secure way. Operations are file-based and can be easily automated, tracked, audited, and managed
 via file-based processes such as [GitOps](https://github.com/topics/gitops){:target="_blank"}. Fully integrated with
 cloud KMS services such as [AWS KMS](https://docs.aws.amazon.com/kms){:target="_blank"}
@@ -28,7 +27,7 @@ The library has three main modules:
 ## Demo
 
 In only three steps, you can create a key, deploy the key on cloud KMS, and encrypt/decrypt data. Everything is wrapped
-and managed in [Keyper](https://github.com/apiobuild/jarrid-keyper/){:target="_blank"}.
+and managed in [Keyper](https://github.com/jarrid-xyz/keyper/){:target="_blank"}.
 
 1. **Create Key**
 
@@ -61,10 +60,10 @@ and managed in [Keyper](https://github.com/apiobuild/jarrid-keyper/){:target="_b
 ## Releases
 
 Keyper publish release every Monday. Stay updated with our latest developments by checking out
-our [release notes](https://github.com/apiobuild/jarrid-keyper/releases){:target="_blank"}. If you have a specific
+our [release notes](https://github.com/jarrid-xyz/keyper/releases){:target="_blank"}. If you have a specific
 feature in mind that you'd like to see implemented, feel free to submit
-a [feature request](https://github.com/apiobuild/jarrid-keyper/issues/new/choose){:target="_blank"}. You can
-also [track the progress](https://github.com/orgs/apiobuild/projects/5/views/1){:target="_blank"} of ongoing feature
+a [feature request](https://github.com/jarrid-xyz/keyper/issues/new/choose){:target="_blank"}. You can
+also [track the progress](https://github.com/orgs/jarrid-xyz/projects/1){:target="_blank"} of ongoing feature
 requests and see what's coming next.
 
 ## Need Help?
@@ -74,4 +73,4 @@ and feedback. If you need help with implementation or have questions about crypt
 general, don't hesitate to reach out.
 
 [Contact Us](https://jarrid.xyz/#contact){ .md-button .md-button--primary target="_blank" }
-[Try Now](https://github.com/apiobuild/jarrid-keyper/){ .md-button .md-button--primary target="_blank" }
+[Try Now](https://github.com/jarrid-xyz/keyper/){ .md-button .md-button--primary target="_blank" }

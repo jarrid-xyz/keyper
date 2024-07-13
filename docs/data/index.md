@@ -4,7 +4,7 @@ hide:
     - toc
 ---
 
-The data module allows you to manage data with crypto keys created by [Keyper](https://github.com/apiobuild/jarrid-keyper/){:target="_blank"}.
+The data module allows you to manage data with crypto keys created by [Keyper](https://github.com/jarrid-xyz/keyper/){:target="_blank"}.
 
 ## Encrypt and Decrypt Data
 
