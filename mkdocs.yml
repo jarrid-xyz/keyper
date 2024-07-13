@@ -1,5 +1,5 @@
 site_name: Keyper
-site_dir: docs/docs
+site_dir: keyper
 site_url: https://jarrid.xyz/keyper/docsmkdocs serve
 theme:
   name: material
