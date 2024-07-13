@@ -59,3 +59,10 @@ configs/
 
 # Ingore creds
 **key.json
+
+# mkdocs
+.cache
+site/
+
+# dokka
+docs/kdoc/

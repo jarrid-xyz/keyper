@@ -1,0 +1,31 @@
+[data-md-color-scheme="default"] {
+  --md-default-bg-color: #ffffff;
+
+  --md-primary-fg-color: #80FFDB;
+  --md-primary-fg-color--light: #80FFDB;
+
+  --md-primary-bg-color: #000000;
+  --md-primary-bg-color--light: #000000;
+
+  --md-default-fg-color: #000000;
+  --md-default-fg-color--light: #000000;
+
+  --md-accent-fg-color: #7400B8;
+  --md-accent-fg-color--light: #7400B8;
+
+  --md-typeset-a-color: #7400B8;
+  --md-typeset-a-color--light: #7400B8;
+}
+
+[data-md-color-scheme="dark"] {
+  --md-default-bg-color: #000000;
+  --md-primary-fg-color: #7400B8;
+  --md-default-fg-color: #ffffff;
+  --md-default-fg-color--light: #ffffff;
+  --md-typeset-a-color: #80FFDB;
+  --md-typeset-color: #ffffff;
+}
+
+.md-code__content {
+  text-wrap: wrap
+}

@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -30,6 +29,15 @@ jobs:
       - name: Run with Gradle
         run: ./gradlew build
 
+      - name: Run Gradle build
+        run: ./gradlew build dokkaHtml
+
+      - name: Archive Dokka HTML output
+        uses: actions/upload-artifact@v4
+        with:
+          name: dokka-html
+          path: docs/kdoc
+
   docker:
     runs-on: ubuntu-latest
     steps:
@@ -48,3 +56,23 @@ jobs:
         with:
           push: false
           tags: jarrid/keyper:latest
+
+  mkdocs:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Download Dokka HTML output
+        uses: actions/download-artifact@v4
+        with:
+          name: dokka-html
+          path: docs/kdoc
+      - uses: actions/cache@v4
+        with:
+          key: mkdocs-material-${{ env.cache_id }}
+          path: .cache
+          restore-keys: |
+            mkdocs-material-
+      - run: pip install mkdocs-material
+      - run: mkdocs build
