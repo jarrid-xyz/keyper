@@ -1,5 +1,5 @@
 site_name: Keyper
-site_dir: keyper
+site_description: Keyper by Jarrid is a suite of crypto key management APIs that simplify key creation, management, deployment, and encryption/decryption. It supports file-based operations for easy automation and tracking via GitOps. Fully integrated with cloud KMS services like AWS KMS and GCP KMS, Keyper reduces infrastructure maintenance.
 site_url: https://jarrid.xyz/keyper/docsmkdocs serve
 theme:
   name: material
