@@ -73,5 +73,5 @@ We are a small but ambitious team actively looking to expand our capabilities. W
 and feedback. If you need help with implementation or have questions about crypto key or data and software security in
 general, don't hesitate to reach out.
 
-[Contact Us](https://jarrid.xyz/#contact){ .md-button .md-button--primary target="_
-blank" } [Try Now](https://github.com/apiobuild/jarrid-keyper/){ .md-button .md-button--primary target="_blank" }
+[Contact Us](https://jarrid.xyz/#contact){ .md-button .md-button--primary target="_blank" }
+[Try Now](https://github.com/apiobuild/jarrid-keyper/){ .md-button .md-button--primary target="_blank" }
