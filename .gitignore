@@ -64,4 +64,4 @@ configs/
 .cache
 
 # dokka
-mkdocs/kdoc/
+docs/kdoc/
