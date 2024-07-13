@@ -103,6 +103,13 @@ tasks {
 
     withType<DokkaTask>().configureEach {
         pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
+            moduleName = "Keyper"
+            homepageLink = "https://jarrid.xyz/keyper"
+            customStyleSheets = listOf(
+                file("../docs/stylesheets/dokka/logo-styles.css"),
+                file("../docs/stylesheets/dokka/custom-style.css")
+            )
+            customAssets = listOf(file("../docs/assets/images/jarrid_logo_black.png"))
             footerMessage = "(c) 2024 Jarrid"
         }
         outputDirectory.set(file("$rootDir/docs/kdoc"))
