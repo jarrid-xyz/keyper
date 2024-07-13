@@ -26,7 +26,7 @@ nav:
       - index.md
       - development.md
       - API Docs: kdoc/index.html
-      - Release: https://github.com/apiobuild/jarrid-keyper/releases
+      - Release: https://github.com/jarrid-xyz/keyper/releases
       - integration.md
   - Crypto Key: crypto-key/index.md
   - Deploy:
@@ -56,7 +56,7 @@ extra:
     property: G-2VNWJJB7P7
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/apiobuild?q=jarrid&type=all&language=&sort=
+      link: https://github.com/jarrid-xyz
     - icon: fontawesome/brands/instagram
       link: https://www.instagram.com/jarrid.xyz
     - icon: fontawesome/brands/linkedin
