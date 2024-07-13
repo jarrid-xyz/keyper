@@ -22,17 +22,19 @@ theme:
 
 nav:
   - Keyper:
-    - index.md
-    - development.md
-    - integration.md
+      - index.md
+      - development.md
+      - API Docs: kdoc/index.html
+      - Release: https://github.com/apiobuild/jarrid-keyper/releases
+      - integration.md
   - Crypto Key: crypto-key/index.md
-  - Deploy: 
-    - deploy/index.md
-    - deploy/cli.md
-    - deploy/gcp.md
-  - Data: 
-    - data/index.md
-    - data/secure-data-flow.md
+  - Deploy:
+      - deploy/index.md
+      - deploy/cli.md
+      - deploy/gcp.md
+  - Data:
+      - data/index.md
+      - data/secure-data-flow.md
 
 markdown_extensions:
   - attr_list
@@ -52,14 +54,14 @@ extra:
     provider: google
     property: G-2VNWJJB7P7
   social:
-    - icon: fontawesome/brands/github 
+    - icon: fontawesome/brands/github
       link: https://github.com/apiobuild?q=jarrid&type=all&language=&sort=
-    - icon: fontawesome/brands/instagram 
+    - icon: fontawesome/brands/instagram
       link: https://www.instagram.com/jarrid.xyz
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/company/apiobuild/
     - icon: fontawesome/solid/envelope
-      link: mailto:luluc@jarrid.xyz 
+      link: mailto:luluc@jarrid.xyz
 
 extra_css:
   - stylesheets/extra.css

@@ -1,3 +1,4 @@
+lib/src/main/resources/app.yaml
 provider:
   gcp:
     accountId: "databoo"
@@ -7,3 +8,4 @@ manager:
     backend: "local"
     path: "configs"
 out_dir: "/home/keyper"
+#out_dir: "/Users/luluc/Development/apiobuild/jarrid/jarrid-keyper"
