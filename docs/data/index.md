@@ -1,5 +1,5 @@
 ---
-title: Data
+title: CLI
 hide:
     - toc
 ---
