@@ -2,7 +2,7 @@
 title: Secure Data Flow
 ---
 
-While data exchange on the public internet is protected by robust protocols like [TLS](terminology.md#example-tls-transport-layer-security). Most companies handle sensitive user data internally implemet much loose data security and encryption standards. It's understandable. First, it's very complicated. Second, without shared process and standards, it's very costly to implement and maintain. We build [keyper](https://github.com/jarrid-xyz/keyper/){:target="_blank"} with the goal to simplify and streamline data security and encryption implementations for product and data engineers.
+While data exchange on the public internet is protected by robust protocols like [TLS](terminology.md#example-tls-transport-layer-security). Most companies handle sensitive user data internally implement much loose data security and encryption standards. It's understandable. First, it's very complicated. Second, without shared process and standards, it's very costly to implement and maintain. We build [Keyper](https://github.com/jarrid-xyz/keyper/){:target="_blank"} with the goal to simplify and streamline data security and encryption implementations for product and data engineers.
 
 ## Direct AES + ACLs Encryption Flow
 
@@ -37,7 +37,7 @@ sequenceDiagram
 
 **Cons**
 
-1. **Access to Raw Data:** The backend application has access to the actual [AES]((terminology.md#aes-advanced-encryption-standard)) key and raw data, which means that for highly sensitive data, the backend itself could be a potential point of compromise.
+1. **Access to Raw Data:** The backend application has access to the actual [AES](terminology.md#aes-advanced-encryption-standard) key and raw data, which means that for highly sensitive data, the backend itself could be a potential point of compromise.
 2. **Trust Issues:** Since the backend can see the raw data, it cannot be fully trusted in scenarios where data confidentiality is important.
 3. **Misconfiguration Risks:** Both the AES key management and [IAM/ACLs](terminology.md#identity-and-access-management-iam) policies could be misconfigured or mishandled, leading to potential security vulnerabilities.
 
@@ -99,9 +99,9 @@ sequenceDiagram
 
 ## AES + RSA + TEE Encryption Flow
 
-This approach combines [Hybrid RSA + AES Encryption Flow](#hybrid-rsa--aes-encryption-flow) with [Trusted Execution Environment (TEE)](terminology.md#tee-trusted-execution-environment) to enhance data security. The client encrypts the data with the [RSA](terminology.md#rsa-rivest-shamir-adleman) public key before sending it to the backend, which then sends it to the [TEE](terminology.md#tee-trusted-execution-environment). Within the [TEE](terminology.md#tee-trusted-execution-environment), the data is decrypted using the [RSA](terminology.md#rsa-rivest-shamir-adleman) private key, re-encrypted with an [AES](terminology.md#aes-advanced-encryption-standard) key, and sent to the backend to store in the data store. When the data is needed, the process is reversed, ensuring that sensitive data remains protected throughout the entire workflow.
+This approach combines [Hybrid RSA + AES Encryption Flow](#hybrid-rsa-aes-encryption-flow) with [Trusted Execution Environment (TEE)](terminology.md#tee-trusted-execution-environment) to enhance data security. The client encrypts the data with the [RSA](terminology.md#rsa-rivest-shamir-adleman) public key before sending it to the backend, which then sends it to the [TEE](terminology.md#tee-trusted-execution-environment). Within the [TEE](terminology.md#tee-trusted-execution-environment), the data is decrypted using the [RSA](terminology.md#rsa-rivest-shamir-adleman) private key, re-encrypted with an [AES](terminology.md#aes-advanced-encryption-standard) key, and sent to the backend to store in the data store. When the data is needed, the process is reversed, ensuring that sensitive data remains protected throughout the entire workflow.
 
-This flow adds a lot of overhead compared to the [Direct AES + ACLs Encryption Flow](#direct-aes-acls-encryption-flow) and [Hybrid RSA + AES Encryption Flow](#hybrid-rsa--aes-encryption-flow) as it needs to spin up an independent [TEE](terminology.md#tee-trusted-execution-environment) to manage the encryption and decryption. However, the advantage of this approach is that the backend never has access to the data or the AES key. Data is tightly protected throughout the entire data transmission flow.
+This flow adds a lot of overhead compared to the [Direct AES + ACLs Encryption Flow](#direct-aes-acls-encryption-flow) and [Hybrid RSA + AES Encryption Flow](#hybrid-rsa-aes-encryption-flow) as it needs to spin up an independent [TEE](terminology.md#tee-trusted-execution-environment) to manage the encryption and decryption. However, the advantage of this approach is that the backend never has access to the data or the AES key. Data is tightly protected throughout the entire data transmission flow.
 
 ```mermaid
 sequenceDiagram
@@ -150,3 +150,15 @@ sequenceDiagram
 1. **Financial Data Protection:** Securely handle and store sensitive financial information, such as credit card details and banking information, ensuring data confidentiality and integrity.
 2. **Healthcare Records Management:** Protect sensitive healthcare records, ensuring they are processed and stored in a highly secure and trusted environment.
 3. **Regulated Industries:** Suitable for industries with strict regulatory requirements for data protection, such as government and defense, ensuring compliance and data security.
+
+## Comparison
+
+| Feature                    | Direct AES + ACLs Encryption Flow                          | Hybrid RSA + AES Encryption Flow                    | AES + RSA + TEE Encryption Flow                                     |
+| -------------------------- | ---------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------- |
+| **Encryption Method**      | AES for encryption, IAM for access control                 | RSA for initial encryption, AES for storage         | RSA for initial encryption, AES for storage, TEE for processing     |
+| **Data Transmission**      | Raw data sent to backend                                   | Encrypted with RSA, then AES                        | Encrypted with RSA, processed in TEE, then AES                      |
+| **Backend Access to Data** | Backend can access raw data                                | Backend can access data after RSA decryption        | Backend never accesses raw data or AES key                          |
+| **Security Level**         | Basic encryption and access control                        | Enhanced security with separate key management      | Highest security with TEE, ensuring data confidentiality            |
+| **Performance Overhead**   | Minimal                                                    | Moderate due to dual encryption                     | High due to TEE and dual encryption                                 |
+| **Complexity**             | Low                                                        | Moderate                                            | High due to TEE implementation                                      |
+| **Use Cases**              | Internal data management, log storage, client data storage | Sensitive data transmission, secure form submission | Financial data protection, healthcare records, regulated industries |
