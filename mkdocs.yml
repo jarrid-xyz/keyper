@@ -1,11 +1,17 @@
 site_name: Keyper
 site_description: Keyper by Jarrid is a suite of crypto key management APIs that simplify key creation, management, deployment, and encryption/decryption. It supports file-based operations for easy automation and tracking via GitOps. Fully integrated with cloud KMS services like AWS KMS and GCP KMS, Keyper reduces infrastructure maintenance.
-site_url: https://jarrid.xyz/keyper/docsmkdocs serve
+site_url: https://jarrid.xyz/keyper
+repo_url: https://github.com/jarrid-xyz/keyper
 theme:
+  font:
+    text: Ubuntu
   name: material
   logo: assets/images/favicon.ico
   favicon: assets/images/favicon.ico
-  
+  icon:
+    repo: fontawesome/brands/github
+  feature:
+      tabs: true
   features:
     - navigation.tabs
     - navigation.footer
@@ -25,9 +31,10 @@ nav:
   - Keyper:
       - index.md
       - development.md
-      - API Docs: kdoc/index.html
-      - Release: https://github.com/jarrid-xyz/keyper/releases
+      - API Docs: kdoc/index.html" target="_blank
+      - Release: https://github.com/jarrid-xyz/keyper/releases" target="_blank
       - integration.md
+      - About Jarrid: https://jarrid.xyz" target="_blank
   - Crypto Key: crypto-key/index.md
   - Deploy:
       - deploy/index.md
@@ -36,6 +43,8 @@ nav:
   - Data:
       - data/index.md
       - data/secure-data-flow.md
+      - data/terminology.md
+  - Jarrid: https://jarrid.xyz" target="_blank
 
 markdown_extensions:
   - attr_list
@@ -47,7 +56,12 @@ markdown_extensions:
       pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
 
 extra:
   generator: false
