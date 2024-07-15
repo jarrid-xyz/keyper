@@ -66,3 +66,6 @@ site/
 
 # dokka
 docs/kdoc/
+
+# vscode
+.vscode
