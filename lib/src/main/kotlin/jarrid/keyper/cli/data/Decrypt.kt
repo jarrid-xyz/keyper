@@ -4,7 +4,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 
 import jarrid.keyper.cli.DataSubcommand
-import jarrid.keyper.key.data.Decrypt
+import jarrid.keyper.resource.key.data.Decrypt
 import kotlinx.coroutines.runBlocking
 
 class Decrypt : DataSubcommand(help = "Decrypt data with using key") {

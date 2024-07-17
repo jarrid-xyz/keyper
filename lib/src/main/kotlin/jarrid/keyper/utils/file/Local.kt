@@ -1,9 +1,9 @@
 package jarrid.keyper.utils.file
 
 import io.klogging.Klogging
-import jarrid.keyper.app.Config
-import jarrid.keyper.key.DeploymentStack
-import jarrid.keyper.key.Model
+import jarrid.keyper.resource.Config
+import jarrid.keyper.tfcdk.DeploymentStack
+import jarrid.keyper.resource.key.Model
 import jarrid.keyper.utils.json.decode
 import jarrid.keyper.utils.json.encode
 import jarrid.keyper.utils.model.NewUUID
@@ -35,6 +35,9 @@ class Local(config: Config) : Backend, Klogging {
         return Files.list(dirPath).map { it.fileName.toString() }.toList()
     }
 
+    suspend fun createDirs(path: String) {
+
+    }
     suspend fun createDir(keyConfig: Model) {
         val prefix = getPrefix(keyConfig)
         if (Files.exists(rootDir.resolve(prefix))) {
@@ -98,7 +101,8 @@ class Local(config: Config) : Backend, Klogging {
             out.add(
                 DeploymentStack(
                     deploymentId = deploymentId,
-                    keys = configs
+                    keys = configs,
+                    serviceAccounts = emptyList()
                 )
             )
         }

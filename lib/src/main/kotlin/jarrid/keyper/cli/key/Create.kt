@@ -1,7 +1,7 @@
 package jarrid.keyper.cli.key
 
 import jarrid.keyper.cli.KeySubcommand
-import jarrid.keyper.key.Usage
+import jarrid.keyper.resource.key.Usage
 import kotlinx.coroutines.runBlocking
 
 class Create(help: String = "Create key") : KeySubcommand(help = help) {

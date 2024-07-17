@@ -1,4 +1,4 @@
-import jarrid.keyper.app.Backend.LOCAL
+import jarrid.keyper.resource.Backend.LOCAL
 import jarrid.keyper.tfcdk.KeyStack
 import jarrid.keyper.tfcdk.gcp.stack.GCPKeyStackImpl
 import jarrid.keyper.utils.file.Backend

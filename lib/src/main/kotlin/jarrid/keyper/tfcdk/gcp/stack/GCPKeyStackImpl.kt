@@ -8,9 +8,9 @@ import com.hashicorp.cdktf.providers.google.kms_key_ring.KmsKeyRing
 import com.hashicorp.cdktf.providers.google.kms_key_ring.KmsKeyRingConfig
 import com.hashicorp.cdktf.providers.google.provider.GoogleProvider
 import io.klogging.Klogging
-import jarrid.keyper.key.DeploymentStack
-import jarrid.keyper.key.Model
-import jarrid.keyper.key.Name
+import jarrid.keyper.tfcdk.DeploymentStack
+import jarrid.keyper.resource.key.Model
+import jarrid.keyper.resource.key.Name
 import jarrid.keyper.tfcdk.KeyStack
 import jarrid.keyper.tfcdk.StackTfvars
 import software.constructs.Construct

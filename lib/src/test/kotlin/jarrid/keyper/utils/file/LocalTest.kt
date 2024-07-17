@@ -3,9 +3,9 @@ package jarrid.keyper.utils.file
 import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
 import io.mockk.*
-import jarrid.keyper.app.Config
-import jarrid.keyper.key.Model
-import jarrid.keyper.key.Usage
+import jarrid.keyper.resource.Config
+import jarrid.keyper.resource.key.Model
+import jarrid.keyper.resource.key.Usage
 import jarrid.keyper.utils.json.encode
 import jarrid.keyper.utils.model.NewTimestamp
 import jarrid.keyper.utils.model.NewUUID

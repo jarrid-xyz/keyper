@@ -1,12 +1,12 @@
-package jarrid.keyper.key.data
+package jarrid.keyper.resource.key.data
 
 import com.google.cloud.kms.v1.CryptoKeyName
 import com.google.cloud.kms.v1.DecryptRequest
 import com.google.cloud.kms.v1.KeyManagementServiceClient
 import com.google.protobuf.ByteString
-import jarrid.keyper.app.Backend
-import jarrid.keyper.app.Stack
-import jarrid.keyper.key.Name
+import jarrid.keyper.resource.Backend
+import jarrid.keyper.resource.Stack
+import jarrid.keyper.resource.key.Name
 import java.util.*
 
 class Decrypt(

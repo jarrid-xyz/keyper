@@ -1,6 +1,6 @@
 package jarrid.keyper.utils.json
 
-import jarrid.keyper.key.Model
+import jarrid.keyper.resource.key.Model
 import kotlinx.serialization.json.Json
 
 fun encode(config: Model): String {

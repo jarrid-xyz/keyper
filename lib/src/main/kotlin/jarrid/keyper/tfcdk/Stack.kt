@@ -3,10 +3,19 @@ package jarrid.keyper.tfcdk
 import com.hashicorp.cdktf.App
 import com.hashicorp.cdktf.AppConfig
 import io.klogging.Klogging
-import jarrid.keyper.app.Config
+import jarrid.keyper.resource.Config
+import jarrid.keyper.resource.key.Model as Key
+import jarrid.keyper.resource.iam.Model as ServiceAccount
 import jarrid.keyper.utils.file.Backend
+import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
+
+data class DeploymentStack(
+    val deploymentId: UUID,
+    val keys: List<Key>,
+    val serviceAccounts: List<ServiceAccount>,
+)
 
 class Stack(
     private val backend: Backend,

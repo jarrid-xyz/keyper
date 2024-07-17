@@ -1,4 +1,4 @@
-package jarrid.keyper.key
+package jarrid.keyper.resource.key
 
 import java.util.*
 

@@ -5,7 +5,7 @@ import com.github.ajalt.clikt.parameters.options.associate
 import com.github.ajalt.clikt.parameters.options.option
 import jarrid.keyper.api.KeyServiceImpl
 import jarrid.keyper.api.Options
-import jarrid.keyper.key.Usage
+import jarrid.keyper.resource.key.Usage
 
 abstract class KeySubcommand(help: String = "") :
     BaseSubcommand(help = help) {

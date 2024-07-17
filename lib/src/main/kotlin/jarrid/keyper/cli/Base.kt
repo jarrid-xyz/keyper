@@ -6,8 +6,8 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.enum
 import io.klogging.Klogging
-import jarrid.keyper.app.Backend
-import jarrid.keyper.app.Stack
+import jarrid.keyper.resource.Backend
+import jarrid.keyper.resource.Stack
 import jarrid.keyper.tfcdk.KeyStack
 import kotlin.reflect.KClass
 import jarrid.keyper.utils.file.Backend as FileBackend

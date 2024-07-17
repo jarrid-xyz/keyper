@@ -1,10 +1,10 @@
-package jarrid.keyper.key.data
+package jarrid.keyper.resource.key.data
 
 import io.klogging.Klogging
-import jarrid.keyper.app.Backend
-import jarrid.keyper.app.Config
-import jarrid.keyper.app.Stack
-import jarrid.keyper.key.Model
+import jarrid.keyper.resource.Backend
+import jarrid.keyper.resource.Config
+import jarrid.keyper.resource.Stack
+import jarrid.keyper.resource.key.Model
 import java.util.*
 
 abstract class Base(

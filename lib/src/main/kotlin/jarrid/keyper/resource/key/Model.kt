@@ -1,4 +1,4 @@
-package jarrid.keyper.key
+package jarrid.keyper.resource.key
 
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -25,9 +25,4 @@ data class Model(
     @Contextual var updated: Instant? = null,
     @Contextual var deploymentId: UUID? = null,
     @Contextual val context: Map<String, @Contextual Any>? = null,
-)
-
-data class DeploymentStack(
-    val deploymentId: UUID,
-    val keys: List<Model>
 )

@@ -1,4 +1,4 @@
-package jarrid.keyper.app
+package jarrid.keyper.resource
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.decodeFromStream

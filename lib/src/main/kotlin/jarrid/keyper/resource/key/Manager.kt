@@ -1,5 +1,7 @@
-package jarrid.keyper.key
+package jarrid.keyper.resource.key
 
+import io.klogging.Klogging
+import jarrid.keyper.resource.BaseManager
 import jarrid.keyper.utils.file.Backend
 import jarrid.keyper.utils.model.NewTimestamp
 import jarrid.keyper.utils.model.NewUUID
@@ -11,8 +13,11 @@ data class Payload(
     val context: Map<String, Any>? = null
 )
 
-abstract class Manager(backend: Backend) {
-    open val backend: Backend = backend
+class Manager(
+    private val payload: Payload,
+    backend: Backend
+) : Klogging, BaseManager(backend = backend) {
+
     suspend fun convert(payload: Payload, usage: Usage): Model {
         when (usage) {
             Usage.CREATE_KEY -> {
@@ -20,20 +25,14 @@ abstract class Manager(backend: Backend) {
                     usage = usage,
                     keyId = NewUUID.get(),
                     created = NewTimestamp.get(),
-                    deploymentId = backend.getOrCreateDeploymentId(payload.deploymentId),
+                    deploymentId = getDeploymentId(payload.deploymentId),
                     ttl = 7,
                     context = payload.context,
                 )
             }
 
-            Usage.SHARE_KEY -> {
-                TODO()
-            }
-
-            Usage.ENCRYPT -> {
-                TODO()
-            }
-
+            Usage.SHARE_KEY,
+            Usage.ENCRYPT,
             Usage.DECRYPT -> {
                 TODO()
             }
@@ -46,9 +45,23 @@ abstract class Manager(backend: Backend) {
         return config
     }
 
-    abstract suspend fun createKey(): Model
-    abstract suspend fun shareKey()
-    abstract suspend fun encrypt()
-    abstract suspend fun getKey()
-    abstract suspend fun decrypt()
+    suspend fun createKey(): Model {
+        return run(payload, Usage.CREATE_KEY)
+    }
+
+    suspend fun shareKey() {
+        TODO()
+    }
+
+    suspend fun getKey() {
+        TODO()
+    }
+
+    suspend fun encrypt() {
+        TODO()
+    }
+
+    suspend fun decrypt() {
+        TODO()
+    }
 }

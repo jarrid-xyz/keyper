@@ -1,7 +1,7 @@
 package jarrid.keyper.utils.file
 
-import jarrid.keyper.key.DeploymentStack
-import jarrid.keyper.key.Model
+import jarrid.keyper.resource.key.Model
+import jarrid.keyper.tfcdk.DeploymentStack
 import java.nio.file.Paths
 import java.util.*
 

@@ -4,7 +4,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 
 import jarrid.keyper.cli.DataSubcommand
-import jarrid.keyper.key.data.Encrypt
+import jarrid.keyper.resource.key.data.Encrypt
 import kotlinx.coroutines.runBlocking
 
 class Encrypt : DataSubcommand(help = "Encrypt data with using key") {
