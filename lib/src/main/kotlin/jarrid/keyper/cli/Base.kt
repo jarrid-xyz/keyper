@@ -17,9 +17,14 @@ abstract class BaseSubcommand(help: String = "") : CliktCommand(help), Klogging 
         help = "Specify configuration backend"
     ).enum<Backend>()
         .default(Backend.LOCAL)
+
     val stack: Stack by option(
         help = "Specify deployment stack"
     ).enum<Stack>().default(Stack.GCP)
+
+    val deployment: String? by option(
+        help = "Deployment name"
+    ).default("default")
 
     suspend fun runTf() {
         val backend: FileBackend = backend.get()

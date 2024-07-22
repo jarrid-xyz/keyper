@@ -6,6 +6,7 @@ import jarrid.keyper.resource.Payload
 import jarrid.keyper.resource.ResourceIsUndefinedException
 import jarrid.keyper.resource.Stack
 import jarrid.keyper.utils.file.Backend
+import jarrid.keyper.utils.model.NewTimestamp
 import jarrid.keyper.utils.model.NewUUID
 import jarrid.keyper.resource.Manager as ResourceManager
 
@@ -25,11 +26,12 @@ class Manager(
             ?: throw ResourceIsUndefinedException()
 
         // Determine the key resource
-        val key: Model = Model(
+        val key = Model(
             id = resource.id ?: NewUUID.get(),
             name = resource.name,
             ttl = resource.getConfigAttribute("ttl", 7) as Int
         )
+        key.base.created = NewTimestamp.get()
 
 
         backend.write(key, deployment)

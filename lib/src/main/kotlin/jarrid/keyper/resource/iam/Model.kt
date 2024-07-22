@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 import java.util.*
 
 class RoleIsUndefinedException(message: String = "Role name must be defined in the payload") :
-    Exception(message = message)
+    Exception(message)
 
 
 @Serializable

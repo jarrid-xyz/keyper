@@ -15,7 +15,7 @@ enum class ResourceType {
 
 @Serializable
 class Base(
-    @Contextual val created: Instant? = null,
+    @Contextual var created: Instant? = null,
     @Contextual val updated: Instant? = null,
     @Contextual val id: UUID,
     val name: String? = null,
@@ -53,19 +53,20 @@ data class Deployment(
     companion object {
         // Factory method to create a new Deployment with a new ID
         fun new(
+            id: UUID? = null,
             name: String = "default",
             context: Map<String, @Contextual Any>? = null
         ): Deployment {
             return Deployment(
-                _id = NewUUID.get(),
+                _id = id ?: NewUUID.get(),
                 _name = name,
                 _context = context
             )
         }
 
-        fun get(id: UUID, name: String = "default"): Deployment {
+        fun get(id: UUID?, name: String = "default"): Deployment {
             return Deployment(
-                _id = id,
+                _id = id ?: NewUUID.getEmpty(),
                 _name = name,
             )
         }

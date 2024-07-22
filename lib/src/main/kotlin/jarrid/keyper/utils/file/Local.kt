@@ -25,6 +25,7 @@ class Local(config: Config) : Backend(config = config) {
 
     override fun write(path: String, encoded: String) {
         val resolved = rootDir.resolve(path)
+        Files.createDirectories(resolved.parent)
         Files.writeString(resolved, encoded)
     }
 

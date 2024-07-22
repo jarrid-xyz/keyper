@@ -4,7 +4,7 @@ import kotlinx.serialization.Contextual
 import java.util.*
 
 class ResourceIsUndefinedException(message: String = "Resource must be defined in the payload") :
-    Exception(message = message)
+    Exception(message)
 
 data class BasePayload(
     val id: UUID? = null,
