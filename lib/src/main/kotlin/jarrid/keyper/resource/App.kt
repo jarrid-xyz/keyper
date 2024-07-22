@@ -8,8 +8,6 @@ import jarrid.keyper.utils.file.Local
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.io.InputStream
-import java.nio.file.Path
-import java.nio.file.Paths
 import kotlin.reflect.KClass
 import jarrid.keyper.utils.file.Backend as FileBackend
 
@@ -54,17 +52,17 @@ enum class Stack {
     @SerialName("gcp")
     GCP {
         override fun get(): KClass<out KeyStack> = GCPKeyStackImpl::class
-        override fun getConfig(config: AppConfig): CloudProviderConfig? = config.provider.gcp
+        override fun getConfig(config: App): CloudProviderConfig? = config.provider.gcp
     };
 
 //    @SerialName("aws")
 //    AWS {
 //        override fun get(): KClass<out KeyStack> = AWSKeyStackImpl::class
-//        override fun getConfig(config: AppConfig): CloudProviderConfig? = provider.aws
+//        override fun getConfig(config: App): CloudProviderConfig? = provider.aws
 //    };
 
     abstract fun get(): KClass<out KeyStack>
-    abstract fun getConfig(config: AppConfig): CloudProviderConfig?
+    abstract fun getConfig(config: App): CloudProviderConfig?
 }
 
 @Serializable
@@ -79,8 +77,8 @@ data class File(
 )
 
 @Serializable
-data class AppConfig(
-    val provider: ProviderConfig,
+data class App(
+    val provider: ProviderConfig = ProviderConfig(),
     val manager: File,
     @SerialName("out_dir")
     val outDir: String = "./"
@@ -89,16 +87,14 @@ data class AppConfig(
 class Config(path: String = "/app.yaml") {
     private val stream: InputStream =
         Config::class.java.getResourceAsStream(path)
-            ?: throw IllegalArgumentException("File not found: app.yaml")
+            ?: throw IllegalArgumentException("App config file not found: $path")
 
-    private var config: AppConfig = load()
-    private fun load(): AppConfig {
-        return Yaml.default.decodeFromStream(AppConfig.serializer(), stream)
+    private fun load(): App {
+        return Yaml.default.decodeFromStream(App.serializer(), stream)
     }
 
-    fun get(): AppConfig {
+    private var config: App = load()
+    fun get(): App {
         return config
     }
-
-    val outDir: Path = Paths.get(config.outDir)
 }

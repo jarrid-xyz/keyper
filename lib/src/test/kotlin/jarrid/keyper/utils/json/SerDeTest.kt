@@ -1,9 +1,9 @@
 package jarrid.keyper.utils.json
 
 
+import jarrid.keyper.utils.model.NewUUID
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import java.time.Instant
 import java.util.*
 import kotlin.test.Test
@@ -20,24 +20,21 @@ data class TestDataClass(
     @Contextual val uuid2: UUID
 )
 
-class ModuleTest {
+class SerDeTest {
     @Test
     fun testSerialization() {
-
-        val json = Json {
-            serializersModule = module
-        }
+        val serde = SerDe()
         val testData = TestDataClass(
             string = "string",
             instant2 = Instant.now(),
             any2 = false,
-            uuid2 = UUID.randomUUID()
+            uuid2 = NewUUID.get()
         )
-        val encoded: String = json.encodeToString(
+        val encoded: String = serde.json.encodeToString(
             TestDataClass.serializer(),
             testData
         )
-        val decoded: TestDataClass = json.decodeFromString(encoded)
+        val decoded: TestDataClass = serde.json.decodeFromString(encoded)
         assertEquals(testData, decoded)
     }
 }

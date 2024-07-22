@@ -4,17 +4,20 @@ import com.hashicorp.cdktf.App
 import com.hashicorp.cdktf.AppConfig
 import io.klogging.Klogging
 import jarrid.keyper.resource.Config
-import jarrid.keyper.resource.key.Model as Key
-import jarrid.keyper.resource.iam.Model as ServiceAccount
+import jarrid.keyper.resource.Deployment
 import jarrid.keyper.utils.file.Backend
-import java.util.*
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
+import jarrid.keyper.resource.iam.Model as Role
+import jarrid.keyper.resource.key.Model as Key
 
+@Serializable
 data class DeploymentStack(
-    val deploymentId: UUID,
-    val keys: List<Key>,
-    val serviceAccounts: List<ServiceAccount>,
+    @Contextual val deployment: Deployment,
+    @Contextual val keys: List<Key>,
+    @Contextual val roles: List<Role>,
 )
 
 class Stack(
@@ -32,7 +35,7 @@ class Stack(
     }
 
     private suspend fun create(): App {
-        val deployments = backend.getDeploymentStacks()
+        val deployments = backend.getDeploymentStack()
         val app = App(getAppConfig())
         val constructor = stack.primaryConstructor
             ?: throw IllegalArgumentException("KeyStack class must have a primary constructor")

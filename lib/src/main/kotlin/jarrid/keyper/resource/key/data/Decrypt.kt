@@ -5,6 +5,8 @@ import com.google.cloud.kms.v1.DecryptRequest
 import com.google.cloud.kms.v1.KeyManagementServiceClient
 import com.google.protobuf.ByteString
 import jarrid.keyper.resource.Backend
+import jarrid.keyper.resource.Deployment
+import jarrid.keyper.resource.Model
 import jarrid.keyper.resource.Stack
 import jarrid.keyper.resource.key.Name
 import java.util.*
@@ -12,19 +14,19 @@ import java.util.*
 class Decrypt(
     backend: Backend,
     stack: Stack,
-    deploymentId: UUID?,
-    keyId: UUID
-) : Base(backend, stack, deploymentId, keyId) {
+    key: Model,
+) : Base(backend, stack, key) {
     suspend fun run(ciphertext: String): String {
-        val key = getKeyConfig()
+        val key = getKeyResource()
         KeyManagementServiceClient.create().use { client ->
             // Build the key name
+            val deployment = Deployment.get(key.base.id)
             val keyName =
                 CryptoKeyName.of(
                     projectId,
                     region,
-                    Name.getSanitizedName(key.deploymentId!!),
-                    Name.getSanitizedName(key.keyId!!)
+                    Name.getSanitizedName(deployment.base.id),
+                    Name.getSanitizedName(key.base.id)
                 )
 
             // Decode the Base64 encoded ciphertext
