@@ -1,28 +1,38 @@
 package jarrid.keyper.resource.key
 
 import io.klogging.Klogging
+import jarrid.keyper.resource.Deployment
 import jarrid.keyper.resource.Payload
+import jarrid.keyper.resource.ResourceIsUndefinedException
+import jarrid.keyper.resource.Stack
 import jarrid.keyper.utils.file.Backend
 import jarrid.keyper.utils.model.NewUUID
+import jarrid.keyper.resource.Manager as ResourceManager
 
 class Manager(
-    val backend: Backend
-) : Klogging {
-    private fun convert(payload: Payload): Model {
-        val ttl = payload.getConfigAttribute("ttl") as? Int ?: 7
-        val out = Model(
-            ttl = ttl,
-            id = NewUUID.get(),
-            name = payload.base.name,
-            context = payload.base.context,
-        )
-        return out
-    }
+    backend: Backend,
+    stack: Stack
+) : ResourceManager(backend = backend, stack = stack), Klogging {
 
     suspend fun createKey(payload: Payload): Model {
-        val resource: Model = convert(payload)
-        val deployment = backend.getDeployment()
-        backend.write(resource, deployment)
-        return resource
+        // Determine the deployment
+        val deployment = payload.deployment?.let {
+            backend.getDeployment(Deployment.get(it.id ?: NewUUID.getEmpty(), it.name ?: "default"))
+        } ?: backend.getDeployment()
+
+        // Assert resource is defined
+        val resource = payload.resource
+            ?: throw ResourceIsUndefinedException()
+
+        // Determine the key resource
+        val key: Model = Model(
+            id = resource.id ?: NewUUID.get(),
+            name = resource.name,
+            ttl = resource.getConfigAttribute("ttl", 7) as Int
+        )
+
+
+        backend.write(key, deployment)
+        return key
     }
 }

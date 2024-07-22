@@ -4,15 +4,13 @@ import java.util.*
 
 object NewUUID {
     @JvmStatic
-    fun get(): UUID {
-        return UUID.randomUUID()
-    }
+    fun get(): UUID = UUID.randomUUID()
 
     @JvmStatic
-    fun getEmpty(): UUID {
-        return UUID(0, 0)
-    }
+    fun getEmpty(): UUID = UUID(0L, 0L)
 }
+
+fun UUID.isEmpty(): Boolean = this == UUID(0L, 0L)
 
 class InvalidUUIDException(message: String) : Exception(message)
 

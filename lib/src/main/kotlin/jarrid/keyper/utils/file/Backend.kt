@@ -5,6 +5,7 @@ import jarrid.keyper.resource.*
 import jarrid.keyper.tfcdk.DeploymentStack
 import jarrid.keyper.utils.json.SerDe
 import jarrid.keyper.utils.model.InvalidUUIDException
+import jarrid.keyper.utils.model.isEmpty
 import jarrid.keyper.utils.model.toUUID
 import java.nio.file.Paths
 import jarrid.keyper.resource.iam.Model as Role
@@ -89,7 +90,9 @@ abstract class Backend(config: Config) : Klogging {
         var deployments = getDeployments()
         if (deployment != null) {
             deployments = deployments.filter {
-                (it.id == deployment.id) && (deployment.name.isEmpty() || it.name == deployment.name)
+                val idMatch = deployment.id.isEmpty() || it.id == deployment.id
+                val nameMatch = deployment.name.isEmpty() || it.name == deployment.name
+                idMatch && nameMatch
             }
         }
 

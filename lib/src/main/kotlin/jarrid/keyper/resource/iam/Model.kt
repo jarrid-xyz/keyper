@@ -6,9 +6,9 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.util.*
 
-enum class Usage {
-    CREATE,
-}
+class RoleIsUndefinedException(message: String = "Role name must be defined in the payload") :
+    Exception(message = message)
+
 
 @Serializable
 data class Model(
