@@ -1,9 +1,12 @@
-package jarrid.keyper.resource.key
+package jarrid.keyper.resource.iam
 
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import jarrid.keyper.resource.*
+import jarrid.keyper.resource.BasePayload
+import jarrid.keyper.resource.Deployment
+import jarrid.keyper.resource.Payload
+import jarrid.keyper.resource.Stack
 import jarrid.keyper.utils.file.Backend
 import jarrid.keyper.utils.json.SerDe
 import jarrid.keyper.utils.model.NewTimestamp
@@ -13,12 +16,12 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import kotlin.reflect.KClass
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import jarrid.keyper.resource.key.Model as Key
 
 @ExtendWith(MockKExtension::class)
-class ManagerTest {
+class IAMManagerTest {
 
     @MockK
     lateinit var backend: Backend
@@ -29,34 +32,36 @@ class ManagerTest {
     private lateinit var manager: Manager
     private val serde = SerDe()
 
-    data class CreateKeyTestCase(
+    data class CreateRoleTestCase(
         val payload: Payload,
-        val expected: Key,
-        val expectException: Boolean = false
+        val expected: Model? = null,
+        val exception: KClass<out Throwable>? = null
     )
 
     companion object {
         val deploymentId = NewUUID.get()
         val resourceId = NewUUID.get()
         val created = NewTimestamp.get()
-        private val context = mapOf("key" to "value")
+        private val context = mapOf("role" to "value")
         private val deployment = Deployment.new(
             id = deploymentId,
             name = "test-deployment",
             context = context
         )
-        private val key = Key(
-            id = resourceId,
-            name = "test-key",
-            ttl = 7
+        private val role = Model.create(
+            BasePayload(
+                id = resourceId,
+                name = "test-role",
+                context = context
+            )
         ).apply {
             base.created = created
         }
 
         @JvmStatic
-        fun createKeyProvider(): List<CreateKeyTestCase> {
+        fun createRoleProvider(): List<CreateRoleTestCase> {
             return listOf(
-                CreateKeyTestCase(
+                CreateRoleTestCase(
                     payload = Payload(
                         deployment = BasePayload(
                             id = deploymentId,
@@ -65,39 +70,25 @@ class ManagerTest {
                         ),
                         resource = BasePayload(
                             id = resourceId,
-                            name = key.name,
-                            context = mapOf("ttl" to 7)
+                            name = role.name,
+                            context = context
                         )
                     ),
-                    expected = key
+                    expected = role
                 ),
-                CreateKeyTestCase(
-                    payload = Payload(
-                        deployment = BasePayload(),
-                        resource = BasePayload(
-                            name = "default-key",
-                            context = mapOf("ttl" to 7)
-                        )
-                    ),
-                    expected = Key(
-                        id = resourceId,
-                        name = "default-key",
-                        ttl = 7
-                    ).apply {
-                        base.created = created
-                    }
-                ),
-                CreateKeyTestCase(
+                CreateRoleTestCase(
                     payload = Payload(
                         deployment = BasePayload(
                             id = deploymentId,
                             name = deployment.name,
                             context = context
                         ),
-                        resource = null
+                        resource = BasePayload(
+                            id = resourceId,
+                            context = context
+                        )
                     ),
-                    expected = key,
-                    expectException = true
+                    exception = RoleNameIsUndefinedException::class
                 )
             )
         }
@@ -106,7 +97,7 @@ class ManagerTest {
     @BeforeEach
     fun setup() {
         mockkStatic(NewUUID::class)
-        every { NewUUID.get() } returns resourceId
+        every { NewUUID.get() } returnsMany listOf(deploymentId, resourceId)
         mockkStatic(NewTimestamp::class)
         every { NewTimestamp.get() } returns created
 
@@ -114,18 +105,20 @@ class ManagerTest {
     }
 
     @ParameterizedTest
-    @MethodSource("createKeyProvider")
-    fun testCreateKey(case: CreateKeyTestCase) {
+    @MethodSource("createRoleProvider")
+    fun testCreateRole(case: CreateRoleTestCase) {
         runBlocking {
             coEvery { backend.getDeployment(any()) } returns deployment
-            coEvery { backend.write(any<Key>(), any<Deployment>()) } just Runs
+            coEvery { backend.write(any<Model>(), any<Deployment>()) } just Runs
 
-            if (case.expectException) {
-                assertFailsWith<ResourceIsUndefinedException> {
-                    manager.createKey(case.payload)
+            if (case.exception != null) {
+                assertFailsWith(case.exception) {
+                    runBlocking {
+                        manager.createRole(case.payload)
+                    }
                 }
             } else {
-                val actual = manager.createKey(case.payload)
+                val actual = manager.createRole(case.payload)
                 assertEquals(serde.encode(case.expected), serde.encode(actual))
                 coVerify { backend.write(actual, deployment) }
             }

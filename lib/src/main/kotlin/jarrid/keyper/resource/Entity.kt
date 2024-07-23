@@ -1,5 +1,6 @@
 package jarrid.keyper.resource
 
+import jarrid.keyper.utils.model.NewTimestamp
 import jarrid.keyper.utils.model.NewUUID
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -20,7 +21,11 @@ class Base(
     @Contextual val id: UUID,
     val name: String? = null,
     val context: Map<String, @Contextual Any>? = null,
-)
+) {
+    fun create() {
+        this.created = NewTimestamp.get()
+    }
+}
 
 @Serializable
 open class Resource(

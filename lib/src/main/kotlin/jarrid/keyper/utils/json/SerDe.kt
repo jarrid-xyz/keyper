@@ -10,6 +10,8 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import java.time.Instant
 import java.util.*
+import jarrid.keyper.resource.iam.Model as Role
+import jarrid.keyper.resource.key.Model as Key
 
 class SerDe {
     private val module = SerializersModule {
@@ -34,6 +36,8 @@ class SerDe {
     inline fun <reified T> encode(value: T): String {
         val serializer = when (T::class) {
             Model::class -> Model.serializer()
+            Key::class -> Key.serializer()
+            Role::class -> Role.serializer()
             Deployment::class -> Deployment.serializer()
             Resource::class -> Resource.serializer()
             DeploymentStack::class -> DeploymentStack.serializer()
@@ -45,6 +49,8 @@ class SerDe {
     inline fun <reified T> decode(string: String): T {
         val serializer = when (T::class) {
             Model::class -> Model.serializer()
+            Key::class -> Key.serializer()
+            Role::class -> Role.serializer()
             Deployment::class -> Deployment.serializer()
             Resource::class -> Resource.serializer()
             DeploymentStack::class -> DeploymentStack.serializer()
