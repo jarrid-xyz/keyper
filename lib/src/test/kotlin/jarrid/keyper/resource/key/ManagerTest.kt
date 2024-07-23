@@ -36,6 +36,11 @@ class ManagerTest {
         val exception: KClass<out Throwable>? = null
     )
 
+    data class ListTestCase<Key>(
+        val payload: Payload,
+        val expected: List<Key>
+    )
+
     companion object {
         val deploymentId = NewUUID.get()
         val resourceId = NewUUID.get()
@@ -68,7 +73,7 @@ class ManagerTest {
                         ),
                         resource = BasePayload(
                             id = resourceId,
-                            name = key.name,
+                            name = key.base.name,
                             context = mapOf("ttl" to 7)
                         )
                     ),
@@ -103,6 +108,22 @@ class ManagerTest {
                 )
             )
         }
+
+        @JvmStatic
+        fun listKeyProvider(): List<ListTestCase<Key>> {
+            return listOf(
+                ListTestCase(
+                    payload = Payload(
+                        deployment = BasePayload(
+                            id = deploymentId,
+                            name = deployment.name,
+                            context = context
+                        )
+                    ),
+                    expected = listOf(key)
+                )
+            )
+        }
     }
 
     @BeforeEach
@@ -120,7 +141,7 @@ class ManagerTest {
     fun testCreateKey(case: CreateKeyTestCase) {
         runBlocking {
             coEvery { backend.getDeployment(any()) } returns deployment
-            coEvery { backend.write(any<Key>(), any<Deployment>()) } just Runs
+            coEvery { backend.write(any<Key>(), any()) } just Runs
 
             if (case.exception != null) {
                 assertFailsWith(case.exception) {
@@ -130,9 +151,22 @@ class ManagerTest {
                 // not sure why, the order is backwards (?)
                 every { NewUUID.get() } returnsMany listOf(resourceId, deploymentId)
                 val actual = manager.createKey(case.payload)
-                assertEquals(serde.encode(case.expected), serde.encode(actual))
+                if (case.expected != null) {
+                    assertEquals(serde.encode(case.expected.base), serde.encode(actual.base))
+                }
                 coVerify { backend.write(actual, deployment) }
             }
         }
+    }
+
+    @ParameterizedTest
+    @MethodSource("listKeyProvider")
+    fun testListKeys(case: ListTestCase<Key>) {
+        val keyManager = Manager(backend, stack)
+        coEvery { backend.getDeployment(any<Deployment>()) } returns deployment
+        coEvery { backend.getResources<Key>(any()) } returns case.expected
+        val actual = runBlocking { keyManager.list(case.payload) }
+        assertEquals(case.expected.map { it.base }, actual.map { it.base })
+        coVerify { backend.getResources<Key>(any()) }
     }
 }

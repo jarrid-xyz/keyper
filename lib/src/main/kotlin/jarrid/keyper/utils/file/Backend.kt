@@ -20,7 +20,7 @@ class UnsupportedResourceTypeException(message: String) : Exception(message)
 abstract class Backend(config: Config) : Klogging {
     private val app = config.get()
     val root: String = app.outDir
-    private val serde = SerDe()
+    val serde = SerDe()
     private val dir: String = app.manager.file.path
 
     companion object {
@@ -41,7 +41,7 @@ abstract class Backend(config: Config) : Klogging {
         return joinPaths(root, dir, deployment.id.toString())
     }
 
-    private fun getFileName(resource: Resource, deployment: Deployment): String {
+    fun getFileName(resource: Resource, deployment: Deployment): String {
         return joinPaths(
             root,
             dir,
@@ -73,13 +73,17 @@ abstract class Backend(config: Config) : Klogging {
         logger.info("Write to file: $filePath")
     }
 
-    suspend fun write(resource: Resource, deployment: Deployment) {
-        val encoded = serde.encode(resource)
+    suspend fun <T : Resource> write(resource: T, deployment: Deployment) {
+        val encoded = when (resource) {
+            is Key -> serde.encode(resource)
+            is Role -> serde.encode(resource)
+            else -> throw UnsupportedResourceTypeException("Unsupported resource type: ${resource::class}")
+        }
         val filePath = getFileName(resource, deployment)
         write(filePath, encoded)
         logger.info("Write to file: $filePath")
     }
-
+    
     abstract fun write(path: String, encoded: String)
     abstract fun exists(path: String): Boolean
     abstract fun createDir(path: String)
@@ -90,7 +94,7 @@ abstract class Backend(config: Config) : Klogging {
         var deployments = getDeployments()
         if (deployment != null) {
             deployments = deployments.filter {
-                val idMatch = deployment.id.isEmpty() || it.id == deployment.id
+                val idMatch = deployment.id.isEmpty() || it.base.id == deployment.id
                 val nameMatch = deployment.name.isEmpty() || it.name == deployment.name
                 idMatch && nameMatch
             }
@@ -129,7 +133,7 @@ abstract class Backend(config: Config) : Klogging {
             Role::class -> ResourceType.ROLE
             else -> throw UnsupportedResourceTypeException("Unsupported resource type: ${T::class}")
         }
-        return getResources<T>(deployment, resourceType)
+        return getResources(deployment, resourceType)
     }
 
     suspend fun <T : Resource> getResources(deployment: Deployment, type: ResourceType): List<T> {

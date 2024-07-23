@@ -35,12 +35,9 @@ open class Resource(
 
 @Serializable
 data class Deployment(
-    @Transient
-    private val _id: UUID = NewUUID.getEmpty(),
-    @Transient
-    private val _name: String = "default",
-    @Transient
-    private val _context: Map<String, @Contextual Any>? = null,
+    @Transient private val _id: UUID = NewUUID.getEmpty(),
+    @Transient private val _name: String = "default",
+    @Transient private val _context: Map<String, @Contextual Any>? = null,
 ) : Resource(
     base = Base(id = _id, name = _name, context = _context),
     type = ResourceType.DEPLOYMENT

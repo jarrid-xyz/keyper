@@ -31,6 +31,11 @@ class ManagerTest {
         val expected: Deployment
     )
 
+    data class ListTestCase(
+        val payload: Payload,
+        val expected: List<Deployment>
+    )
+
     companion object {
         val deploymentId = NewUUID.get()
         val created = NewTimestamp.get()
@@ -70,6 +75,22 @@ class ManagerTest {
                 )
             )
         }
+
+        @JvmStatic
+        fun listDeploymentProvider(): List<ListTestCase> {
+            return listOf(
+                ListTestCase(
+                    payload = Payload(
+                        deployment = BasePayload(
+                            id = deploymentId,
+                            name = deployment.name,
+                            context = context
+                        )
+                    ),
+                    expected = listOf(deployment)
+                )
+            )
+        }
     }
 
     @BeforeEach
@@ -94,5 +115,14 @@ class ManagerTest {
             coVerify { backend.createDeploymentDir(actual) }
             coVerify { backend.write(actual) }
         }
+    }
+
+    @ParameterizedTest
+    @MethodSource("listDeploymentProvider")
+    fun testListDeployments(case: ListTestCase) {
+        coEvery { backend.getDeployments() } returns case.expected
+        val actual = manager.list()
+        assertEquals(case.expected, actual)
+        coVerify { backend.getDeployments() }
     }
 }

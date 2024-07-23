@@ -5,8 +5,8 @@ import jarrid.keyper.resource.BasePayload
 import jarrid.keyper.resource.Resource
 import jarrid.keyper.resource.ResourceType
 import jarrid.keyper.utils.model.NewUUID
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import java.util.*
 
 class RoleNameIsUndefinedException(message: String = "Role name must be defined in the payload") :
@@ -15,9 +15,9 @@ class RoleNameIsUndefinedException(message: String = "Role name must be defined 
 
 @Serializable
 data class Model(
-    @Contextual val id: UUID,
-    val name: String,
-    val context: Map<String, @Contextual Any>? = null,
+    @Transient private val id: UUID = NewUUID.getEmpty(),
+    @Transient private val name: String = "role",
+    @Transient private val context: Map<String, Any>? = null,
 ) : Resource(
     base = Base(id = id, name = name, context = context),
     type = ResourceType.ROLE,
@@ -29,6 +29,7 @@ data class Model(
             val out = Model(
                 id = payload.id ?: NewUUID.get(),
                 name = name,
+                context = payload.context
             )
             out.base.create()
             return out

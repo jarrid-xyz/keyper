@@ -19,6 +19,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import kotlin.reflect.KClass
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import jarrid.keyper.resource.iam.Model as Role
 
 @ExtendWith(MockKExtension::class)
 class ManagerTest {
@@ -34,8 +35,13 @@ class ManagerTest {
 
     data class CreateRoleTestCase(
         val payload: Payload,
-        val expected: Model? = null,
+        val expected: Role? = null,
         val exception: KClass<out Throwable>? = null
+    )
+
+    data class ListTestCase<Role>(
+        val payload: Payload,
+        val expected: List<Role>
     )
 
     companion object {
@@ -50,7 +56,7 @@ class ManagerTest {
                 context = context
             )
         )
-        private val role = Model.create(
+        private val role = Role.create(
             BasePayload(
                 id = resourceId,
                 name = "test-role",
@@ -72,7 +78,7 @@ class ManagerTest {
                         ),
                         resource = BasePayload(
                             id = resourceId,
-                            name = role.name,
+                            name = role.base.name,
                             context = context
                         )
                     ),
@@ -94,6 +100,22 @@ class ManagerTest {
                 )
             )
         }
+
+        @JvmStatic
+        fun listRoleProvider(): List<ListTestCase<Role>> {
+            return listOf(
+                ListTestCase(
+                    payload = Payload(
+                        deployment = BasePayload(
+                            id = deploymentId,
+                            name = deployment.name,
+                            context = context
+                        )
+                    ),
+                    expected = listOf(role)
+                )
+            )
+        }
     }
 
     @BeforeEach
@@ -110,18 +132,31 @@ class ManagerTest {
     @MethodSource("createRoleProvider")
     fun testCreateRole(case: CreateRoleTestCase) {
         runBlocking {
-            coEvery { backend.getDeployment(any()) } returns deployment
-            coEvery { backend.write(any<Model>(), any<Deployment>()) } just Runs
+            coEvery { backend.getDeployment(any<Deployment>()) } returns deployment
+            coEvery { backend.write(any<Role>(), any<Deployment>()) } just Runs
 
             if (case.exception != null) {
                 assertFailsWith(case.exception) {
                     manager.createRole(case.payload)
                 }
             } else {
+                every { NewUUID.get() } returnsMany listOf(resourceId, deploymentId)
                 val actual = manager.createRole(case.payload)
-                assertEquals(serde.encode(case.expected), serde.encode(actual))
+                if (case.expected != null) {
+                    assertEquals(serde.encode(case.expected.base), serde.encode(actual.base))
+                }
                 coVerify { backend.write(actual, deployment) }
             }
         }
+    }
+
+    @ParameterizedTest
+    @MethodSource("listRoleProvider")
+    fun testListRoles(case: ListTestCase<Role>) {
+        coEvery { backend.getDeployment(any<Deployment>()) } returns deployment
+        coEvery { backend.getResources<Role>(any()) } returns case.expected
+        val actual = runBlocking { manager.list(case.payload) }
+        assertEquals(case.expected.map { it.base }, actual.map { it.base })
+        coVerify { backend.getResources<Role>(any()) }
     }
 }

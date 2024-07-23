@@ -21,4 +21,8 @@ open class Manager(
         backend.write(deployment)
         return deployment
     }
+
+    fun list(): List<Deployment> {
+        return backend.getDeployments()
+    }
 }

@@ -25,4 +25,10 @@ class Manager(
         backend.write(key, deployment)
         return key
     }
+
+    suspend fun list(payload: Payload): List<Model> {
+        // Determine the deployment
+        val deployment = getOrCreateDeployment(payload)
+        return backend.getResources(deployment)
+    }
 }

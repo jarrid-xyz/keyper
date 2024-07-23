@@ -12,7 +12,7 @@ data class BasePayload(
     val context: Map<String, Any>? = null,
 ) {
     fun getConfigAttribute(attr: String, default: Any?): Any? {
-        return this.context?.getOrDefault(attr, default)
+        return this.context?.getOrDefault(attr, default) ?: default
     }
 }
 

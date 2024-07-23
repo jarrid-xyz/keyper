@@ -1,6 +1,7 @@
 package jarrid.keyper.utils.json
 
 import InstantSerializer
+import jarrid.keyper.resource.Base
 import jarrid.keyper.resource.Deployment
 import jarrid.keyper.resource.Model
 import jarrid.keyper.resource.Resource
@@ -35,6 +36,7 @@ class SerDe {
 
     inline fun <reified T> encode(value: T): String {
         val serializer = when (T::class) {
+            Base::class -> Base.serializer()
             Model::class -> Model.serializer()
             Key::class -> Key.serializer()
             Role::class -> Role.serializer()

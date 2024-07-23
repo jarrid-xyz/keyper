@@ -478,7 +478,7 @@ class BackendTest {
             coEvery { backend.read(any()) } returns serde.encode(key)
 
             val result = backend.getResources<Key>(deployment)
-            assertEquals(expected, result)
+            assertListsEqual(expected.map { it.base }, result.map { it.base })
         }
     }
 
@@ -498,7 +498,7 @@ class BackendTest {
             coEvery { backend.read(any()) } returns serde.encode(role)
 
             val result = backend.getResources<Role>(deployment)
-            assertEquals(expected, result)
+            assertListsEqual(expected.map { it.base }, result.map { it.base })
         }
     }
 

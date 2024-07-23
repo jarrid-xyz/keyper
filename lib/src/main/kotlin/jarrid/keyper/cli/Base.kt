@@ -19,13 +19,6 @@ abstract class BaseSubcommand(help: String = "") : CliktCommand(help), Klogging 
     val stack: Stack by option(
         "-s", "--stack", help = "Specify deployment stack"
     ).enum<Stack>().default(Stack.GCP)
-
-//    suspend fun runTf() {
-//        val backend: FileBackend = backend.get()
-//        val stack: KClass<out KeyStack> = stack.get()
-//        val tf = jarrid.keyper.tfcdk.Stack(backend, stack)
-//        tf.run()
-//    }
 }
 
 open class Keyper(help: String = "Keyper is a suite of key manage APIs to simplify key creation, management, encryption/decryption in standardized and secured way. For more information, visit: https://jarrid.xyz") :
