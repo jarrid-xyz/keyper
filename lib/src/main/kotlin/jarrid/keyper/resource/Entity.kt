@@ -56,17 +56,17 @@ data class Deployment(
         get() = base.context ?: _context
 
     companion object {
+
+
         // Factory method to create a new Deployment with a new ID
-        fun new(
-            id: UUID? = null,
-            name: String = "default",
-            context: Map<String, @Contextual Any>? = null
-        ): Deployment {
-            return Deployment(
-                _id = id ?: NewUUID.get(),
-                _name = name,
-                _context = context
+        fun create(payload: BasePayload): Deployment {
+            val out = Deployment(
+                _id = payload.id ?: NewUUID.get(),
+                _name = payload.name ?: "default",
+                _context = payload.context
             )
+            out.base.create()
+            return out
         }
 
         fun get(id: UUID?, name: String = "default"): Deployment {

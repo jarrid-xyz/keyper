@@ -27,7 +27,7 @@ class ManagerTest {
     private val serde = SerDe()
 
     data class CreateDeploymentTestCase(
-        val payload: Payload,
+        val payload: BasePayload,
         val expected: Deployment
     )
 
@@ -35,33 +35,35 @@ class ManagerTest {
         val deploymentId = NewUUID.get()
         val created = NewTimestamp.get()
         private val context = mapOf("key" to "value")
-        private val deployment = Deployment.new(
-            id = deploymentId,
-            name = "test-deployment",
-            context = context
+        private val deployment = Deployment.create(
+            BasePayload(
+                id = deploymentId,
+                name = "test-deployment",
+                context = context
+            )
         )
 
         @JvmStatic
         fun createDeploymentProvider(): List<CreateDeploymentTestCase> {
             return listOf(
                 CreateDeploymentTestCase(
-                    payload = Payload(
-                        deployment = BasePayload(
-                            id = deploymentId,
-                            name = deployment.name,
-                            context = context
-                        )
+                    payload = BasePayload(
+                        id = deploymentId,
+                        name = "test-deployment",
+                        context = context
                     ),
                     expected = deployment.apply {
                         base.created = created
                     }
                 ),
                 CreateDeploymentTestCase(
-                    payload = Payload(),
-                    expected = Deployment.new(
-                        id = deploymentId,
-                        name = "default",
-                        context = null
+                    payload = BasePayload(),
+                    expected = Deployment.create(
+                        BasePayload(
+                            id = deploymentId,
+                            name = "default",
+                            context = null
+                        )
                     ).apply {
                         base.created = created
                     }

@@ -56,7 +56,7 @@ abstract class Backend(config: Config) : Klogging {
     }
 
     suspend fun createDeploymentDir(deployment: Deployment? = null) {
-        val useDeployment = deployment ?: Deployment.new()
+        val useDeployment = deployment ?: Deployment.create(BasePayload())
         val path = getPath(useDeployment)
         if (!exists(path)) {
             createDir(path)

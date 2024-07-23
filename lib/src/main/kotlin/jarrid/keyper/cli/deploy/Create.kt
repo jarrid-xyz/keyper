@@ -6,7 +6,6 @@ import com.github.ajalt.clikt.parameters.options.option
 import jarrid.keyper.cli.DeploySubcommand
 import jarrid.keyper.resource.BasePayload
 import jarrid.keyper.resource.Manager
-import jarrid.keyper.resource.Payload
 import java.util.*
 
 class Create : DeploySubcommand(help = "Create a deployment") {
@@ -24,14 +23,12 @@ class Create : DeploySubcommand(help = "Create a deployment") {
 
     override suspend fun runAsync() {
         val manager = Manager(backend.get(), stack)
-        val payload = Payload(
-            deployment = BasePayload(
-                id = id,
-                name = name,
-                context = context
-            ),
+        val payload = BasePayload(
+            id = id,
+            name = name,
             context = context
         )
+
         manager.createDeployment(payload)
     }
 }

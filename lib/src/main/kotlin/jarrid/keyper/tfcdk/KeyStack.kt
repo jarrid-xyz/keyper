@@ -20,7 +20,7 @@ abstract class KeyStack(
         val provider = stack.getConfig(appConfig)!!
 
         fun getKeyConfigOptions(config: Model, option: String): String? {
-            val keyConfigOptions: Map<String, Any>? = config.context?.get("options") as? Map<String, Any>
+            val keyConfigOptions: Map<String, Any>? = config.base.context?.get("options") as? Map<String, Any>
             return keyConfigOptions?.get(option) as? String
         }
 

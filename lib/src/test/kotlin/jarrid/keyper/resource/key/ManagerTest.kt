@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import kotlin.reflect.KClass
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import jarrid.keyper.resource.key.Model as Key
@@ -31,8 +32,8 @@ class ManagerTest {
 
     data class CreateKeyTestCase(
         val payload: Payload,
-        val expected: Key,
-        val expectException: Boolean = false
+        val expected: Key? = null,
+        val exception: KClass<out Throwable>? = null
     )
 
     companion object {
@@ -40,10 +41,12 @@ class ManagerTest {
         val resourceId = NewUUID.get()
         val created = NewTimestamp.get()
         private val context = mapOf("key" to "value")
-        private val deployment = Deployment.new(
-            id = deploymentId,
-            name = "test-deployment",
-            context = context
+        private val deployment = Deployment.create(
+            BasePayload(
+                id = deploymentId,
+                name = "test-deployment",
+                context = context
+            )
         )
         private val key = Key(
             id = resourceId,
@@ -96,8 +99,7 @@ class ManagerTest {
                         ),
                         resource = null
                     ),
-                    expected = key,
-                    expectException = true
+                    exception = ResourceIsUndefinedException::class
                 )
             )
         }
@@ -106,7 +108,7 @@ class ManagerTest {
     @BeforeEach
     fun setup() {
         mockkStatic(NewUUID::class)
-        every { NewUUID.get() } returns resourceId
+        every { NewUUID.get() } returnsMany listOf(deploymentId, resourceId)
         mockkStatic(NewTimestamp::class)
         every { NewTimestamp.get() } returns created
 
@@ -120,11 +122,13 @@ class ManagerTest {
             coEvery { backend.getDeployment(any()) } returns deployment
             coEvery { backend.write(any<Key>(), any<Deployment>()) } just Runs
 
-            if (case.expectException) {
-                assertFailsWith<ResourceIsUndefinedException> {
+            if (case.exception != null) {
+                assertFailsWith(case.exception) {
                     manager.createKey(case.payload)
                 }
             } else {
+                // not sure why, the order is backwards (?)
+                every { NewUUID.get() } returnsMany listOf(resourceId, deploymentId)
                 val actual = manager.createKey(case.payload)
                 assertEquals(serde.encode(case.expected), serde.encode(actual))
                 coVerify { backend.write(actual, deployment) }

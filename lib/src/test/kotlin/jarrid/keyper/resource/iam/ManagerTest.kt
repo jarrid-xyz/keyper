@@ -21,7 +21,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 @ExtendWith(MockKExtension::class)
-class IAMManagerTest {
+class ManagerTest {
 
     @MockK
     lateinit var backend: Backend
@@ -43,10 +43,12 @@ class IAMManagerTest {
         val resourceId = NewUUID.get()
         val created = NewTimestamp.get()
         private val context = mapOf("role" to "value")
-        private val deployment = Deployment.new(
-            id = deploymentId,
-            name = "test-deployment",
-            context = context
+        private val deployment = Deployment.create(
+            BasePayload(
+                id = deploymentId,
+                name = "test-deployment",
+                context = context
+            )
         )
         private val role = Model.create(
             BasePayload(
@@ -113,9 +115,7 @@ class IAMManagerTest {
 
             if (case.exception != null) {
                 assertFailsWith(case.exception) {
-                    runBlocking {
-                        manager.createRole(case.payload)
-                    }
+                    manager.createRole(case.payload)
                 }
             } else {
                 val actual = manager.createRole(case.payload)

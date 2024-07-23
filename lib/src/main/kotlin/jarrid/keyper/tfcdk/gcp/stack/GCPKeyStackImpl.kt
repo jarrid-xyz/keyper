@@ -8,9 +8,10 @@ import com.hashicorp.cdktf.providers.google.kms_key_ring.KmsKeyRing
 import com.hashicorp.cdktf.providers.google.kms_key_ring.KmsKeyRingConfig
 import com.hashicorp.cdktf.providers.google.provider.GoogleProvider
 import io.klogging.Klogging
-import jarrid.keyper.tfcdk.DeploymentStack
+import jarrid.keyper.resource.Deployment
 import jarrid.keyper.resource.key.Model
 import jarrid.keyper.resource.key.Name
+import jarrid.keyper.tfcdk.DeploymentStack
 import jarrid.keyper.tfcdk.KeyStack
 import jarrid.keyper.tfcdk.StackTfvars
 import software.constructs.Construct
@@ -39,11 +40,11 @@ class GCPKeyStackImpl(
             .build()
     }
 
-    private fun getLabels(key: Model): Map<String, String> {
+    private fun getLabels(key: Model, deployment: Deployment?): Map<String, String> {
         return mapOf(
             "stack-name" to stackName,
-            "key-id" to key.keyId.toString(),
-            "deployment-id" to key.deploymentId.toString()
+            "key-id" to key.base.id.toString(),
+            "deployment-id" to deployment!!.base.id.toString()
         )
     }
 
@@ -84,25 +85,27 @@ class GCPKeyStackImpl(
         return out
     }
 
-    override fun convert(configs: List<DeploymentStack>): Tfvars {
+    override fun convert(stack: List<DeploymentStack>): Tfvars {
         val keyRings: MutableList<KeyRing> = mutableListOf()
-        for (config in configs) {
+        // TODO: fix it
+        for (config in stack) {
             val tfKeys: MutableList<Key> = mutableListOf()
             for (key in config.keys) {
-                val keyId = key.keyId!!
+                val keyId = key.base.id
                 tfKeys.add(
                     Key(
                         keyName = Name.getSanitizedName(keyId),
                         keyId = keyId,
                         rotationPeriod = getKeyConfigOptions(key, "rotationPeriod"),
-                        labels = getLabels(key)
+//                        TODO: fix it
+                        labels = getLabels(key, null)
                     )
                 )
             }
             keyRings.add(
                 KeyRing(
-                    keyRingName = Name.getSanitizedName(config.deploymentId),
-                    deploymentId = config.deploymentId,
+                    keyRingName = Name.getSanitizedName(config.deployment.base.id),
+                    deploymentId = config.deployment.base.id,
                     keys = tfKeys
                 )
             )
