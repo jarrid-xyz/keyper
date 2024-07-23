@@ -9,6 +9,7 @@ import jarrid.keyper.utils.json.SerDe
 import jarrid.keyper.utils.model.NewUUID
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -27,7 +28,7 @@ class BackendTest {
     @MockK
     lateinit var config: Config
     private lateinit var backend: Local
-    private val serde = SerDe()
+    val serde = SerDe()
 
     @BeforeEach
     fun setup() {
@@ -84,7 +85,7 @@ class BackendTest {
     data class GetResourcesTestCase(
         val deployment: Deployment,
         val files: List<String>,
-        val type: ResourceType,
+        val type: ResourceType = ResourceType.KEY,
         val deploymentExists: Boolean = true,
         val expected: List<Resource> = emptyList()
     )
@@ -281,28 +282,24 @@ class BackendTest {
                     _context = null
                 ),
                 files = emptyList(),
-                type = ResourceType.KEY,
                 deploymentExists = false
             ),
             // Files are empty
             GetResourcesTestCase(
                 deployment = deployment,
                 files = listOf("deployment.json"),
-                type = ResourceType.KEY,
                 expected = emptyList()
             ),
             // Files contain only deployment.json
             GetResourcesTestCase(
                 deployment = deployment,
                 files = listOf("deployment.json"),
-                type = ResourceType.KEY,
                 expected = emptyList()
             ),
             // Files contain valid UUID
             GetResourcesTestCase(
                 deployment = deployment,
                 files = listOf("deployment.json", "$resourceId.json"),
-                type = ResourceType.KEY,
                 expected = listOf(
                     Resource(
                         base = Base(id = resourceId, name = null),
@@ -444,7 +441,7 @@ class BackendTest {
             if (!case.deploymentExists) {
                 coEvery { backend.getDeployments() } returns emptyList()
                 assertFailsWith<DeploymentNotFoundException> {
-                    backend.getResources(case.deployment, case.type)
+                    backend.getResources<Key>(case.deployment, case.type)
                 }
             } else {
                 coEvery { backend.getDeployments() } returns listOf(case.deployment)
@@ -452,16 +449,56 @@ class BackendTest {
 
                 if (case.files.isNotEmpty() && case.files.contains("$resourceId.json")) {
                     coEvery { backend.read(any()) } returns serde.encode(
-                        Resource(
-                            base = Base(id = resourceId, name = null),
-                            type = ResourceType.KEY
+                        Key(
+                            id = resourceId,
+                            name = null,
                         )
                     )
                 }
 
-                val result = backend.getResources(case.deployment, case.type)
+                val result = backend.getResources<Key>(case.deployment, case.type)
                 assertListsEqual(case.expected, result)
             }
+        }
+    }
+
+    @Test
+    fun testGetResourcesKey() {
+        runBlocking {
+            val deployment = Deployment(
+                _id = deploymentId,
+                _name = "default",
+                _context = null
+            )
+            val key = Key(id = resourceId, ttl = 7)
+            val expected = listOf(key)
+
+            coEvery { backend.getDeployments() } returns listOf(deployment)
+            coEvery { backend.ls(any()) } returns listOf("$resourceId.json")
+            coEvery { backend.read(any()) } returns serde.encode(key)
+
+            val result = backend.getResources<Key>(deployment)
+            assertEquals(expected, result)
+        }
+    }
+
+    @Test
+    fun testGetResourcesRole() {
+        runBlocking {
+            val deployment = Deployment(
+                _id = deploymentId,
+                _name = "default",
+                _context = null
+            )
+            val role = Role(id = resourceId, name = "admin")
+            val expected = listOf(role)
+
+            coEvery { backend.getDeployments() } returns listOf(deployment)
+            coEvery { backend.ls(any()) } returns listOf("$resourceId.json")
+            coEvery { backend.read(any()) } returns serde.encode(role)
+
+            val result = backend.getResources<Role>(deployment)
+            assertEquals(expected, result)
         }
     }
 
@@ -470,8 +507,8 @@ class BackendTest {
     fun testGetDeploymentStack(case: GetDeploymentStackTestCase) = runBlocking {
         coEvery { backend.getDeployments() } returns case.deployments
         for (deployment in case.deployments) {
-            coEvery { backend.getResources(deployment, ResourceType.KEY) } returns case.keys
-            coEvery { backend.getResources(deployment, ResourceType.ROLE) } returns case.roles
+            coEvery { backend.getResources<Key>(deployment, ResourceType.KEY) } returns case.keys
+            coEvery { backend.getResources<Role>(deployment, ResourceType.ROLE) } returns case.roles
         }
 
         val result = backend.getDeploymentStack()

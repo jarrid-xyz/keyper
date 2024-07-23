@@ -15,7 +15,7 @@ class DeploymentNotFoundException(message: String) : Exception(message)
 class MultipleDeploymentsFoundException(message: String) : Exception(message)
 class ResourceNotFoundException(message: String) : Exception(message)
 class DirectoryNotFoundException(message: String) : Exception(message)
-
+class UnsupportedResourceTypeException(message: String) : Exception(message)
 
 abstract class Backend(config: Config) : Klogging {
     private val app = config.get()
@@ -121,16 +121,31 @@ abstract class Backend(config: Config) : Klogging {
         return serde.decode(read(fileName))
     }
 
-    suspend fun getResources(deployment: Deployment, type: ResourceType): List<Resource> {
+
+    @Suppress("UNCHECKED_CAST")
+    suspend inline fun <reified T : Resource> getResources(deployment: Deployment): List<T> {
+        val resourceType = when (T::class) {
+            Key::class -> ResourceType.KEY
+            Role::class -> ResourceType.ROLE
+            else -> throw UnsupportedResourceTypeException("Unsupported resource type: ${T::class}")
+        }
+        return getResources<T>(deployment, resourceType)
+    }
+
+    suspend fun <T : Resource> getResources(deployment: Deployment, type: ResourceType): List<T> {
         val useDeployment = getDeployment(deployment)
         val files = ls(joinPaths(getPath(useDeployment), type.toString().lowercase()))
-        val out: MutableList<Resource> = mutableListOf()
+        val out: MutableList<T> = mutableListOf()
         for (file in files) {
             val fileName = removeFileExt(file)
             try {
                 val resourceFileName =
                     getFileName(Resource(base = Base(id = fileName.toUUID()), type = type), useDeployment)
-                val resource: Resource = serde.decode(read(resourceFileName))
+                val resource: T = when (type) {
+                    ResourceType.KEY -> serde.decode<Key>(read(resourceFileName)) as T
+                    ResourceType.ROLE -> serde.decode<Role>(read(resourceFileName)) as T
+                    else -> throw UnsupportedResourceTypeException("Unsupported resource type: $type")
+                }
                 out.add(resource)
             } catch (e: InvalidUUIDException) {
                 logger.warn("File name $fileName cannot be cast to UUID, skipping.")
@@ -143,8 +158,8 @@ abstract class Backend(config: Config) : Klogging {
         val deployments = getDeployments()
         val out: MutableList<DeploymentStack> = mutableListOf()
         for (deployment in deployments) {
-            val keys = getResources(deployment, ResourceType.KEY) as List<Key>
-            val roles = getResources(deployment, ResourceType.ROLE) as List<Role>
+            val keys = getResources<Key>(deployment)
+            val roles = getResources<Role>(deployment)
             out.add(
                 DeploymentStack(
                     deployment = deployment,
