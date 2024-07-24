@@ -6,7 +6,8 @@ hide:
 
 ## About
 
-[Keyper](https://github.com/jarrid-xyz/keyper/){:target="_blank"} by [Jarrid](https://jarrid.xyz){:target="_blank"} is a suite of crypto key management APIs to simplify key creation, management, deployment, encryption/decryption
+[Keyper](https://github.com/jarrid-xyz/keyper/){:target="_blank"} by [Jarrid](https://jarrid.xyz){:target="_blank"} is a
+suite of crypto key management APIs to simplify key creation, management, deployment, encryption/decryption
 in a standardized and secure way. Operations are file-based and can be easily automated, tracked, audited, and managed
 via file-based processes such as [GitOps](https://github.com/topics/gitops){:target="_blank"}. Fully integrated with
 cloud KMS services such as [AWS KMS](https://docs.aws.amazon.com/kms){:target="_blank"}
@@ -15,7 +16,8 @@ infrastructure maintenance burden.
 
 The library has three main modules:
 
-1. [Crypto Key](crypto-key/index.md): Create key configs as JSON files. Configuration helps you manage key
+1. [Resource](resource/index.md): Create key and service account configs as JSON files. Configuration helps you manage
+   key
    implementations in a simple, trackable, and readable way.
 2. [Deploy](deploy/index.md): Take the existing key configs (in JSON files), plan and deploy
    via [Terraform](https://www.terraform.io/){:target="_blank"} accordingly. Take advantage of Terraform's existing
@@ -32,7 +34,7 @@ and managed in [Keyper](https://github.com/jarrid-xyz/keyper/){:target="_blank"}
 1. **Create Key**
 
       ```bash
-      keyper create key --backend local --stack gcp
+      keyper resource create -t key
       ```
 
       <script src="https://asciinema.org/a/667093.js" id="asciicast-667093" async="true"></script>
@@ -48,11 +50,11 @@ and managed in [Keyper](https://github.com/jarrid-xyz/keyper/){:target="_blank"}
 3. **Encrypt/Decrypt**
 
       ```bash
-      keyper data encrypt --backend local --stack gcp --key-id <> --plaintext <>
+      keyper data encrypt --key-id <> --plaintext <>
       ```
 
       ```bash
-      keyper data decrypt --backend local --stack gcp --key-id <> --ciphertext <>
+      keyper data decrypt --key-id <> --ciphertext <>
       ```
 
       <script src="https://asciinema.org/a/667096.js" id="asciicast-667096" async="true"></script>

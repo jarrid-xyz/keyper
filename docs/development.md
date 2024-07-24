@@ -4,8 +4,8 @@ hide:
   - toc
 ---
 
-The CLI is written in Kotlin and cross compilable into Java. We choose Kotlin because we plan to release library in most languages that's compilable from C such as Python, Rust, Golang etc.
-
+The CLI is written in Kotlin and cross compilable into Java. We choose Kotlin because we plan to release library in most
+languages that's compilable from C such as Python, Rust, Golang etc.
 
 ## Jar
 
@@ -71,7 +71,7 @@ Run the packaged CLI directly from docker:
 docker run -it --rm --name keyper-cli \
   -v ./configs:/home/keyper/configs \
   -v ./cdktf.out:/home/keyper/cdktf.out \
-  ghcr.io/jarrid-xyz/keyper:main key create --backend LOCAL --stack GCP 
+  ghcr.io/jarrid-xyz/keyper:main resource create -t key 
 
 # run plan
 docker run -it --rm --name keyper-cli \
@@ -79,9 +79,12 @@ docker run -it --rm --name keyper-cli \
   -v ./cdktf.out:/home/keyper/cdktf.out \
   -v ./.cdktf-sa-key.json:/home/keyper/gcp.json \
   -e GOOGLE_APPLICATION_CREDENTIALS="/home/keyper/gcp.json" \
+  -e GOOGLE_CLOUD_KEYFILE_JSON="/home/keyper/gcp.json" \
   ghcr.io/jarrid-xyz/keyper:main deploy plan
 ```
 
 ### Published Docker Image
 
-If you don't wish to build your own, you can pull our latest [docker images are published on Github](https://github.com/jarrid-xyz/keyper/pkgs/container/keyper){:target=_blank}.
+If you don't wish to build your own, you can pull our
+latest [docker images are published on GitHub](https://github.com/jarrid-xyz/keyper/pkgs/container/keyper){:target=_
+blank}.

@@ -1,7 +1,7 @@
 ---
 title: Setup GCP
 hide:
-    - toc
+  - toc
 ---
 
 ## Keyper Configuration
@@ -37,14 +37,22 @@ provider:
     --flatten="bindings[].members" \
     --filter="bindings.members:serviceAccount:$SERVICE-cdktf-sa@$PROJECT_ID.iam.gserviceaccount.com"
    ```
-3. Create and download the key:
-   
+3. Add `roles/iam.serviceAccountAdmin` to the service account:
+   ```bash
+   SERVICE=keyper
+   PROJECT_ID=$(gcloud config get-value project)
+   gcloud projects add-iam-policy-binding $PROJECT_ID \
+   --member "serviceAccount:$SERVICE-cdktf-sa@$PROJECT_ID.iam.gserviceaccount.com" \
+   --role "roles/iam.serviceAccountAdmin"
+   ```
+4. Create and download the key:
+
     ```bash
     gcloud iam service-accounts keys create .cdktf-sa-key.json \
         --iam-account "$SERVICE-cdktf-sa@$PROJECT_ID.iam.gserviceaccount.com"
     ```
-    **Make sure you don't commit `.cdktf-sa-key.json` to github.**
+   **Make sure you don't commit `.cdktf-sa-key.json` to github.**
 
-4. Set ENV `GOOGLE_APPLICATION_CREDENTIALS` to path
-    
-    Your CI/CD pipeline will be able to use this role to create/delete GCP KMS resources.
+5. Set ENV `GOOGLE_CLOUD_KEYFILE_JSON` to path
+
+   Your CI/CD pipeline will be able to use this role to create/delete GCP KMS resources.

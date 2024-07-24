@@ -1,256 +1,111 @@
 package jarrid.keyper.utils.file
 
-import com.google.common.jimfs.Configuration
-import com.google.common.jimfs.Jimfs
-import io.mockk.*
-import jarrid.keyper.app.Config
-import jarrid.keyper.key.Model
-import jarrid.keyper.key.Usage
-import jarrid.keyper.utils.json.encode
-import jarrid.keyper.utils.model.NewTimestamp
-import jarrid.keyper.utils.model.NewUUID
-import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.TestInstance.Lifecycle
-import java.nio.file.FileSystem
+import io.mockk.every
+import io.mockk.mockk
+import jarrid.keyper.resource.App
+import jarrid.keyper.resource.BackendConfig
+import jarrid.keyper.resource.Config
+import jarrid.keyper.resource.ResourceBackend
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.*
-import kotlin.reflect.KClass
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
-@TestInstance(Lifecycle.PER_CLASS)
 class LocalTest {
 
     private lateinit var local: Local
-    private lateinit var fileSystem: FileSystem
     private lateinit var rootDir: Path
-    private val deploymentId = NewUUID.get()
-    private val keyId = NewUUID.get()
-    private val keyConfig = Model(
-        deploymentId = deploymentId,
-        keyId = keyId,
-        created = NewTimestamp.get(),
-        usage = Usage.CREATE_KEY
-    )
-    private var prefixDirPath: String = ""
-    private var configFilePath = ""
-
-    private fun getNewKeyConfig(): Model {
-        return Model(
-            deploymentId = NewUUID.get(),
-            keyId = NewUUID.get(),
-            created = NewTimestamp.get(),
-            usage = Usage.CREATE_KEY
-        )
-    }
+    private lateinit var dirPath: Path
 
     @BeforeEach
-    fun setUp() {
-        // Create an in-memory file system with read-write permissions
-        fileSystem = Jimfs.newFileSystem(Configuration.unix())
-        rootDir = fileSystem.getPath("/mock/root")
-        Files.createDirectories(rootDir)
+    fun setup() {
+        // Create a temporary directory for the root
+        rootDir = Files.createTempDirectory("root")
 
-        // Mock Config to return the in-memory file system rootDir
-        val configMock = spyk(Config())
-        every { configMock.outDir } returns rootDir
-
-        // Initialize the Local instance with the mocked Config
-        local = spyk(Local(configMock))
-
-        // Set up necessary mocks and stubs
-        coEvery { local.rootDir } returns rootDir
-
-        // Initialize paths for the test
-        prefixDirPath = local.getPrefix(keyConfig)
-        configFilePath = local.getFileName(keyConfig)
-    }
-
-    @Test
-    fun testWrite() = runBlocking {
-        // Call the write method
-        local.write(keyConfig)
-
-        // Verify that the createDir and writeFile methods were called
-        coVerify { local.createDir(keyConfig) }
-        coVerify { local.writeFile(keyConfig) }
-
-        // Check if the directory is created correctly in the in-memory file system
-        val dirPath = rootDir.resolve(prefixDirPath)
-        assertTrue(Files.exists(dirPath) && Files.isDirectory(dirPath))
-
-        // Check if the file is written correctly in the in-memory file system
-        val filePath = rootDir.resolve(configFilePath)
-        assertTrue(Files.exists(filePath))
-        val content = Files.readString(filePath)
-        assertEquals(encode(keyConfig), content)
-    }
-
-    data class GetOrCreateDeploymentIdTestCase(
-        val byDeploymentId: UUID? = null,
-        val keyConfigs: List<Model>,
-        val force: Boolean,
-        val expectedDeploymentId: UUID?
-    )
-
-    @Nested
-    inner class TestsWithStaticMocks {
-
-        @BeforeEach
-        fun setUpMocks() {
-            mockkStatic(NewUUID::class)
-            mockkStatic(NewTimestamp::class)
-        }
-
-        @AfterEach
-        fun tearDownMocks() {
-            unmockkAll()
-        }
-
-        @Test
-        fun testGetOrCreateDeploymentId() = runBlocking {
-            val keyConfig1 = getNewKeyConfig()
-            val keyConfig2 = getNewKeyConfig()
-            every { NewUUID.get() } returnsMany listOf(deploymentId)
-            val cases = listOf(
-                GetOrCreateDeploymentIdTestCase(
-                    keyConfigs = emptyList(),
-                    force = false,
-                    expectedDeploymentId = null
-                ),
-                GetOrCreateDeploymentIdTestCase(
-                    keyConfigs = emptyList(),
-                    force = true,
-                    expectedDeploymentId = deploymentId
-                ),
-                GetOrCreateDeploymentIdTestCase(
-                    keyConfigs = listOf(
-                        keyConfig1,
-                    ),
-                    force = false,
-                    expectedDeploymentId = keyConfig1.deploymentId
-                ),
-                GetOrCreateDeploymentIdTestCase(
-                    keyConfigs = listOf(
-                        keyConfig1,
-                    ),
-                    force = true,
-                    expectedDeploymentId = keyConfig1.deploymentId
-                ),
-                GetOrCreateDeploymentIdTestCase(
-                    keyConfigs = listOf(
-                        keyConfig1,
-                        keyConfig2,
-                    ),
-                    force = false,
-                    expectedDeploymentId = null
-                ),
-                GetOrCreateDeploymentIdTestCase(
-                    byDeploymentId = NewUUID.get(),
-                    keyConfigs = emptyList(),
-                    force = true,
-                    expectedDeploymentId = deploymentId
+        val config = mockk<Config>()
+        every { config.get() } returns App(
+            outDir = rootDir.toString(),
+            resource = ResourceBackend(
+                backend = BackendConfig(
+                    path = "dir"
                 )
             )
-
-            for (case in cases) {
-                for (keyConfig in case.keyConfigs) {
-                    local.write(keyConfig)
-                }
-                val actual = local.getOrCreateDeploymentId(byDeploymentId = case.byDeploymentId, force = case.force)
-                assertEquals(case.expectedDeploymentId, actual)
-            }
-        }
-    }
-
-    @Test
-    fun testGetConfigs() = runBlocking {
-        local.write(keyConfig)
-
-        // Call the getConfigs method
-        val stacks = local.getDeploymentStacks()
-
-        // Verify that the configs are returned correctly
-        assertEquals(1, stacks.size)
-        assertEquals(keyConfig, stacks[0].keys[0])
-    }
-
-    data class GetConfigByIdTestCase(
-        val deploymentId: UUID,
-        val runWrite: Boolean = false,
-        val keyId: UUID,
-        val expected: Model? = null,
-        val error: KClass<out Throwable>? = null
-    )
-
-    @Test
-    fun testGetConfigById() = runBlocking {
-        val deploymentId = NewUUID.get()
-        val cases = listOf(
-            GetConfigByIdTestCase(
-                deploymentId = deploymentId,
-                keyId = NewUUID.get(),
-                error = KeyConfigNotFound::class
-            ),
-            GetConfigByIdTestCase(
-                deploymentId = deploymentId,
-                runWrite = true,
-                keyId = NewUUID.get(),
-                error = KeyConfigNotFound::class
-            ),
-            GetConfigByIdTestCase(
-                deploymentId = keyConfig.deploymentId!!,
-                runWrite = true,
-                keyId = keyConfig.keyId!!,
-                expected = keyConfig,
-            ),
-//            GetConfigByIdTestCase(
-//                runWrite = true,
-//                deploymentId = deploymentId,
-//                keyId = keyId,
-//                expected = keyConfig,
-//            ),
-//            GetConfigByIdTestCase(
-//                runWrite = true,
-//                deploymentId = NewUUID.get(),
-//                keyId = keyId,
-//            ),
-//            GetConfigByIdTestCase(
-//                runWrite = true,
-//                deploymentId = deploymentId,
-//                keyId = NewUUID.get(),
-//            ),
         )
-        for (case in cases) {
-            if (case.runWrite) {
-                local.write(keyConfig)
-            }
-            if (case.error != null) {
-                assertFailsWith(case.error) {
-                    local.getConfig(deploymentId = case.deploymentId, keyId = case.keyId)
-                }
-            } else {
-                val actual = local.getConfig(deploymentId = case.deploymentId, keyId = case.keyId)
-                assertEquals(case.expected, actual)
-            }
+
+        local = Local(config)
+        dirPath = rootDir.resolve("dir")
+        Files.createDirectories(dirPath)
+    }
+
+    @Test
+    fun `test exists`() {
+        val existingFilePath = dirPath.resolve("existing_file.txt")
+        Files.createFile(existingFilePath)
+
+        assertTrue(local.exists("dir/existing_file.txt"))
+        assertTrue(!local.exists("dir/non_existing_file.txt"))
+    }
+
+    @Test
+    fun `test createDir`() {
+        val newDirPath = dirPath.resolve("new_dir")
+
+        local.createDir("dir/new_dir")
+
+        assertTrue(Files.exists(newDirPath))
+        assertTrue(Files.isDirectory(newDirPath))
+    }
+
+    @Test
+    fun `test write`() {
+        val filePath = dirPath.resolve("file.txt")
+        val content = "Hello, World!"
+
+        local.write("dir/file.txt", content)
+
+        assertTrue(Files.exists(filePath))
+        assertEquals(content, Files.readString(filePath))
+    }
+
+    @Test
+    fun `test ls`() {
+        val file1 = dirPath.resolve("file1.txt")
+        val file2 = dirPath.resolve("file2.txt")
+        Files.createFile(file1)
+        Files.createFile(file2)
+
+        val files = local.ls("dir")
+
+        assertTrue(files.contains("file1.txt"))
+        assertTrue(files.contains("file2.txt"))
+        assertEquals(2, files.size)
+    }
+
+    @Test
+    fun `test ls non-existent directory`() {
+        assertFailsWith<DirectoryNotFoundException> {
+            local.ls("non_existent_dir")
         }
     }
 
-    companion object {
-        @JvmStatic
-        @AfterAll
-        fun tearDownClass() {
-            unmockkAll()
-        }
+    @Test
+    fun `test read`() {
+        val filePath = dirPath.resolve("file.txt")
+        val content = "Hello, World!"
+        Files.writeString(filePath, content)
 
-        @JvmStatic
-        @BeforeAll
-        fun setUpClass() {
-            mockkStatic(NewUUID::class)
-            mockkStatic(NewTimestamp::class)
+        val readContent = local.read("dir/file.txt")
+
+        assertEquals(content, readContent)
+    }
+
+    @Test
+    fun `test read non-existent file`() {
+        assertFailsWith<ResourceNotFoundException> {
+            local.read("dir/non_existent_file.txt")
         }
     }
 }
