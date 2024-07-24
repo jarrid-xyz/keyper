@@ -125,8 +125,7 @@ abstract class Backend(config: Config) : Klogging {
         return serde.decode(read(fileName))
     }
 
-
-    @Suppress("UNCHECKED_CAST")
+    
     suspend inline fun <reified T : Resource> getResources(deployment: Deployment): List<T> {
         val resourceType = when (T::class) {
             Key::class -> ResourceType.KEY

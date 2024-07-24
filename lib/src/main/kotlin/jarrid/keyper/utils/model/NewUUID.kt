@@ -21,12 +21,3 @@ fun String.toUUID(): UUID {
         throw InvalidUUIDException("$this is not a valid UUID")
     }
 }
-
-fun String.stripFileTypeAndToUUID(fileType: String = ".json"): UUID {
-    if (this.endsWith(fileType)) {
-        val string = this.removeSuffix(fileType)
-        return string.toUUID()
-    } else {
-        throw IllegalArgumentException("$this does not end with $fileType")
-    }
-}

@@ -1,6 +1,5 @@
 package jarrid.keyper.cli.resource
 
-import com.google.gson.annotations.SerializedName
 import jarrid.keyper.cli.ResourceSubcommand
 import jarrid.keyper.resource.BasePayload
 import jarrid.keyper.resource.Manager
@@ -8,14 +7,6 @@ import jarrid.keyper.resource.Payload
 import jarrid.keyper.resource.ResourceType
 import jarrid.keyper.resource.iam.Manager as IAMManager
 import jarrid.keyper.resource.key.Manager as KeyManager
-
-enum class Action {
-    @SerializedName("Create Resource")
-    CREATE_RESOURCE,
-
-    @SerializedName("List")
-    LIST
-}
 
 class Create(help: String = "Create resource") : ResourceSubcommand(help = help) {
     override suspend fun runAsync() {
