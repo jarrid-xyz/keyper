@@ -58,7 +58,7 @@ class GCP(
         )
     }
 
-    private fun createServiceAccount(role: Role, deployment: Deployment): ServiceAccount {
+    private fun createServiceAccount(role: Role): ServiceAccount {
         return ServiceAccount(
             this, role.base.name!!, ServiceAccountConfig.builder()
                 .accountId(Name.getSanitizedAccountId(role.base.name))
@@ -108,9 +108,7 @@ class GCP(
     }
 
     private fun createRoles(tfvar: DeploymentStack) {
-        tfvar.roles.forEach { role ->
-            createServiceAccount(role, tfvar.deployment)
-        }
+        tfvar.roles.forEach { role -> createServiceAccount(role) }
     }
 
     override suspend fun create(tfvar: DeploymentStack) {
