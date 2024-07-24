@@ -1,7 +1,12 @@
 package jarrid.keyper.resource.key.data
 
+import com.google.cloud.kms.v1.CryptoKeyName
 import io.klogging.Klogging
-import jarrid.keyper.resource.*
+import jarrid.keyper.resource.Backend
+import jarrid.keyper.resource.Config
+import jarrid.keyper.resource.Model
+import jarrid.keyper.resource.Stack
+import jarrid.keyper.resource.key.Name
 
 abstract class Base(
     val backend: Backend,
@@ -10,17 +15,16 @@ abstract class Base(
 ) : Klogging {
 
     private val app = Config().get()
-    private val provider = stack.getConfig(app)!!
-    val useBackend = backend.get()
-    val projectId = provider.accountId
-    val region = provider.region
+    val provider = stack.getConfig(app)
+    private val projectId = provider.accountId
+    private val region = provider.region
 
-
-    suspend fun getKeyResource(): Resource {
-        val deployment = useBackend.getDeployment()
-        val key = useBackend.getResource(
-            deployment,
+    fun getKeyName(key: Model): CryptoKeyName {
+        return CryptoKeyName.of(
+            projectId,
+            region,
+            key.deployment.name,
+            Name.getJarridKeyName(key.resource.base.id)
         )
-        return key
     }
 }

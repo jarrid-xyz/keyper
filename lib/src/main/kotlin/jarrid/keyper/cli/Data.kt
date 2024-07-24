@@ -2,6 +2,7 @@ package jarrid.keyper.cli
 
 import com.github.ajalt.clikt.core.NoOpCliktCommand
 import com.github.ajalt.clikt.parameters.options.convert
+import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import jarrid.keyper.utils.model.toUUID
@@ -9,10 +10,14 @@ import java.util.*
 
 
 abstract class DataSubcommand(help: String = "") : BaseSubcommand(help = help) {
-    val keyId: UUID by option(help = "keyId to use to encrypt data")
-        .convert { it.toUUID() }.required()
-    val deploymentId: UUID? by option(help = "deploymentId of the key to use to encrypt data")
-        .convert { it.toUUID() }
+
+    val deployment: String? by option(
+        "-d", "--deployment", help = "Deployment name"
+    ).default("default")
+
+    val keyId: UUID by option(
+        "-k", "--key-id", help = "keyId to use",
+    ).convert { it.toUUID() }.required()
 }
 
 class Data :
