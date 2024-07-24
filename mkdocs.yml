@@ -12,7 +12,7 @@ theme:
   icon:
     repo: fontawesome/brands/github
   feature:
-      tabs: true
+    tabs: true
   features:
     - navigation.tabs
     - navigation.footer
@@ -40,7 +40,7 @@ nav:
       - Release: https://github.com/jarrid-xyz/keyper/releases" target="_blank
       - integration.md
       - About Jarrid: https://jarrid.xyz" target="_blank
-  - Crypto Key: crypto-key/index.md
+  - Resource: resource/index.md
   - Deploy:
       - deploy/index.md
       - deploy/cli.md
