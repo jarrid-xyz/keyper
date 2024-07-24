@@ -13,7 +13,8 @@ import java.util.*
 @Serializable
 data class Model(
     @Transient private val id: UUID = NewUUID.getEmpty(),
-    @Transient private val ttl: Int = 7,
+    @Transient val ttl: Int = 7,
+    @Transient val rotationPeriod: String = "7776000s", // 90 days
     @Transient private val name: String? = null,
     @Transient private val context: Map<String, Any>? = null,
 ) : Resource(
@@ -25,7 +26,8 @@ data class Model(
             val out = Model(
                 id = payload.id ?: NewUUID.get(),
                 name = payload.name,
-                ttl = payload.getConfigAttribute("ttl", 7) as Int
+                ttl = payload.getConfigAttribute("ttl", 7) as Int,
+                rotationPeriod = payload.getConfigAttribute("rotation_period", "7776000s") as String
             )
             out.base.create()
             return out

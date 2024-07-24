@@ -2,25 +2,32 @@ package jarrid.keyper.resource
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.decodeFromStream
-import jarrid.keyper.tfcdk.KeyStack
-import jarrid.keyper.tfcdk.gcp.stack.GCPKeyStackImpl
 import jarrid.keyper.utils.file.Local
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.io.InputStream
 import kotlin.reflect.KClass
+import jarrid.keyper.tfcdk.Stack as TfStack
+import jarrid.keyper.tfcdk.gcp.stack.GCP as GCPStack
 import jarrid.keyper.utils.file.Backend as FileBackend
 
 @Serializable
 data class CloudProviderConfig(
-    val accountId: String,
-    val region: String
+    val accountId: String = "",
+    val region: String = "global"
+)
+
+@Serializable
+data class Tfcdk(
+    val stack: Stack = Stack.GCP,
+    val path: String = "cdktf.out"
 )
 
 @Serializable
 data class ProviderConfig(
-    val gcp: CloudProviderConfig? = null,
-    val aws: CloudProviderConfig? = null
+    val gcp: CloudProviderConfig = CloudProviderConfig(),
+    val aws: CloudProviderConfig = CloudProviderConfig(),
+    val tfcdk: Tfcdk = Tfcdk()
 )
 
 @Serializable
@@ -51,8 +58,8 @@ enum class Backend {
 enum class Stack {
     @SerialName("gcp")
     GCP {
-        override fun get(): KClass<out KeyStack> = GCPKeyStackImpl::class
-        override fun getConfig(config: App): CloudProviderConfig? = config.provider.gcp
+        override fun get(): KClass<out TfStack> = GCPStack::class
+        override fun getConfig(config: App): CloudProviderConfig = config.provider.gcp
     };
 
 //    @SerialName("aws")
@@ -61,8 +68,8 @@ enum class Stack {
 //        override fun getConfig(config: App): CloudProviderConfig? = provider.aws
 //    };
 
-    abstract fun get(): KClass<out KeyStack>
-    abstract fun getConfig(config: App): CloudProviderConfig?
+    abstract fun get(): KClass<out TfStack>
+    abstract fun getConfig(config: App): CloudProviderConfig
 }
 
 @Serializable
@@ -72,14 +79,14 @@ data class BackendConfig(
 )
 
 @Serializable
-data class File(
-    val file: BackendConfig
+data class ResourceBackend(
+    val backend: BackendConfig
 )
 
 @Serializable
 data class App(
     val provider: ProviderConfig = ProviderConfig(),
-    val manager: File,
+    val resource: ResourceBackend,
     @SerialName("out_dir")
     val outDir: String = "./"
 )

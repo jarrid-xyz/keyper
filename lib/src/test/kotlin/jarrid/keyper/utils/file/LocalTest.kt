@@ -5,7 +5,7 @@ import io.mockk.mockk
 import jarrid.keyper.resource.App
 import jarrid.keyper.resource.BackendConfig
 import jarrid.keyper.resource.Config
-import jarrid.keyper.resource.File
+import jarrid.keyper.resource.ResourceBackend
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
@@ -28,8 +28,8 @@ class LocalTest {
         val config = mockk<Config>()
         every { config.get() } returns App(
             outDir = rootDir.toString(),
-            manager = File(
-                file = BackendConfig(
+            resource = ResourceBackend(
+                backend = BackendConfig(
                     path = "dir"
                 )
             )

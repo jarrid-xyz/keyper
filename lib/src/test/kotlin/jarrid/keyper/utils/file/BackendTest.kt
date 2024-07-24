@@ -37,8 +37,8 @@ class BackendTest {
 
         every { config.get() } returns App(
             outDir = "root",
-            manager = File(
-                file = BackendConfig(
+            resource = ResourceBackend(
+                backend = BackendConfig(
                     path = "dir"
                 )
             )

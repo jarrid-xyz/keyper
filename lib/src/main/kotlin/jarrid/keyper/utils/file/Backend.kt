@@ -21,7 +21,7 @@ abstract class Backend(config: Config) : Klogging {
     private val app = config.get()
     val root: String = app.outDir
     val serde = SerDe()
-    private val dir: String = app.manager.file.path
+    private val dir: String = app.resource.backend.path
 
     companion object {
         fun joinPaths(vararg paths: String): String {
@@ -83,7 +83,7 @@ abstract class Backend(config: Config) : Klogging {
         write(filePath, encoded)
         logger.info("Write to file: $filePath")
     }
-    
+
     abstract fun write(path: String, encoded: String)
     abstract fun exists(path: String): Boolean
     abstract fun createDir(path: String)

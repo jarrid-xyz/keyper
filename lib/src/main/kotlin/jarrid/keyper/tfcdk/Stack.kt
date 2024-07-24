@@ -1,56 +1,37 @@
 package jarrid.keyper.tfcdk
 
-import com.hashicorp.cdktf.App
-import com.hashicorp.cdktf.AppConfig
-import io.klogging.Klogging
+import com.github.f4b6a3.uuid.codec.base.Base62Codec
+import com.hashicorp.cdktf.TerraformStack
 import jarrid.keyper.resource.Config
-import jarrid.keyper.resource.Deployment
-import jarrid.keyper.utils.file.Backend
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.Serializable
-import kotlin.reflect.KClass
-import kotlin.reflect.full.primaryConstructor
-import jarrid.keyper.resource.iam.Model as Role
-import jarrid.keyper.resource.key.Model as Key
+import kotlinx.coroutines.runBlocking
+import software.constructs.Construct
+import java.util.*
 
-@Serializable
-data class DeploymentStack(
-    @Contextual val deployment: Deployment,
-    @Contextual val keys: List<Key>,
-    @Contextual val roles: List<Role>,
-)
+abstract class Stack(
+    scope: Construct,
+    val stackName: String = "default",
+) : TerraformStack(scope, stackName) {
 
-class Stack(
-    private val backend: Backend,
-    private val stack: KClass<out KeyStack>,
-) : Klogging {
-    private val appConfig = Config().get()
-    private val root: String = appConfig.outDir
+    val config = Config().get()
+    val stack = config.provider.tfcdk.stack
 
-    private suspend fun getAppConfig(): AppConfig {
-        logger.info("Current root: $root")
-        return AppConfig.builder()
-            .outdir(Backend.joinPaths(root, "cdktf.out"))
-            .build()
+    companion object {
+        private fun base62Encode(uuid: UUID): String {
+            // shorter uuid encoding option
+            val encoder = Base62Codec()
+            val encoded = encoder.encode(uuid)
+            return encoded
+        }
     }
 
-    private suspend fun create(): App {
-        val deployments = backend.getDeploymentStack()
-        val app = App(getAppConfig())
-        val constructor = stack.primaryConstructor
-            ?: throw IllegalArgumentException("KeyStack class must have a primary constructor")
-        val keyStack = constructor.call(app)
-
-        val tfvars = keyStack.convert(deployments)
-        keyStack.create(tfvars)
-
-        logger.info("Run terraform synth for deployments: $deployments")
-        app.synth()
-        logger.info("Finished terraform synth.")
-        return app
+    init {
+        runBlocking {
+            useBackend()
+            useProvider()
+        }
     }
 
-    suspend fun run() {
-        create()
-    }
+    abstract suspend fun useBackend()
+    abstract suspend fun useProvider()
+    abstract suspend fun create(tfvar: DeploymentStack)
 }
