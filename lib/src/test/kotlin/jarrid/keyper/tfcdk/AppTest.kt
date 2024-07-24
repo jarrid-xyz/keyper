@@ -87,9 +87,7 @@ class TfAppTest {
 
         tfApp.create()
 
-        deployments.forEach { deployment ->
-            coVerify { tfStack.create(deployment) }
-        }
+        deployments.forEach { coVerify { tfStack.create(it) } }
         verify { cdktfApp.synth() }
     }
 }
