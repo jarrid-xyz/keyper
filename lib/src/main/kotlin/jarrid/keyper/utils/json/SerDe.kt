@@ -34,7 +34,7 @@ class SerDe {
         return json.decodeFromString(serializer, string)
     }
 
-    inline fun <reified T> encode(value: T): String {
+    inline fun <reified T> getSerializer(): KSerializer<T> {
         val serializer = when (T::class) {
             Base::class -> Base.serializer()
             Model::class -> Model.serializer()
@@ -45,19 +45,17 @@ class SerDe {
             DeploymentStack::class -> DeploymentStack.serializer()
             else -> throw IllegalArgumentException("Unsupported type: ${T::class}")
         }
-        return encode(serializer as KSerializer<T>, value)
+        return serializer as KSerializer<T>
+    }
+
+
+    inline fun <reified T> encode(value: T): String {
+        val serializer = getSerializer<T>()
+        return encode(serializer, value)
     }
 
     inline fun <reified T> decode(string: String): T {
-        val serializer = when (T::class) {
-            Model::class -> Model.serializer()
-            Key::class -> Key.serializer()
-            Role::class -> Role.serializer()
-            Deployment::class -> Deployment.serializer()
-            Resource::class -> Resource.serializer()
-            DeploymentStack::class -> DeploymentStack.serializer()
-            else -> throw IllegalArgumentException("Unsupported type: ${T::class}")
-        }
-        return decode(serializer as KSerializer<T>, string)
+        val serializer = getSerializer<T>()
+        return decode(serializer, string)
     }
 }

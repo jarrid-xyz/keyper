@@ -7,9 +7,10 @@ import jarrid.keyper.cli.deploy.Apply
 import jarrid.keyper.cli.deploy.Destroy
 import jarrid.keyper.cli.deploy.Plan
 import jarrid.keyper.cli.resource.Create
-import jarrid.keyper.cli.resource.List
+import jarrid.keyper.cli.resource.key.Key
 import jarrid.keyper.utils.logging.config
 import jarrid.keyper.cli.deploy.Create as CreateDeploy
+import jarrid.keyper.cli.resource.ListResource as List
 
 fun main(args: Array<String>) {
     config()
@@ -17,7 +18,8 @@ fun main(args: Array<String>) {
         .subcommands(
             Resource().subcommands(
                 Create(),
-                List()
+                List(),
+                Key()
             ),
             Deploy().subcommands(
                 CreateDeploy(),

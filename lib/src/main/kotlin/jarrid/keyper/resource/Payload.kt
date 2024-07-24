@@ -10,6 +10,7 @@ data class BasePayload(
     val id: UUID? = null,
     val name: String? = null,
     val context: Map<String, Any>? = null,
+    val type: ResourceType? = null
 ) {
     fun getConfigAttribute(attr: String, default: Any?): Any? {
         return this.context?.getOrDefault(attr, default) ?: default

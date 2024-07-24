@@ -17,7 +17,7 @@ enum class ResourceType {
 @Serializable
 class Base(
     @Contextual var created: Instant? = null,
-    @Contextual val updated: Instant? = null,
+    @Contextual var updated: Instant? = null,
     @Contextual val id: UUID,
     val name: String? = null,
     val context: Map<String, @Contextual Any>? = null,
@@ -25,12 +25,16 @@ class Base(
     fun create() {
         this.created = NewTimestamp.get()
     }
+
+    fun updated() {
+        this.updated = NewTimestamp.get()
+    }
 }
 
 @Serializable
 open class Resource(
     val base: Base,
-    val type: ResourceType
+    val type: ResourceType? = null
 )
 
 @Serializable

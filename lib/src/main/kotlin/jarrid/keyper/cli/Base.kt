@@ -11,7 +11,8 @@ import io.klogging.Klogging
 import jarrid.keyper.resource.Backend
 import jarrid.keyper.resource.Stack
 
-abstract class BaseSubcommand(help: String = "") : CliktCommand(help), Klogging {
+abstract class BaseSubcommand(help: String = "", name: String? = null) : CliktCommand(help = help, name = name),
+    Klogging {
     val backend: Backend by option(
         "-b", "--backend", help = "Specify configuration backend"
     ).enum<Backend>().default(Backend.LOCAL)
@@ -21,7 +22,11 @@ abstract class BaseSubcommand(help: String = "") : CliktCommand(help), Klogging 
     ).enum<Stack>().default(Stack.GCP)
 }
 
-open class Keyper(help: String = "Keyper is a suite of key manage APIs to simplify key creation, management, encryption/decryption in standardized and secured way. For more information, visit: https://jarrid.xyz") :
+open class Keyper(
+    help: String = "Keyper is a suite of key manage APIs to simplify key creation, management, " +
+            "encryption/decryption in standardized and secured way. " +
+            "For more information, visit: https://jarrid.xyz/keyper"
+) :
     NoOpCliktCommand(help) {
     init {
         context {

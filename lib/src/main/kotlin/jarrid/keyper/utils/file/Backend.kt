@@ -11,16 +11,22 @@ import java.nio.file.Paths
 import jarrid.keyper.resource.iam.Model as Role
 import jarrid.keyper.resource.key.Model as Key
 
-class DeploymentNotFoundException(message: String) : Exception(message)
-class MultipleDeploymentsFoundException(message: String) : Exception(message)
+class DeploymentNotFoundException(message: String = "Deployment not found, run keyper deploy init to create deployment") :
+    Exception(message)
+
+class MultipleDeploymentsFoundException(message: String = "Multiple deployments found, please specify a deployment.") :
+    Exception(message)
+
 class ResourceNotFoundException(message: String) : Exception(message)
+class ResourceIsNullException(message: String = "Resource must not be null") : Exception(message)
+class ResourceIdIsNullException(message: String = "Resource Id must not be null") : Exception(message)
 class DirectoryNotFoundException(message: String) : Exception(message)
 class UnsupportedResourceTypeException(message: String) : Exception(message)
 
 abstract class Backend(config: Config) : Klogging {
     private val app = config.get()
     val root: String = app.outDir
-    private val serde = SerDe()
+    val serde = SerDe()
     private val dir: String = app.resource.backend.path
 
     companion object {
@@ -75,8 +81,8 @@ abstract class Backend(config: Config) : Klogging {
 
     suspend fun <T : Resource> write(resource: T, deployment: Deployment) {
         val encoded = when (resource) {
-            is Key -> serde.encode(resource)
-            is Role -> serde.encode(resource)
+            is Key -> serde.encode(Key.serializer(), resource)
+            is Role -> serde.encode(Role.serializer(), resource)
             else -> throw UnsupportedResourceTypeException("Unsupported resource type: ${resource::class}")
         }
         val filePath = getFileName(resource, deployment)
@@ -101,11 +107,17 @@ abstract class Backend(config: Config) : Klogging {
         }
 
         val out: Deployment = when {
-            deployments.isEmpty() -> throw DeploymentNotFoundException("Deployment not found, run keyper deploy init to create deployment")
-            deployments.size > 1 -> throw MultipleDeploymentsFoundException("Multiple deployments found, please specify a deployment.")
+            deployments.isEmpty() -> throw DeploymentNotFoundException()
+            deployments.size > 1 -> throw MultipleDeploymentsFoundException()
             else -> deployments.first()
         }
         return out
+    }
+
+    fun getResourceWithCheck(payload: Payload, type: ResourceType): Resource {
+        val resource = payload.resource ?: throw ResourceIsNullException()
+        val id = resource.id ?: throw ResourceIdIsNullException()
+        return Resource(base = Base(id = id, name = payload.resource.name), type = type)
     }
 
     fun getDeployments(): List<Deployment> {
@@ -119,12 +131,18 @@ abstract class Backend(config: Config) : Klogging {
         return out
     }
 
-    fun getResource(resource: Resource): Resource {
-        val deployment = getDeployment()
-        val fileName = getFileName(resource, deployment)
-        return serde.decode(read(fileName))
-    }
+    fun <T : Resource> getResource(resource: Resource, deployment: Deployment? = null): T {
+        val useDeployment = getDeployment(deployment)
+        val fileName = getFileName(resource, useDeployment)
+        val json = read(fileName)
+        val decoded: T = when (resource.type) {
+            ResourceType.KEY -> serde.decode<Key>(json) as T
+            ResourceType.ROLE -> serde.decode<Role>(json) as T
+            else -> throw UnsupportedResourceTypeException("Unsupported resource type: $resource.type")
+        }
 
+        return decoded
+    }
 
     suspend inline fun <reified T : Resource> getResources(deployment: Deployment): List<T> {
         val resourceType = when (T::class) {
