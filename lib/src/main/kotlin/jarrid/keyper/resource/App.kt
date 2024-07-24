@@ -75,7 +75,7 @@ enum class Stack {
 @Serializable
 data class BackendConfig(
     val backend: Backend = Backend.LOCAL,
-    val path: String
+    val path: String = "config"
 )
 
 @Serializable

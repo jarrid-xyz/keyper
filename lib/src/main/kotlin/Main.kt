@@ -1,4 +1,5 @@
-import jarrid.keyper.tfcdk.App
+import jarrid.keyper.resource.Config
+import jarrid.keyper.tfcdk.TfApp
 import jarrid.keyper.utils.logging.config
 
 /**
@@ -6,6 +7,6 @@ import jarrid.keyper.utils.logging.config
  */
 suspend fun main() {
     config()
-    val app = App()
+    val app = TfApp(Config().get())
     app.run()
 }

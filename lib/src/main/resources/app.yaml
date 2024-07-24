@@ -1,9 +1,13 @@
 provider:
+  tfcdk:
+    stack: "gcp"
+    path: "cdktf.out"
   gcp:
     accountId: "databoo"
     region: us-east1
-manager:
-  file:
+resource:
+  backend:
     backend: "local"
     path: "configs"
+
 out_dir: "/home/keyper"

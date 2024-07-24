@@ -20,7 +20,7 @@ class UnsupportedResourceTypeException(message: String) : Exception(message)
 abstract class Backend(config: Config) : Klogging {
     private val app = config.get()
     val root: String = app.outDir
-    val serde = SerDe()
+    private val serde = SerDe()
     private val dir: String = app.resource.backend.path
 
     companion object {
@@ -125,7 +125,7 @@ abstract class Backend(config: Config) : Klogging {
         return serde.decode(read(fileName))
     }
 
-    
+
     suspend inline fun <reified T : Resource> getResources(deployment: Deployment): List<T> {
         val resourceType = when (T::class) {
             Key::class -> ResourceType.KEY
