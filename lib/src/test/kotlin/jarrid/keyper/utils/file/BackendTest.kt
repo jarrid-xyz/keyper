@@ -13,8 +13,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
-import java.nio.file.Files
-import java.nio.file.Paths
 import kotlin.reflect.KClass
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -45,7 +43,6 @@ class BackendTest {
         )
 
         backend = spyk(Local(config))
-        Files.createDirectories(Paths.get("root/dir"))
     }
 
     data class CreateDeploymentDirTestCase(
@@ -359,6 +356,8 @@ class BackendTest {
         val path = Backend.joinPaths("root", "dir", useDeployment.id.toString())
         // Mock the exists method
         every { backend.exists(path) } returns case.exists
+        // Mock the createDir method
+        coEvery { backend.createDir(any()) } just Runs
         backend.createDeploymentDir(case.deployment)
         if (case.create) {
             verify { backend.createDir(path) }
