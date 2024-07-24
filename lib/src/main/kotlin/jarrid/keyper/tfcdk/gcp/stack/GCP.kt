@@ -7,14 +7,18 @@ import com.hashicorp.cdktf.providers.google.kms_crypto_key.KmsCryptoKeyConfig
 import com.hashicorp.cdktf.providers.google.kms_key_ring.KmsKeyRing
 import com.hashicorp.cdktf.providers.google.kms_key_ring.KmsKeyRingConfig
 import com.hashicorp.cdktf.providers.google.provider.GoogleProvider
+import com.hashicorp.cdktf.providers.google.service_account.ServiceAccount
+import com.hashicorp.cdktf.providers.google.service_account.ServiceAccountConfig
 import io.klogging.Klogging
 import jarrid.keyper.resource.CloudProviderConfig
 import jarrid.keyper.resource.Deployment
-import jarrid.keyper.resource.key.Model
 import jarrid.keyper.resource.key.Name
 import jarrid.keyper.tfcdk.DeploymentStack
 import jarrid.keyper.tfcdk.Stack
 import software.constructs.Construct
+import jarrid.keyper.resource.iam.Model as Role
+import jarrid.keyper.resource.key.Model as Key
+import jarrid.keyper.tfcdk.gcp.stack.Key as TfKey
 
 class GCP(
     scope: Construct,
@@ -46,7 +50,7 @@ class GCP(
             .build()
     }
 
-    private fun getLabels(key: Model, deployment: Deployment): Map<String, String> {
+    private fun getLabels(key: Key, deployment: Deployment): Map<String, String> {
         return mapOf(
             "stack-name" to stackName,
             "key-id" to key.base.id.toString(),
@@ -54,6 +58,15 @@ class GCP(
         )
     }
 
+    private fun createServiceAccount(role: Role, deployment: Deployment): ServiceAccount {
+        return ServiceAccount(
+            this, role.base.name!!, ServiceAccountConfig.builder()
+                .accountId(Name.getSanitizedAccountId(role.base.name))
+                .displayName(role.base.name)
+                .description("jarrid-keyper service account for ${role.base.name}. Deployment")
+                .build()
+        )
+    }
 
     private fun createKmsKeyRing(keyRing: KeyRing): KmsKeyRing {
         return KmsKeyRing(
@@ -64,7 +77,7 @@ class GCP(
         )
     }
 
-    private fun createSymmetricKey(key: Key, keyRing: KmsKeyRing): KmsCryptoKey {
+    private fun createSymmetricKey(key: TfKey, keyRing: KmsKeyRing): KmsCryptoKey {
         // Define a KMS Crypto Key
         return KmsCryptoKey(
             this, key.keyName, KmsCryptoKeyConfig.builder()
@@ -83,7 +96,7 @@ class GCP(
         )
         val kmsKeyRing = createKmsKeyRing(keyRingPayload)
         tfvar.keys.forEach { key ->
-            val keyPayload = Key(
+            val keyPayload = TfKey(
                 keyName = key.base.name ?: Name.getJarridKeyName(key.base.id),
                 keyId = key.base.id,
                 ttl = key.ttl,
@@ -94,8 +107,15 @@ class GCP(
         }
     }
 
+    private fun createRoles(tfvar: DeploymentStack) {
+        tfvar.roles.forEach { role ->
+            createServiceAccount(role, tfvar.deployment)
+        }
+    }
+
     override suspend fun create(tfvar: DeploymentStack) {
         createKeys(tfvar)
+        createRoles(tfvar)
         logger.info("Created GCP terraform stack")
     }
 }
