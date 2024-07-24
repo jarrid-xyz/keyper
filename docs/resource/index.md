@@ -82,4 +82,4 @@ keyper resource create -t key
 keyper resource create -t role
 ```
 
-<script src="https://asciinema.org/a/667093.js" id="asciicast-667093" async="true"></script>
+<script src="https://asciinema.org/a/669368.js" id="asciicast-669368" async="true"></script>
