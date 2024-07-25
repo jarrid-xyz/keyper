@@ -154,7 +154,7 @@ class BackendTest {
                         id = resourceId,
                     ),
                     expectedPath = "root/dir/$deploymentId/key/$resourceId.json",
-                    expectedEncoded = """{"base":{"created":null,"updated":null,"id":"$resourceId","name":null,"context":null},"type":"KEY"}"""
+                    expectedEncoded = """{"base":{"created":null,"updated":null,"id":"$resourceId","name":null,"context":null},"type":"KEY","ttl":7,"rotationPeriod":"7776000s","permission":{"allowEncrypt":[],"allowDecrypt":[]}}"""
                 )
             )
         }
