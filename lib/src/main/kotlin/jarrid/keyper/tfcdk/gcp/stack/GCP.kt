@@ -165,7 +165,7 @@ class GCP(
         return CreateRolesOutput(roles = out)
     }
 
-    private fun getRole(name: String, tfvar: DeploymentStack): Role {
+    fun getRole(name: String, tfvar: DeploymentStack): Role {
         val filtered = tfvar.roles.filter { role -> role.base.name == name }
         return when {
             filtered.isEmpty() -> throw RoleNotFoundException(name)
@@ -173,22 +173,6 @@ class GCP(
             else -> filtered.first()
         }
     }
-
-//    private fun getKeyToRoles(tfvar: DeploymentStack, type: KeyOperation): Map<Key, List<Role>> {
-//        val allowed = mutableMapOf<Key, MutableList<Role>>()
-//        tfvar.keys.forEach { key ->
-//            val roles = when (type) {
-//                KeyOperation.ENCRYPT -> key.permission.allowEncrypt
-//                KeyOperation.DECRYPT -> key.permission.allowDecrypt
-//                else -> throw IllegalArgumentException("Unknown permission type: $type")
-//            }
-//            roles.forEach { roleName ->
-//                val role = getRole(roleName, tfvar)
-//                allowed.computeIfAbsent(key) { mutableListOf() }.add(role)
-//            }
-//        }
-//        return allowed
-//    }
 
     private fun Map<Role, ServiceAccount>.getOrThrow(role: Role): ServiceAccount {
         return this[role] ?: throw RoleNotFoundException(role.base.name!!)
@@ -198,7 +182,7 @@ class GCP(
         return this[key] ?: throw KeyNotFoundException(key.base.id.toString())
     }
 
-    private fun getIamPolicyVar(
+    fun getIamPolicyVar(
         key: Key,
         keys: CreateKeysOutput,
         roles: CreateRolesOutput,
@@ -221,7 +205,7 @@ class GCP(
         )
     }
 
-    private fun createPermissions(
+    fun createPermissions(
         tfvar: DeploymentStack,
         keys: CreateKeysOutput,
         roles: CreateRolesOutput
