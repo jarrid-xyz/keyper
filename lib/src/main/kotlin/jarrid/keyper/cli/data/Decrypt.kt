@@ -2,17 +2,16 @@ package jarrid.keyper.cli.data
 
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
-import jarrid.keyper.cli.DataSubcommand
+import jarrid.keyper.cli.resource.key.KeySubcommand
 import jarrid.keyper.resource.Deployment
 import jarrid.keyper.resource.Model
 import jarrid.keyper.resource.key.data.Decrypt
-import kotlinx.coroutines.runBlocking
 import jarrid.keyper.resource.key.Model as Key
 
-class Decrypt : DataSubcommand(help = "Decrypt data with using key") {
+class Decrypt : KeySubcommand(help = "Decrypt data with using key") {
     private val ciphertext: String by option(help = "The Base64 encoded ciphertext data to decrypt").required()
 
-    override fun run() = runBlocking {
+    override suspend fun runAsync() {
         val deployment = backend.get().getDeployment(
             Deployment.get(name = deployment ?: "default")
         )

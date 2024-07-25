@@ -35,17 +35,19 @@ and managed in [Keyper](https://github.com/jarrid-xyz/keyper/){:target="_blank"}
 
       ```bash
       keyper resource create -t key
+      keyper resource create -t role -n test-role
       ```
 
-      <script src="https://asciinema.org/a/667093.js" id="asciicast-667093" async="true"></script>
+      <script src="https://asciinema.org/a/669368.js" id="asciicast-669368" async="true"></script>
 
 2. **Deploy via [Terraform](https://www.terraform.io/){:target="_blank"}**
 
       ```bash
+      keyper deploy plan
       keyper deploy apply
       ```
 
-      <script src="https://asciinema.org/a/667095.js" id="asciicast-667095" async="true"></script>
+      <script src="https://asciinema.org/a/669496.js" id="asciicast-669496" async="true"></script>
 
 3. **Encrypt/Decrypt**
 

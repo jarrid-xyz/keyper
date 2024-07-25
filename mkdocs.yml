@@ -40,7 +40,10 @@ nav:
       - Release: https://github.com/jarrid-xyz/keyper/releases" target="_blank
       - integration.md
       - About Jarrid: https://jarrid.xyz" target="_blank
-  - Resource: resource/index.md
+  - Resource: 
+      - resource/index.md
+      - resource/key.md
+      - resource/role.md
   - Deploy:
       - deploy/index.md
       - deploy/cli.md

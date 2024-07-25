@@ -1,14 +1,19 @@
 package jarrid.keyper.cli.resource
 
 import jarrid.keyper.cli.ResourceSubcommand
-import jarrid.keyper.resource.BasePayload
-import jarrid.keyper.resource.Manager
-import jarrid.keyper.resource.Payload
-import jarrid.keyper.resource.ResourceType
+import jarrid.keyper.resource.*
 import jarrid.keyper.resource.iam.Manager as IAMManager
 import jarrid.keyper.resource.key.Manager as KeyManager
 
-class List(help: String = "List  resources") : ResourceSubcommand(help = help) {
+class ListResource(help: String = "List resources by resource types", name: String? = "list") :
+    ResourceSubcommand(help = help, name = name) {
+
+    fun show(resources: List<Resource>) {
+        resources.forEach {
+            echo(it.base.name ?: it.base.id)
+        }
+    }
+
     override suspend fun runAsync() {
         val deployment = BasePayload(
             name = deployment,
@@ -21,19 +26,23 @@ class List(help: String = "List  resources") : ResourceSubcommand(help = help) {
             ResourceType.KEY -> {
                 val manager = KeyManager(backend.get(), stack)
                 val resources = manager.list(payload)
-                echo("Keys: ${resources.joinToString { it.base.name ?: it.base.id.toString() }}")
+                echo("Keys:")
+                show(resources)
+
             }
 
             ResourceType.ROLE -> {
                 val manager = IAMManager(backend.get(), stack)
                 val resources = manager.list(payload)
-                echo("Roles: ${resources.joinToString { it.base.name!! }}")
+                echo("Roles:")
+                show(resources)
             }
 
             ResourceType.DEPLOYMENT -> {
                 val manager = Manager(backend.get(), stack)
                 val resources = manager.list()
-                echo("Deployments: ${resources.joinToString { it.name }}")
+                echo("Deployments:")
+                show(resources)
             }
         }
     }

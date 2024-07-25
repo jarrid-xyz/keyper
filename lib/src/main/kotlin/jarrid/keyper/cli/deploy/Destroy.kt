@@ -3,9 +3,10 @@ package jarrid.keyper.cli.deploy
 import jarrid.keyper.cli.DeploySubcommand
 
 class Destroy :
-    DeploySubcommand(help =
+    DeploySubcommand(
+        help =
         "Runs cdktf synth and cdktf destroy. Equivalent of terraform destroy in cdktf. " +
-        " For more information, visit: https://jarrid.xyz"
+                " For more information, visit: https://jarrid.xyz/keyper"
     ) {
     override suspend fun runAsync() {
         command.cdktf("destroy --auto-approve $cdktfArgsCmd")

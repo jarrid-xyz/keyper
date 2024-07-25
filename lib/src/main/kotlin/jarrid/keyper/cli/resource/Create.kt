@@ -8,7 +8,7 @@ import jarrid.keyper.resource.ResourceType
 import jarrid.keyper.resource.iam.Manager as IAMManager
 import jarrid.keyper.resource.key.Manager as KeyManager
 
-class Create(help: String = "Create resource") : ResourceSubcommand(help = help) {
+class Create(help: String = "Create resource by resource types") : ResourceSubcommand(help = help) {
     override suspend fun runAsync() {
         val deployment = BasePayload(
             name = deployment,

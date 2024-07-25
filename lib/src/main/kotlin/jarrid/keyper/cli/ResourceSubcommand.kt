@@ -8,8 +8,8 @@ import com.github.ajalt.clikt.parameters.types.enum
 import jarrid.keyper.resource.ResourceType
 import kotlinx.coroutines.runBlocking
 
-abstract class ResourceSubcommand(help: String = "") :
-    BaseSubcommand(help = help) {
+abstract class ResourceSubcommand(help: String = "", name: String? = null) :
+    BaseSubcommand(help, name) {
 
     val deployment: String? by option(
         "-d", "--deployment", help = "Deployment name"
@@ -42,6 +42,8 @@ abstract class ResourceSubcommand(help: String = "") :
 }
 
 class Resource(
-    help: String = "Resource module allows you to create, update, delete and list resources. For more information, visit: https://jarrid.xyz"
+    help: String =
+        "Resource module allows you to create, update, delete and list resources. " +
+                "For more information, visit: https://jarrid.xyz/keyper"
 ) :
     Keyper(help)

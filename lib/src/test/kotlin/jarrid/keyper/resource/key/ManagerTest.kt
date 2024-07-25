@@ -41,10 +41,17 @@ class ManagerTest {
         val expected: List<Key>
     )
 
+    data class PermissionTestCase(
+        val type: EditPermission,
+        val roles: List<String>,
+        val started: Permission? = null,
+        val expected: Permission
+    )
+
     companion object {
-        val deploymentId = NewUUID.get()
-        val resourceId = NewUUID.get()
-        val created = NewTimestamp.get()
+        private val deploymentId = NewUUID.get()
+        private val resourceId = NewUUID.get()
+        private val created = NewTimestamp.get()
         private val context = mapOf("key" to "value")
         private val deployment = Deployment.create(
             BasePayload(
@@ -124,6 +131,37 @@ class ManagerTest {
                 )
             )
         }
+
+        @JvmStatic
+        fun permissionProvider(): List<PermissionTestCase> = listOf(
+            PermissionTestCase(
+                type = EditPermission.ADD_ALLOW_ENCRYPT,
+                roles = listOf("role1"),
+                expected = Permission(allowEncrypt = listOf("role1"), allowDecrypt = emptyList())
+            ),
+            PermissionTestCase(
+                type = EditPermission.ADD_ALLOW_DECRYPT,
+                roles = listOf("role2", "role2"),
+                expected = Permission(allowEncrypt = emptyList(), allowDecrypt = listOf("role2"))
+            ),
+            PermissionTestCase(
+                type = EditPermission.REMOVE_ALLOW_ENCRYPT,
+                roles = listOf("role1"),
+                started = Permission(allowEncrypt = listOf("role1"), allowDecrypt = emptyList()),
+                expected = Permission(allowEncrypt = emptyList(), allowDecrypt = emptyList())
+            ),
+            PermissionTestCase(
+                type = EditPermission.REMOVE_ALLOW_DECRYPT,
+                roles = listOf("role1"),
+                started = Permission(allowEncrypt = emptyList(), allowDecrypt = listOf("role2")),
+                expected = Permission(allowEncrypt = emptyList(), allowDecrypt = listOf("role2"))
+            ),
+            PermissionTestCase(
+                type = EditPermission.REMOVE_ALLOW_DECRYPT,
+                roles = listOf("role2"),
+                expected = Permission(allowEncrypt = emptyList(), allowDecrypt = emptyList())
+            )
+        )
     }
 
     @BeforeEach
@@ -162,11 +200,34 @@ class ManagerTest {
     @ParameterizedTest
     @MethodSource("listKeyProvider")
     fun testListKeys(case: ListTestCase<Key>) {
-        val keyManager = Manager(backend, stack)
         coEvery { backend.getDeployment(any<Deployment>()) } returns deployment
         coEvery { backend.getResources<Key>(any()) } returns case.expected
-        val actual = runBlocking { keyManager.list(case.payload) }
+        val actual = runBlocking { manager.list(case.payload) }
         assertEquals(case.expected.map { it.base }, actual.map { it.base })
         coVerify { backend.getResources<Key>(any()) }
+    }
+
+    @ParameterizedTest
+    @MethodSource("permissionProvider")
+    fun testPermission(case: PermissionTestCase) = runBlocking {
+        val payload = Payload(resource = BasePayload(id = resourceId, name = "test-key"), deployment = null)
+        val resource = Resource(base = Base(id = resourceId, name = "test-key"))
+        val key: Key = Key(id = resourceId, name = "test-key").apply {
+            if (case.started != null) {
+                permission = case.started
+            }
+        }
+
+        // Set up mocks
+        every { manager.getOrCreateDeployment(payload) } returns deployment
+        every { backend.getResourceWithCheck(payload, ResourceType.KEY) } returns resource
+        every { backend.getResource<Key>(resource, deployment) } returns key
+        coEvery { backend.write(any<Key>(), any()) } just Runs
+
+        // Call the permission method
+        manager.permission(payload, case.type, case.roles)
+
+        // Verify the permission change
+        assertEquals(case.expected, key.permission)
     }
 }

@@ -154,7 +154,7 @@ class BackendTest {
                         id = resourceId,
                     ),
                     expectedPath = "root/dir/$deploymentId/key/$resourceId.json",
-                    expectedEncoded = """{"base":{"created":null,"updated":null,"id":"$resourceId","name":null,"context":null},"type":"KEY"}"""
+                    expectedEncoded = """{"base":{"created":null,"updated":null,"id":"$resourceId","name":null,"context":null},"type":"KEY","ttl":7,"rotationPeriod":"7776000s","permission":{"allowEncrypt":[],"allowDecrypt":[]}}"""
                 )
             )
         }
@@ -423,13 +423,41 @@ class BackendTest {
         if (case.error) {
             coEvery { backend.read(any()) } throws ResourceNotFoundException("Resource not found")
             assertFailsWith<ResourceNotFoundException> {
-                backend.getResource(case.resource)
+                backend.getResource<Resource>(case.resource)
             }
         } else {
             coEvery { backend.read(any()) } returns case.json
-            val actual = backend.getResource(case.resource)
+            val actual = backend.getResource<Resource>(case.resource)
             val encoded = serde.encode(actual)
             assertEquals(encoded, serde.encode(case.resource))
+        }
+    }
+
+    @Test
+    fun testGetKeyResource() {
+        runBlocking {
+            val key = Key(id = resourceId, ttl = 7)
+            val json = serde.encode(key)
+
+            coEvery { backend.getDeployments() } returns listOf(deployment)
+            coEvery { backend.read(any()) } returns json
+
+            val actual = backend.getResource<Key>(key)
+            assertEquals(json, serde.encode(actual))
+        }
+    }
+
+    @Test
+    fun testGetResourceRole() {
+        runBlocking {
+            val role = Role(id = resourceId, name = "admin")
+            val json = serde.encode(role)
+
+            coEvery { backend.getDeployments() } returns listOf(deployment)
+            coEvery { backend.read(any()) } returns json
+
+            val actual = backend.getResource<Role>(role)
+            assertEquals(json, serde.encode(actual))
         }
     }
 
