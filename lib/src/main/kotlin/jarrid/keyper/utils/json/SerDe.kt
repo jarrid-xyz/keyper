@@ -1,6 +1,5 @@
 package jarrid.keyper.utils.json
 
-import InstantSerializer
 import jarrid.keyper.resource.Base
 import jarrid.keyper.resource.Deployment
 import jarrid.keyper.resource.Model

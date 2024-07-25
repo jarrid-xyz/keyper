@@ -1,3 +1,5 @@
+package jarrid.keyper.utils.json
+
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
