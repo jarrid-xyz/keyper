@@ -31,35 +31,21 @@ The library has three main modules:
 In only three steps, you can create a key, deploy the key on cloud KMS, and encrypt/decrypt data. Everything is wrapped
 and managed in [Keyper](https://github.com/jarrid-xyz/keyper/){:target="_blank"}.
 
-1. **Create Key**
+**Create Resources and Deploy**
 
-      ```bash
-      keyper resource create -t key
-      keyper resource create -t role -n test-role
-      ```
+<iframe width="100%" height="600px" src="https://www.youtube.com/embed/0ut4KVRdKgM?si=gRIEHvCPecQS10Ci&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-      <script src="https://asciinema.org/a/669368.js" id="asciicast-669368" async="true"></script>
+**Encrypt/Decrypt**
 
-2. **Deploy via [Terraform](https://www.terraform.io/){:target="_blank"}**
+```bash
+keyper data encrypt --key-id <> --plaintext <>
+```
 
-      ```bash
-      keyper deploy plan
-      keyper deploy apply
-      ```
+```bash
+keyper data decrypt --key-id <> --ciphertext <>
+```
 
-      <script src="https://asciinema.org/a/669496.js" id="asciicast-669496" async="true"></script>
-
-3. **Encrypt/Decrypt**
-
-      ```bash
-      keyper data encrypt --key-id <> --plaintext <>
-      ```
-
-      ```bash
-      keyper data decrypt --key-id <> --ciphertext <>
-      ```
-
-      <script src="https://asciinema.org/a/667096.js" id="asciicast-667096" async="true"></script>
+<script src="https://asciinema.org/a/667096.js" id="asciicast-667096" async="true"></script>
 
 ## Releases
 
