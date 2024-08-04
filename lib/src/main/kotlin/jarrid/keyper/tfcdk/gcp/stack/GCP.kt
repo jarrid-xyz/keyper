@@ -1,5 +1,7 @@
 package jarrid.keyper.tfcdk.gcp.stack
 
+import com.hashicorp.cdktf.GcsBackend
+import com.hashicorp.cdktf.GcsBackendConfig
 import com.hashicorp.cdktf.LocalBackend
 import com.hashicorp.cdktf.LocalBackendConfig
 import com.hashicorp.cdktf.providers.google.data_google_iam_policy.DataGoogleIamPolicy
@@ -16,6 +18,7 @@ import com.hashicorp.cdktf.providers.google.service_account.ServiceAccount
 import com.hashicorp.cdktf.providers.google.service_account.ServiceAccountConfig
 import io.klogging.Klogging
 import jarrid.keyper.app.CloudProviderConfig
+import jarrid.keyper.app.TfBackendType
 import jarrid.keyper.resource.Deployment
 import jarrid.keyper.resource.iam.RoleNameIsUndefinedException
 import jarrid.keyper.resource.key.Name
@@ -41,26 +44,34 @@ class GCP(
         }
 
     override suspend fun useBackend() {
-        // Configure the local backend
-        LocalBackend(
-            this, LocalBackendConfig.builder()
-                .path("terraform.tfstate")
-                .build()
-        )
-//        GcsBackend(
-//            this, GcsBackendConfig.builder()
-//                .credentials("...")
-//                .bucket("...")
-//                .prefix("...")
-//                .build()
-//        )
+        logger.info("GCP provider credentials is set to ${provider.credentials}")
+        when (provider.backend.type) {
+            TfBackendType.LOCAL -> {
+                LocalBackend(
+                    this, LocalBackendConfig.builder()
+                        .path(provider.backend.bucket)
+                        .build()
+                )
+            }
+
+            TfBackendType.CLOUD -> {
+                // Example: GcsBackend
+                GcsBackend(
+                    this, GcsBackendConfig.builder()
+                        .credentials(provider.credentials)
+                        .bucket(provider.backend.bucket)
+                        .prefix("terraform/state")
+                        .build()
+                )
+            }
+        }
     }
 
     override suspend fun useProvider() {
-        val credJsonPath = System.getenv("GOOGLE_CLOUD_KEYFILE_JSON")
-        logger.info("GCP provider credentials is set to $credJsonPath")
+        // val credJsonPath = System.getenv("GOOGLE_CLOUD_KEYFILE_JSON")
+        logger.info("GCP provider credentials is set to ${provider.credentials}")
         GoogleProvider.Builder.create(this, "Google")
-            .credentials(credJsonPath)
+            .credentials(provider.credentials)
             .project(provider.accountId)
             .region(provider.region)
             .build()
