@@ -9,7 +9,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
-import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.io.PrintStream
 import kotlin.test.assertEquals
@@ -120,7 +119,7 @@ class ListResourceTest {
         listResource.runAsync()
 
         // Verify the output
-        val output = captureStdOutSuspend {
+        val output = Helper.captureStdOutSuspend {
             listResource.runAsync()
         }
         assertEquals(case.expectedOutput, output)
@@ -144,15 +143,4 @@ class ListResourceTest {
         System.setOut(originalOut)
     }
 
-    private fun captureStdOutSuspend(block: suspend () -> Unit): String = runBlocking {
-        val outputStream = ByteArrayOutputStream()
-        val originalOut = System.out
-        System.setOut(PrintStream(outputStream))
-        try {
-            block()
-        } finally {
-            System.setOut(originalOut)
-        }
-        return@runBlocking outputStream.toString().trim()
-    }
 }
