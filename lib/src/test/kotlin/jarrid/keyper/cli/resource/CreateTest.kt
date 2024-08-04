@@ -36,7 +36,7 @@ class CreateResourceTest {
         clearAllMocks()
     }
 
-    data class CommandTestCase(
+    data class CreateCommandTestCase(
         val args: Array<String>,
         val resourceType: ResourceType,
         val expected: String
@@ -44,19 +44,19 @@ class CreateResourceTest {
 
     companion object {
         @JvmStatic
-        fun createResourceTestCases(): List<CommandTestCase> {
+        fun createResourceTestCases(): List<CreateCommandTestCase> {
             return listOf(
-                CommandTestCase(
+                CreateCommandTestCase(
                     args = arrayOf("--resource-type", "KEY", "--resource-name", "testKey"),
                     resourceType = ResourceType.KEY,
                     expected = "Key created successfully"
                 ),
-                CommandTestCase(
+                CreateCommandTestCase(
                     args = arrayOf("--resource-type", "ROLE", "--resource-name", "testRole"),
                     resourceType = ResourceType.ROLE,
                     expected = "Role created successfully"
                 ),
-                CommandTestCase(
+                CreateCommandTestCase(
                     args = arrayOf("--resource-type", "DEPLOYMENT", "--resource-name", "testDeployment"),
                     resourceType = ResourceType.DEPLOYMENT,
                     expected = "Deployment created successfully"
@@ -68,7 +68,7 @@ class CreateResourceTest {
 
     @ParameterizedTest
     @MethodSource("createResourceTestCases")
-    fun testCreateResource(case: CommandTestCase) = runBlocking {
+    fun testCreateResource(case: CreateCommandTestCase) = runBlocking {
         // Mock the backend.get() method based on the resource type
         when (case.resourceType) {
             ResourceType.KEY -> {

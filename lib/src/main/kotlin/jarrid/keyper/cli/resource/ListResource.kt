@@ -24,7 +24,7 @@ class ListResource(help: String = "List resources by resource types", name: Stri
 
         when (resourceType) {
             ResourceType.KEY -> {
-                val manager = KeyManager(backend.get(), stack)
+                val manager: KeyManager = getManager()
                 val resources = manager.list(payload)
                 echo("Keys:")
                 show(resources)
@@ -32,14 +32,14 @@ class ListResource(help: String = "List resources by resource types", name: Stri
             }
 
             ResourceType.ROLE -> {
-                val manager = IAMManager(backend.get(), stack)
+                val manager: IAMManager = getManager()
                 val resources = manager.list(payload)
                 echo("Roles:")
                 show(resources)
             }
 
             ResourceType.DEPLOYMENT -> {
-                val manager = Manager(backend.get(), stack)
+                val manager: Manager = getManager()
                 val resources = manager.list()
                 echo("Deployments:")
                 show(resources)
