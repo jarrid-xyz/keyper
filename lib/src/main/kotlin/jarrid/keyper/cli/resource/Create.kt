@@ -9,6 +9,16 @@ import jarrid.keyper.resource.iam.Manager as IAMManager
 import jarrid.keyper.resource.key.Manager as KeyManager
 
 class Create(help: String = "Create resource by resource types") : ResourceSubcommand(help = help) {
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> getManager(): T {
+        return when (resourceType) {
+            ResourceType.KEY -> KeyManager(backend.get(), stack) as T
+            ResourceType.ROLE -> IAMManager(backend.get(), stack) as T
+            ResourceType.DEPLOYMENT -> Manager(backend.get(), stack) as T
+        }
+    }
+
     override suspend fun runAsync() {
         val deployment = BasePayload(
             name = deployment,
@@ -23,17 +33,17 @@ class Create(help: String = "Create resource by resource types") : ResourceSubco
 
         when (resourceType) {
             ResourceType.KEY -> {
-                val manager = KeyManager(backend.get(), stack)
+                val manager: KeyManager = getManager()
                 manager.createKey(payload)
             }
 
             ResourceType.ROLE -> {
-                val manager = IAMManager(backend.get(), stack)
+                val manager: IAMManager = getManager()
                 manager.createRole(payload)
             }
 
             ResourceType.DEPLOYMENT -> {
-                val manager = Manager(backend.get(), stack)
+                val manager: Manager = getManager()
                 manager.createDeployment(deployment)
             }
         }

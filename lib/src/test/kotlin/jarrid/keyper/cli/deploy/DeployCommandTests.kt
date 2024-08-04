@@ -1,12 +1,12 @@
 package jarrid.keyper.cli.deploy
 
 import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.core.context
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import jarrid.keyper.cli.DeploySubcommand
+import jarrid.keyper.cli.Helper
 import jarrid.keyper.utils.shell.Command
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
@@ -14,15 +14,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
-object TestHelper {
-    fun parseCommand(command: CliktCommand, args: Array<String>) {
-        command.context {
-            allowInterspersedArgs = false
-            autoEnvvarPrefix = "TEST"
-        }
-        command.parse(args)
-    }
-}
 
 class DeployCommandTests {
 
@@ -107,7 +98,7 @@ class DeployCommandTests {
         coEvery { mock.cdktf(case.expected) } returns "Executed successfully"
 
         // Ensure the command arguments are correctly set up
-        TestHelper.parseCommand(case.command, case.args)
+        Helper.parseCommand(case.command, case.args)
 
         // Run the command
         case.command.main(case.args)
