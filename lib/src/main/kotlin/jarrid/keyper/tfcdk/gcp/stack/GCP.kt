@@ -15,7 +15,7 @@ import com.hashicorp.cdktf.providers.google.provider.GoogleProvider
 import com.hashicorp.cdktf.providers.google.service_account.ServiceAccount
 import com.hashicorp.cdktf.providers.google.service_account.ServiceAccountConfig
 import io.klogging.Klogging
-import jarrid.keyper.resource.CloudProviderConfig
+import jarrid.keyper.app.CloudProviderConfig
 import jarrid.keyper.resource.Deployment
 import jarrid.keyper.resource.iam.RoleNameIsUndefinedException
 import jarrid.keyper.resource.key.Name
@@ -47,7 +47,13 @@ class GCP(
                 .path("terraform.tfstate")
                 .build()
         )
-
+//        GcsBackend(
+//            this, GcsBackendConfig.builder()
+//                .credentials("...")
+//                .bucket("...")
+//                .prefix("...")
+//                .build()
+//        )
     }
 
     override suspend fun useProvider() {

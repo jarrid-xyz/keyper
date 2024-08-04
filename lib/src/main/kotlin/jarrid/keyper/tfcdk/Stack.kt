@@ -2,7 +2,7 @@ package jarrid.keyper.tfcdk
 
 import com.github.f4b6a3.uuid.codec.base.Base62Codec
 import com.hashicorp.cdktf.TerraformStack
-import jarrid.keyper.resource.Config
+import jarrid.keyper.app.Config
 import kotlinx.coroutines.runBlocking
 import software.constructs.Construct
 import java.util.*

@@ -2,10 +2,10 @@ package jarrid.keyper.utils.file
 
 import io.mockk.every
 import io.mockk.mockk
-import jarrid.keyper.resource.App
-import jarrid.keyper.resource.BackendConfig
-import jarrid.keyper.resource.Config
-import jarrid.keyper.resource.ResourceBackend
+import jarrid.keyper.app.App
+import jarrid.keyper.app.BackendConfig
+import jarrid.keyper.app.Config
+import jarrid.keyper.app.ResourceBackend
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.nio.file.Files

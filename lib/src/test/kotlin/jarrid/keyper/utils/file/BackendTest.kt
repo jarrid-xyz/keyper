@@ -3,7 +3,14 @@ package jarrid.keyper.utils.file
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import jarrid.keyper.resource.*
+import jarrid.keyper.app.App
+import jarrid.keyper.app.BackendConfig
+import jarrid.keyper.app.Config
+import jarrid.keyper.app.ResourceBackend
+import jarrid.keyper.resource.Base
+import jarrid.keyper.resource.Deployment
+import jarrid.keyper.resource.Resource
+import jarrid.keyper.resource.ResourceType
 import jarrid.keyper.tfcdk.DeploymentStack
 import jarrid.keyper.utils.json.SerDe
 import jarrid.keyper.utils.model.NewUUID

@@ -3,7 +3,12 @@ package jarrid.keyper.tfcdk
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import jarrid.keyper.resource.*
+import jarrid.keyper.app.ProviderConfig
+import jarrid.keyper.app.ResourceBackend
+import jarrid.keyper.app.Stack
+import jarrid.keyper.app.Tfcdk
+import jarrid.keyper.resource.BasePayload
+import jarrid.keyper.resource.Deployment
 import jarrid.keyper.utils.file.Backend
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
@@ -11,7 +16,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
 import com.hashicorp.cdktf.App as CdktfApp
-import jarrid.keyper.resource.App as ResourceApp
+import jarrid.keyper.app.App as ResourceApp
 import jarrid.keyper.resource.iam.Model as Role
 import jarrid.keyper.resource.key.Model as Key
 import jarrid.keyper.tfcdk.Stack as TfStack

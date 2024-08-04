@@ -2,10 +2,10 @@ package jarrid.keyper.resource.key.data
 
 import com.google.cloud.kms.v1.CryptoKeyName
 import io.klogging.Klogging
-import jarrid.keyper.resource.Backend
-import jarrid.keyper.resource.Config
+import jarrid.keyper.app.Backend
+import jarrid.keyper.app.Config
+import jarrid.keyper.app.Stack
 import jarrid.keyper.resource.Model
-import jarrid.keyper.resource.Stack
 import jarrid.keyper.resource.key.Name
 
 abstract class Base(

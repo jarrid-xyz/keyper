@@ -1,26 +1,37 @@
-package jarrid.keyper.resource
+package jarrid.keyper.app
 
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.decodeFromStream
 import jarrid.keyper.utils.file.Local
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.io.InputStream
 import kotlin.reflect.KClass
-import jarrid.keyper.tfcdk.Stack as TfStack
-import jarrid.keyper.tfcdk.gcp.stack.GCP as GCPStack
-import jarrid.keyper.utils.file.Backend as FileBackend
 
 @Serializable
 data class CloudProviderConfig(
     val accountId: String = "",
-    val region: String = "global"
+    val region: String = "global",
+    val backend: TfBackend = TfBackend(),
+    val credentials: String = "",
+)
+
+enum class TfBackendType {
+    @SerialName("local")
+    LOCAL,
+
+    @SerialName("cloud")
+    CLOUD
+
+}
+
+@Serializable
+data class TfBackend(
+    val type: TfBackendType = TfBackendType.LOCAL,
+    val bucket: String = "tf-state",
 )
 
 @Serializable
 data class Tfcdk(
     val stack: Stack = Stack.GCP,
-    val path: String = "cdktf.out"
+    val path: String = "cdktf.out",
 )
 
 @Serializable
@@ -34,31 +45,31 @@ data class ProviderConfig(
 enum class Backend {
     @SerialName("local")
     LOCAL {
-        override fun get(): FileBackend = Local(Config())
+        override fun get(): jarrid.keyper.utils.file.Backend = Local(Config())
     },
 
     @SerialName("s3")
     S3 {
-        override fun get(): FileBackend {
+        override fun get(): jarrid.keyper.utils.file.Backend {
             TODO("Not yet implemented")
         }
     },
 
     @SerialName("gcs")
     GCS {
-        override fun get(): FileBackend {
+        override fun get(): jarrid.keyper.utils.file.Backend {
             TODO("Not yet implemented")
         }
     };
 
-    abstract fun get(): FileBackend
+    abstract fun get(): jarrid.keyper.utils.file.Backend
 }
 
 @Serializable
 enum class Stack {
     @SerialName("gcp")
     GCP {
-        override fun get(): KClass<out TfStack> = GCPStack::class
+        override fun get(): KClass<out jarrid.keyper.tfcdk.Stack> = jarrid.keyper.tfcdk.gcp.stack.GCP::class
         override fun getConfig(config: App): CloudProviderConfig = config.provider.gcp
     };
 
@@ -68,7 +79,7 @@ enum class Stack {
 //        override fun getConfig(config: App): CloudProviderConfig? = provider.aws
 //    };
 
-    abstract fun get(): KClass<out TfStack>
+    abstract fun get(): KClass<out jarrid.keyper.tfcdk.Stack>
     abstract fun getConfig(config: App): CloudProviderConfig
 }
 
@@ -84,24 +95,25 @@ data class ResourceBackend(
 )
 
 @Serializable
+enum class ENV {
+    @SerialName("local")
+    LOCAL,
+
+    @SerialName("development")
+    DEVELOPMENT,
+
+    @SerialName("staging")
+    STAGING,
+
+    @SerialName("production")
+    PRODUCTION
+}
+
+@Serializable
 data class App(
     val provider: ProviderConfig = ProviderConfig(),
     val resource: ResourceBackend,
+    val env: ENV = ENV.LOCAL,
     @SerialName("out_dir")
     val outDir: String = "./"
 )
-
-class Config(path: String = "/app.yaml") {
-    private val stream: InputStream =
-        Config::class.java.getResourceAsStream(path)
-            ?: throw IllegalArgumentException("App config file not found: $path")
-
-    private fun load(): App {
-        return Yaml.default.decodeFromStream(App.serializer(), stream)
-    }
-
-    private var config: App = load()
-    fun get(): App {
-        return config
-    }
-}

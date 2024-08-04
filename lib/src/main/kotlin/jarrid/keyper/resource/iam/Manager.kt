@@ -1,9 +1,9 @@
 package jarrid.keyper.resource.iam
 
 import io.klogging.Klogging
+import jarrid.keyper.app.Stack
 import jarrid.keyper.resource.Payload
 import jarrid.keyper.resource.ResourceIsUndefinedException
-import jarrid.keyper.resource.Stack
 import jarrid.keyper.utils.file.Backend
 import jarrid.keyper.resource.Manager as ResourceManager
 

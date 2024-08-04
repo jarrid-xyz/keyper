@@ -1,12 +1,11 @@
 package jarrid.keyper.cli.data
 
 import io.mockk.*
+import jarrid.keyper.app.Backend
+import jarrid.keyper.app.Stack
 import jarrid.keyper.cli.Helper
-import jarrid.keyper.resource.Backend
 import jarrid.keyper.resource.Deployment
 import jarrid.keyper.resource.Model
-import jarrid.keyper.resource.Stack
-
 import jarrid.keyper.utils.model.NewUUID
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
@@ -17,6 +16,7 @@ import kotlin.test.assertEquals
 import jarrid.keyper.resource.key.Model as Key
 import jarrid.keyper.resource.key.data.Decrypt as KeyDecrypt
 import jarrid.keyper.resource.key.data.Encrypt as KeyEncrypt
+import jarrid.keyper.utils.file.Backend as FileBackend
 
 class DataTest {
 
@@ -37,16 +37,26 @@ class DataTest {
         encryptCommand = spyk(Encrypt())
         decryptCommand = spyk(Decrypt())
 
+        val deploymentMock = mockk<Deployment>()
+        val backendMock = mockk<FileBackend>()
+        every { backend.get() } returns backendMock
+        every { backendMock.getDeployment(any()) } returns deploymentMock
 
         // Mock the getEncryptor method to return the mocked encryptor
         encryptCommand = spyk(Encrypt()) {
             every { getEncryptor(any(), any(), any()) } returns keyEncryptor
         }
 
+        // Mock keyEncryptor to use the mock backend
+        every { encryptCommand.backend } returns backend
+
         // Mock the getDecryptor method to return the mocked decryptor
         decryptCommand = spyk(Decrypt()) {
             every { getDecryptor(any(), any(), any()) } returns keyDecryptor
         }
+
+        // Mock keyDecryptor to use the mock backend
+        every { decryptCommand.backend } returns backend
     }
 
     @AfterEach
@@ -55,26 +65,28 @@ class DataTest {
     }
 
     @Test
-    fun testEncrypt() = runBlocking {
-        val plaintext = "testPlaintext"
-        val encryptedValue = "testEncryptedValue"
-        val args = arrayOf("--plaintext", plaintext, "--key-id", keyId.toString())
+    fun testEncrypt() {
+        runBlocking {
+            val plaintext = "testPlaintext"
+            val encryptedValue = "testEncryptedValue"
+            val args = arrayOf("--plaintext", plaintext, "--key-id", keyId.toString())
 
-        coEvery { keyEncryptor.run(plaintext) } returns encryptedValue
+            coEvery { keyEncryptor.run(plaintext) } returns encryptedValue
 
-        // Ensure the command arguments are correctly set up
-        Helper.parseCommand(encryptCommand, args)
+            // Ensure the command arguments are correctly set up
+            Helper.parseCommand(encryptCommand, args)
 
-        // Capture the output
-        val output = Helper.captureStdOutSuspend {
-            encryptCommand.runAsync()
+            // Capture the output
+            val output = Helper.captureStdOutSuspend {
+                encryptCommand.runAsync()
+            }
+
+            // Verify the output
+            assertEquals("Encrypted value: $encryptedValue", output)
+
+            // Verify the encryptor was called with the correct arguments
+            coVerify { keyEncryptor.run(plaintext) }
         }
-
-        // Verify the output
-        assertEquals("Encrypted value: $encryptedValue", output)
-
-        // Verify the encryptor was called with the correct arguments
-        coVerify { keyEncryptor.run(plaintext) }
     }
 
     @Test

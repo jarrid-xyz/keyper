@@ -1,6 +1,6 @@
 package jarrid.keyper.utils.file
 
-import jarrid.keyper.resource.Config
+import jarrid.keyper.app.Config
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths

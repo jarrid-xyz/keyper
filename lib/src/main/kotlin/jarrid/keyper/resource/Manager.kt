@@ -1,6 +1,7 @@
 package jarrid.keyper.resource
 
 import io.klogging.Klogging
+import jarrid.keyper.app.Stack
 import jarrid.keyper.utils.file.Backend
 import jarrid.keyper.utils.model.NewUUID
 
