@@ -1,7 +1,7 @@
 ---
 title: Getting Started
 hide:
-  - toc
+  - navigation
 ---
 
 {% include 'getting-started/content.md' %}
