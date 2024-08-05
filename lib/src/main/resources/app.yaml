@@ -2,9 +2,6 @@ provider:
   tfcdk:
     stack: "gcp"
     path: "cdktf.out"
-  gcp:
-    accountId: "databoo"
-    region: us-east1
 resource:
   backend:
     backend: "local"

@@ -6,17 +6,12 @@ import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigParseOptions
 import com.typesafe.config.ConfigRenderOptions
-import io.klogging.NoCoLogger
 import io.klogging.NoCoLogging
-import io.klogging.noCoLogger
 import kotlinx.serialization.json.Json
-import java.io.File
 import java.io.InputStream
 
 
 class Config(path: String = "/app.yaml") : NoCoLogging {
-    override val logger: NoCoLogger = noCoLogger(Config::class)
-
     private val base: InputStream =
         Config::class.java.getResourceAsStream(path)
             ?: throw IllegalArgumentException("App config file not found: $path")
@@ -32,8 +27,6 @@ class Config(path: String = "/app.yaml") : NoCoLogging {
     }
 
     private fun getYamlConfig(input: InputStream): Config {
-//        val yaml = Yaml()
-//        val map = yaml.decodeFromStream<Map<String, Any>>(input)
         val yamlMapper = ObjectMapper(YAMLFactory())
         val map = yamlMapper.readValue(input, Map::class.java) as Map<String, Any>
         val json = ObjectMapper().writeValueAsString(map)
@@ -42,13 +35,13 @@ class Config(path: String = "/app.yaml") : NoCoLogging {
     }
 
     private fun getEnvConfig(env: ENV): Config? {
-        val path = "/app.$env.yaml"
-        val file = File(Config::class.java.getResource(path)?.file ?: "")
-        if (!file.exists()) {
+        val path = "/app.${env.toString().lowercase()}.yaml"
+        val stream = this::class.java.getResourceAsStream(path)
+        if (stream == null) {
             logger.warn { "Override env config file not found: $path" }
             return null
         }
-        val stream: InputStream = file.inputStream()
+        logger.info { "Override env config found: $path" }
         val config = getYamlConfig(stream)
         return config
     }

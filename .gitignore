@@ -69,3 +69,4 @@ docs/kdoc/
 
 # vscode
 .vscode
+**/app.local.yaml
