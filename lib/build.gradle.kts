@@ -127,5 +127,5 @@ java {
 }
 
 application {
-    mainClass.set("MainKt")
+    mainClass.set("jarrid.keyper.MainKt")
 }
