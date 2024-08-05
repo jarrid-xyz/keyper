@@ -25,6 +25,7 @@ enum class TfBackendType {
 @Serializable
 data class TfBackend(
     val type: TfBackendType = TfBackendType.LOCAL,
+    val path: String = "terraform.tfstate",
     val bucket: String = "tf-state",
 )
 

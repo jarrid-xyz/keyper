@@ -45,11 +45,12 @@ class GCP(
 
     override suspend fun useBackend() {
         logger.info("GCP provider credentials is set to ${provider.credentials}")
+        logger.info("Backend is set to ${provider.backend}")
         when (provider.backend.type) {
             TfBackendType.LOCAL -> {
                 LocalBackend(
                     this, LocalBackendConfig.builder()
-                        .path(provider.backend.bucket)
+                        .path("terraform.tfstate")
                         .build()
                 )
             }
@@ -60,7 +61,7 @@ class GCP(
                     this, GcsBackendConfig.builder()
                         .credentials(provider.credentials)
                         .bucket(provider.backend.bucket)
-                        .prefix("terraform/state")
+                        .prefix("terraform/state/$stackName")
                         .build()
                 )
             }

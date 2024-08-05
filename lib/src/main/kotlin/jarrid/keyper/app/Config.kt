@@ -8,6 +8,8 @@ import com.typesafe.config.ConfigParseOptions
 import com.typesafe.config.ConfigRenderOptions
 import io.klogging.NoCoLogging
 import kotlinx.serialization.json.Json
+import java.io.File
+import java.io.FileInputStream
 import java.io.InputStream
 
 
@@ -35,13 +37,14 @@ class Config(path: String = "/app.yaml") : NoCoLogging {
     }
 
     private fun getEnvConfig(env: ENV): Config? {
-        val path = "/app.${env.toString().lowercase()}.yaml"
-        val stream = this::class.java.getResourceAsStream(path)
-        if (stream == null) {
+        val path = "app.${env.toString().lowercase()}.yaml"
+        val file = File(path)
+        if (!file.exists()) {
             logger.warn { "Override env config file not found: $path" }
             return null
         }
         logger.info { "Override env config found: $path" }
+        val stream = FileInputStream(file)
         val config = getYamlConfig(stream)
         return config
     }
