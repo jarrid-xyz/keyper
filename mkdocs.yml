@@ -4,6 +4,8 @@ site_url: https://jarrid.xyz/keyper
 repo_url: https://github.com/jarrid-xyz/keyper
 
 theme:
+  extra:
+    version: v0.0.1
   font:
     text: Ubuntu
   name: material
@@ -40,12 +42,14 @@ nav:
       - Release: https://github.com/jarrid-xyz/keyper/releases" target="_blank
       - integration.md
       - About Jarrid: https://jarrid.xyz" target="_blank
+  - Getting Started: getting-started/index.md
   - Resource: 
       - resource/index.md
       - resource/key.md
       - resource/role.md
   - Deploy:
       - deploy/index.md
+      - deploy/configuration.md
       - deploy/cli.md
       - deploy/gcp.md
   - Data:
@@ -69,7 +73,9 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
-
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji 
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 extra:
   generator: false
@@ -95,3 +101,4 @@ plugins:
         font_family: Ubuntu
         background_color: "#80FFDB"
         color: black
+  - macros

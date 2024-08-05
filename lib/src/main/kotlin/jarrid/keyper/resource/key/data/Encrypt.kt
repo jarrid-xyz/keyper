@@ -3,8 +3,8 @@ package jarrid.keyper.resource.key.data
 import com.google.cloud.kms.v1.EncryptRequest
 import com.google.cloud.kms.v1.KeyManagementServiceClient
 import com.google.protobuf.ByteString
-import jarrid.keyper.resource.Backend
-import jarrid.keyper.resource.Stack
+import jarrid.keyper.app.Backend
+import jarrid.keyper.app.Stack
 import java.util.*
 import jarrid.keyper.resource.Model as ResourceModel
 

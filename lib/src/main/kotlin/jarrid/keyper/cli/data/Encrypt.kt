@@ -2,11 +2,14 @@ package jarrid.keyper.cli.data
 
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
+import jarrid.keyper.app.Backend
+import jarrid.keyper.app.Stack
 import jarrid.keyper.cli.resource.key.KeySubcommand
 import jarrid.keyper.resource.Deployment
 import jarrid.keyper.resource.Model
 import jarrid.keyper.resource.key.data.Encrypt
 import jarrid.keyper.resource.key.Model as Key
+
 
 class Encrypt : KeySubcommand(help = "Encrypt data with using key") {
     private val plaintext: String by option(help = "The plaintext data to encrypt").required()
@@ -17,8 +20,12 @@ class Encrypt : KeySubcommand(help = "Encrypt data with using key") {
         )
         val key = Key(id = keyId)
         val payload = Model(resource = key, deployment = deployment)
-        val encryptor = Encrypt(backend, stack, payload)
+        val encryptor = getEncryptor(backend, stack, payload)
         val encrypted = encryptor.run(plaintext)
         echo("Encrypted value: $encrypted")
+    }
+
+    fun getEncryptor(backend: Backend, stack: Stack, payload: Model): Encrypt {
+        return Encrypt(backend, stack, payload)
     }
 }

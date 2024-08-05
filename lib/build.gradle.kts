@@ -49,6 +49,9 @@ dependencies {
     implementation("com.github.f4b6a3:uuid-creator:5.3.7")
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.0")
     implementation("com.google.cloud:google-cloud-kms:2.49.0")
+    implementation("com.typesafe:config:1.4.3")
+    implementation("org.yaml:snakeyaml:2.2")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.2")
 
     testImplementation("io.mockk:mockk:1.13.11")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
@@ -124,5 +127,5 @@ java {
 }
 
 application {
-    mainClass.set("MainKt")
+    mainClass.set("jarrid.keyper.MainKt")
 }

@@ -23,9 +23,12 @@ COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=node /usr/local/bin /usr/local/bin
 COPY --from=terraform /terraform /usr/local/bin
 
+# Create the keyper user and home directory
 RUN useradd -ms /bin/bash keyper
 
 WORKDIR /home/keyper
+
+# Copy application files
 COPY lib ./lib
 COPY gradle ./gradle
 COPY settings.gradle.kts ./
@@ -33,10 +36,17 @@ COPY gradlew ./gradlew
 COPY gradlew.bat ./gradlew.bat
 COPY cdktf.json ./cdktf.json
 
+# Ensure gradlew is executable and build the application
 RUN ./gradlew clean build
+
 RUN chown -R keyper:keyper /home/keyper
 RUN chmod 755 /home/keyper
 
+# Set environment variables
+ENV TF_PLUGIN_CACHE_DIR=/tmp/.terraform.d
+ENV CDKTF_HOME=/tmp/.cdktf
+
 USER keyper
+
 ENTRYPOINT ["java", "-jar", "lib/build/libs/lib-standalone.jar"]
 CMD ["sh"]

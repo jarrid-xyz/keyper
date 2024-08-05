@@ -18,7 +18,7 @@ chmod +x ./lib/build/libs/lib-standalone.jar
 
 # use jar as keyper CLI
 java -jar ./lib/build/libs/lib-standalone.jar key -h
- 
+
 # or wrap it into keyper
 alias keyper="java -jar ./lib/build/libs/lib-standalone.jar"
 
@@ -55,7 +55,7 @@ docker build . -t keyper
 Otherwise, to run CLI commands:
 
 ```bash
-docker pull ghcr.io/jarrid-xyz/keyper
+docker pull ghcr.io/jarrid-xyz/keyper:{{config.theme.extra.version}}
 ```
 
 Note, if you get permission denied, try to log out from ghcr.io first:
@@ -71,16 +71,15 @@ Run the packaged CLI directly from docker:
 docker run -it --rm --name keyper-cli \
   -v ./configs:/home/keyper/configs \
   -v ./cdktf.out:/home/keyper/cdktf.out \
-  ghcr.io/jarrid-xyz/keyper:main resource create -t key 
+  ghcr.io/jarrid-xyz/keyper:{{config.theme.extra.version}} resource create -t key 
 
 # run plan
 docker run -it --rm --name keyper-cli \
   -v ./configs:/home/keyper/configs \
   -v ./cdktf.out:/home/keyper/cdktf.out \
   -v ./.cdktf-sa-key.json:/home/keyper/gcp.json \
-  -e GOOGLE_APPLICATION_CREDENTIALS="/home/keyper/gcp.json" \
-  -e GOOGLE_CLOUD_KEYFILE_JSON="/home/keyper/gcp.json" \
-  ghcr.io/jarrid-xyz/keyper:main deploy plan
+  -v ./app.local.yaml:/home/keyper/app.local.yaml
+  ghcr.io/jarrid-xyz/keyper:{{config.theme.extra.version}} deploy plan
 ```
 
 ### Published Docker Image

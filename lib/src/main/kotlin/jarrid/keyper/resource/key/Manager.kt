@@ -1,6 +1,7 @@
 package jarrid.keyper.resource.key
 
 import io.klogging.Klogging
+import jarrid.keyper.app.Stack
 import jarrid.keyper.resource.*
 import jarrid.keyper.utils.file.Backend
 import jarrid.keyper.resource.Manager as ResourceManager

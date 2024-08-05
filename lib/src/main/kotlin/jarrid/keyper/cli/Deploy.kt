@@ -11,7 +11,7 @@ abstract class DeploySubcommand(help: String = "") : BaseSubcommand(help = help)
     private val cdktfArgs by argument().multiple().optional()
     val cdktfArgsCmd
         get() = cdktfArgs?.joinToString(" ") ?: ""
-    val command = Command()
+    var command = Command()
 
     override fun run() = runBlocking {
         runAsync()

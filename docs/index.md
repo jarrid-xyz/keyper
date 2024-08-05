@@ -1,7 +1,7 @@
 ---
 title: Overview
 hide:
-  - toc
+
 ---
 
 ## About
@@ -46,6 +46,10 @@ keyper data decrypt --key-id <> --ciphertext <>
 ```
 
 <script src="https://asciinema.org/a/667096.js" id="asciicast-667096" async="true"></script>
+
+## Getting Started
+
+{% include 'getting-started/content.md' %}
 
 ## Releases
 

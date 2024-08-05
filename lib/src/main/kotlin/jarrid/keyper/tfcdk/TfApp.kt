@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 import com.hashicorp.cdktf.App as CdktfApp
-import jarrid.keyper.resource.App as ResourceConfig
+import jarrid.keyper.app.App as ResourceConfig
 import jarrid.keyper.resource.key.Model as Key
 import jarrid.keyper.tfcdk.Stack as TfStack
 

@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.enum
 import jarrid.keyper.resource.ResourceType
+import jarrid.keyper.resource.key.Manager
 import kotlinx.coroutines.runBlocking
 
 abstract class ResourceSubcommand(help: String = "", name: String? = null) :
@@ -27,6 +28,15 @@ abstract class ResourceSubcommand(help: String = "", name: String? = null) :
     val context: Map<String, String> by option(
         "-c", "--context", help = "Provide additional context as key:value map"
     ).associate()
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> getManager(): T {
+        return when (resourceType) {
+            ResourceType.KEY -> Manager(backend.get(), stack) as T
+            ResourceType.ROLE -> jarrid.keyper.resource.iam.Manager(backend.get(), stack) as T
+            ResourceType.DEPLOYMENT -> jarrid.keyper.resource.Manager(backend.get(), stack) as T
+        }
+    }
 
     override fun run() {
         runBlocking {

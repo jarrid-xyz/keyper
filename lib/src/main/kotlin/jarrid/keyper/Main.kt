@@ -1,4 +1,6 @@
-import jarrid.keyper.resource.Config
+package jarrid.keyper
+
+import jarrid.keyper.app.Config
 import jarrid.keyper.tfcdk.TfApp
 import jarrid.keyper.utils.logging.config
 

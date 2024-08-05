@@ -2,13 +2,10 @@ provider:
   tfcdk:
     stack: "gcp"
     path: "cdktf.out"
-  gcp:
-    accountId: "databoo"
-    region: us-east1
 resource:
   backend:
     backend: "local"
     path: "configs"
 
-#out_dir: "/home/keyper"
-out_dir: "/Users/luluc/Development/apiobuild/jarrid/keyper"
+env: local
+out_dir: "/home/keyper"
