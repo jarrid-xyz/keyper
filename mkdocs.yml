@@ -4,6 +4,8 @@ site_url: https://jarrid.xyz/keyper
 repo_url: https://github.com/jarrid-xyz/keyper
 
 theme:
+  extra:
+    version: v0.0.1
   font:
     text: Ubuntu
   name: material
@@ -35,11 +37,13 @@ theme:
 nav:
   - Keyper:
       - index.md
+      - getting-started/index.md
       - development.md
       - API Docs: kdoc/index.html" target="_blank
       - Release: https://github.com/jarrid-xyz/keyper/releases" target="_blank
       - integration.md
       - About Jarrid: https://jarrid.xyz" target="_blank
+  - Getting Started: getting-started/index.md
   - Resource: 
       - resource/index.md
       - resource/key.md
@@ -95,3 +99,4 @@ plugins:
         font_family: Ubuntu
         background_color: "#80FFDB"
         color: black
+  - macros

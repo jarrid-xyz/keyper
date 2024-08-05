@@ -26,6 +26,10 @@ The library has three main modules:
 3. [Data](data/index.md): Run various encrypt and decrypt data flows with pre-defined keys. Adjust the level of security
    depending on use cases without additional implementation.
 
+## Getting Started
+
+{% include 'getting-started/content.md' %}
+
 ## Demo
 
 In only three steps, you can create a key, deploy the key on cloud KMS, and encrypt/decrypt data. Everything is wrapped
