@@ -78,26 +78,26 @@ buildscript {
 }
 
 tasks {
-    val fatJar = register<Jar>("fatJar") {
-        dependsOn.addAll(
-            listOf(
-                "compileJava",
-                "compileKotlin",
-                "processResources"
-            )
-        ) // We need this for Gradle optimization to work
-        archiveClassifier.set("standalone") // Naming the jar
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        manifest { attributes(mapOf("Main-Class" to "jarrid.keyper.cli.MainKt")) } // Provided we set it up in the application plugin configuration
-        val sourcesMain = sourceSets.main.get()
-        val contents = configurations.runtimeClasspath.get()
-            .map { if (it.isDirectory) it else zipTree(it) } +
-                sourcesMain.output
-        from(contents)
-        exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA") // Exclude signature files
+    // Helper function to create jar tasks
+    fun createJarTask(name: String, classifier: String, mainClass: String): TaskProvider<Jar> {
+        return register<Jar>(name) {
+            dependsOn.addAll(listOf("compileJava", "compileKotlin", "processResources"))
+            archiveClassifier.set(classifier)
+            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+            manifest { attributes(mapOf("Main-Class" to mainClass)) }
+            val sourcesMain = sourceSets.main.get()
+            val contents = configurations.runtimeClasspath.get()
+                .map { if (it.isDirectory) it else zipTree(it) } + sourcesMain.output
+            from(contents)
+            exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA")
+        }
     }
+
+    val cliJar = createJarTask("cliJar", "cli", "jarrid.keyper.cli.MainKt")
+    val mainJar = createJarTask("mainJar", "main", "jarrid.keyper.MainKt")
+
     build {
-        dependsOn(fatJar) // Trigger fat jar creation during build
+        dependsOn(cliJar, mainJar) // Trigger fat jar creation during build
     }
 
     dokkaHtml {

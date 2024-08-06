@@ -57,5 +57,8 @@ cdktf.out/
 # Ignore key artifacts
 configs/
 
-# Ingore creds
+# Ignore credentials
 **key.json
+
+# Ignore app.local.yaml
+**/app.local.yaml
