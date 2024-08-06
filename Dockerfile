@@ -48,5 +48,5 @@ ENV CDKTF_HOME=/tmp/.cdktf
 
 USER keyper
 
-ENTRYPOINT ["java", "-jar", "lib/build/libs/lib-standalone.jar"]
+ENTRYPOINT ["java", "-jar", "lib/build/libs/lib-cli.jar"]
 CMD ["sh"]

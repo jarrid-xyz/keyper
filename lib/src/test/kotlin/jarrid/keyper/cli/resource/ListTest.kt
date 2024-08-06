@@ -4,6 +4,7 @@ import io.mockk.*
 import jarrid.keyper.cli.Helper
 import jarrid.keyper.resource.Deployment
 import jarrid.keyper.resource.ResourceType
+import jarrid.keyper.utils.model.NewUUID
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -61,23 +62,25 @@ class ListResourceTest {
     )
 
     companion object {
+        private val emptyUUID = NewUUID.getEmpty()
+
         @JvmStatic
         fun listResourceTestCases(): List<ListCommandTestCase> {
             return listOf(
                 ListCommandTestCase(
                     args = arrayOf("--resource-type", "KEY"),
                     resourceType = ResourceType.KEY,
-                    expectedOutput = "Keys:\nkey1\nkey2"
+                    expectedOutput = "Keys:\nname: key1, id: $emptyUUID\nname: key2, id: $emptyUUID"
                 ),
                 ListCommandTestCase(
                     args = arrayOf("--resource-type", "ROLE"),
                     resourceType = ResourceType.ROLE,
-                    expectedOutput = "Roles:\nrole1\nrole2"
+                    expectedOutput = "Roles:\nname: role1, id: $emptyUUID\nname: role2, id: $emptyUUID"
                 ),
                 ListCommandTestCase(
                     args = arrayOf("--resource-type", "DEPLOYMENT"),
                     resourceType = ResourceType.DEPLOYMENT,
-                    expectedOutput = "Deployments:\nd1\nd2"
+                    expectedOutput = "Deployments:\nname: d1, id: $emptyUUID\nname: d2, id: $emptyUUID"
                 )
             )
         }

@@ -10,7 +10,9 @@ class ListResource(help: String = "List resources by resource types", name: Stri
 
     fun show(resources: List<Resource>) {
         resources.forEach {
-            echo(it.base.name ?: it.base.id)
+            val name = it.base.name ?: "N/A"
+            val id = it.base.id
+            echo("name: $name, id: $id")
         }
     }
 

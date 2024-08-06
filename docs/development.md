@@ -14,13 +14,13 @@ languages that's compilable from C such as Python, Rust, Golang etc.
 ./gradlew build 
 
 # give permission to run the jar
-chmod +x ./lib/build/libs/lib-standalone.jar
+chmod +x ./lib/build/libs/lib-cli.jar
 
 # use jar as keyper CLI
-java -jar ./lib/build/libs/lib-standalone.jar key -h
+java -jar ./lib/build/libs/lib-cli.jar key -h
 
 # or wrap it into keyper
-alias keyper="java -jar ./lib/build/libs/lib-standalone.jar"
+alias keyper="java -jar ./lib/build/libs/lib-cli.jar"
 
 # try
 keyper -h
