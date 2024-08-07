@@ -18,6 +18,7 @@ abstract class Base(
     val provider = stack.getConfig(app)
     private val projectId = provider.accountId
     private val region = provider.region
+    private val credentials = provider.credentials
 
     fun getKeyName(key: Model): CryptoKeyName {
         return CryptoKeyName.of(
