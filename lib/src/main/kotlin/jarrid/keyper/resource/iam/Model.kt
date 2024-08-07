@@ -22,6 +22,16 @@ data class Model(
     base = Base(id = id, name = name, context = context),
     type = ResourceType.ROLE,
 ) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Model) return false
+        return this.base.id == other.base.id
+    }
+
+    override fun hashCode(): Int {
+        return this.base.id.hashCode()
+    }
+    
     companion object {
         fun create(payload: BasePayload): Model {
             val name = payload.name ?: throw RoleNameIsUndefinedException()
