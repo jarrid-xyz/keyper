@@ -4,6 +4,7 @@ import jarrid.keyper.utils.file.Local
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.reflect.KClass
+import jarrid.keyper.utils.file.Backend as FileBackend
 
 @Serializable
 data class CloudProviderConfig(
@@ -46,24 +47,24 @@ data class ProviderConfig(
 enum class Backend {
     @SerialName("local")
     LOCAL {
-        override fun get(): jarrid.keyper.utils.file.Backend = Local(Config())
+        override fun get(): FileBackend = Local(Config())
     },
 
     @SerialName("s3")
     S3 {
-        override fun get(): jarrid.keyper.utils.file.Backend {
+        override fun get(): FileBackend {
             TODO("Not yet implemented")
         }
     },
 
     @SerialName("gcs")
     GCS {
-        override fun get(): jarrid.keyper.utils.file.Backend {
+        override fun get(): FileBackend {
             TODO("Not yet implemented")
         }
     };
 
-    abstract fun get(): jarrid.keyper.utils.file.Backend
+    abstract fun get(): FileBackend
 }
 
 @Serializable
