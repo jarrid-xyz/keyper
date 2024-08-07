@@ -151,7 +151,7 @@ class GCP(
         val keyRing = createKmsKeyRing(keyRingPayload)
         val keys = tfvar.keys.associateWith { key ->
             val keyPayload = KmsCryptoKeyVar(
-                keyName = key.base.name ?: Name.getJarridKeyName(key.base.id),
+                keyName = Name.getJarridKeyName(key.base),
                 keyId = key.base.id,
                 ttl = key.ttl,
                 rotationPeriod = key.rotationPeriod,
