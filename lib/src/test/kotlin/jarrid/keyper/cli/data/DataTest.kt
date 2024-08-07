@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.test.assertEquals
+import jarrid.keyper.resource.key.Manager as KeyManager
 import jarrid.keyper.resource.key.Model as Key
 import jarrid.keyper.resource.key.data.Decrypt as KeyDecrypt
 import jarrid.keyper.resource.key.data.Encrypt as KeyEncrypt
@@ -22,6 +23,7 @@ class DataTest {
 
     private lateinit var backend: Backend
     private lateinit var stack: Stack
+    private lateinit var keyManager: KeyManager
     private lateinit var keyEncryptor: KeyEncrypt
     private lateinit var keyDecryptor: KeyDecrypt
     private lateinit var encryptCommand: Encrypt
@@ -32,6 +34,7 @@ class DataTest {
     fun setUp() {
         backend = mockk()
         stack = mockk()
+        keyManager = mockk()
         keyEncryptor = mockk()
         keyDecryptor = mockk()
         encryptCommand = spyk(Encrypt())
@@ -42,9 +45,13 @@ class DataTest {
         every { backend.get() } returns backendMock
         every { backendMock.getDeployment(any()) } returns deploymentMock
 
+        // Mock the getKey method to return a mocked key
+        coEvery { keyManager.getKey(any(), any(), any()) } returns Key(id = keyId, name = "test")
+
         // Mock the getEncryptor method to return the mocked encryptor
         encryptCommand = spyk(Encrypt()) {
             every { getEncryptor(any(), any(), any()) } returns keyEncryptor
+            every { getKeyManager() } returns keyManager
         }
 
         // Mock keyEncryptor to use the mock backend
@@ -53,6 +60,7 @@ class DataTest {
         // Mock the getDecryptor method to return the mocked decryptor
         decryptCommand = spyk(Decrypt()) {
             every { getDecryptor(any(), any(), any()) } returns keyDecryptor
+            every { getKeyManager() } returns keyManager
         }
 
         // Mock keyDecryptor to use the mock backend

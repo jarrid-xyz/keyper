@@ -6,6 +6,8 @@ import com.hashicorp.cdktf.providers.google.service_account.ServiceAccount
 import io.mockk.every
 import io.mockk.mockk
 import jarrid.keyper.resource.Deployment
+import jarrid.keyper.resource.iam.MultipleRolesFoundException
+import jarrid.keyper.resource.iam.RoleNotFoundException
 import jarrid.keyper.resource.key.EditPermission
 import jarrid.keyper.tfcdk.DeploymentStack
 import jarrid.keyper.utils.model.NewUUID

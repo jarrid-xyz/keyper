@@ -7,6 +7,9 @@ import jarrid.keyper.resource.ResourceIsUndefinedException
 import jarrid.keyper.utils.file.Backend
 import jarrid.keyper.resource.Manager as ResourceManager
 
+class RoleNotFoundException(val name: String, message: String = "Role: $name not found") : Exception(message)
+class MultipleRolesFoundException(val name: String, message: String = "Multiple roles found by $name") :
+    Exception(message)
 
 class Manager(
     backend: Backend,
