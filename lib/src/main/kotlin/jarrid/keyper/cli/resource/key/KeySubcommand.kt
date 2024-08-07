@@ -28,15 +28,19 @@ abstract class KeySubcommand(help: String = "") : BaseSubcommand(help = help) {
 
     private lateinit var useBackend: Backend
     lateinit var useDeployment: Deployment
+    private lateinit var keyManager: KeyManager
     lateinit var key: Key
 
+    fun getKeyManager(): KeyManager {
+        return KeyManager(backend = useBackend, stack = stack)
+    }
 
     override fun run() {
         useBackend = backend.get()
         useDeployment = useBackend.getDeployment(
             Deployment.get(name = deployment ?: "default")
         )
-        val keyManager = KeyManager(backend = useBackend, stack = stack)
+        keyManager = getKeyManager()
         runBlocking {
             key = keyManager.getKey(keyId, keyName, useDeployment)
             runAsync()

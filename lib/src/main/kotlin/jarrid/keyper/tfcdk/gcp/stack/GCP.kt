@@ -20,18 +20,16 @@ import io.klogging.Klogging
 import jarrid.keyper.app.CloudProviderConfig
 import jarrid.keyper.app.TfBackendType
 import jarrid.keyper.resource.Deployment
+import jarrid.keyper.resource.iam.MultipleRolesFoundException
 import jarrid.keyper.resource.iam.RoleNameIsUndefinedException
+import jarrid.keyper.resource.iam.RoleNotFoundException
+import jarrid.keyper.resource.key.KeyNotFoundException
 import jarrid.keyper.resource.key.Name
 import jarrid.keyper.tfcdk.DeploymentStack
 import jarrid.keyper.tfcdk.Stack
 import software.constructs.Construct
 import jarrid.keyper.resource.iam.Model as Role
 import jarrid.keyper.resource.key.Model as Key
-
-class RoleNotFoundException(val name: String, message: String = "Role: $name not found") : Exception(message)
-class KeyNotFoundException(val name: String, message: String = "Key: $name not found") : Exception(message)
-class MultipleRolesFoundException(val name: String, message: String = "Multiple roles found by $name") :
-    Exception(message)
 
 class GCP(
     scope: Construct,
