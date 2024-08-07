@@ -9,6 +9,7 @@ import jarrid.keyper.utils.file.Backend
 import jarrid.keyper.utils.model.toUUID
 import kotlinx.coroutines.runBlocking
 import java.util.*
+import jarrid.keyper.resource.key.Manager as KeyManager
 import jarrid.keyper.resource.key.Model as Key
 
 
@@ -29,25 +30,15 @@ abstract class KeySubcommand(help: String = "") : BaseSubcommand(help = help) {
     lateinit var useDeployment: Deployment
     lateinit var key: Key
 
-    private suspend fun getKey(keyId: UUID?, keyName: String?): Key {
-        // Ensure that at least one of keyId or keyName is specified
-        require(!(keyId == null && keyName == null)) {
-            "Either --key-id or --key-name must be specified."
-        }
-        val keys = useBackend.getResources<Key>(useDeployment)
-        val key = keys.find { key ->
-            (keyId != null && key.base.id == keyId) || (keyName != null && key.base.name == keyName)
-        } ?: throw IllegalArgumentException("Key not found with the specified ID or name.")
-        return key
-    }
 
     override fun run() {
         useBackend = backend.get()
         useDeployment = useBackend.getDeployment(
             Deployment.get(name = deployment ?: "default")
         )
+        val keyManager = KeyManager(backend = useBackend, stack = stack)
         runBlocking {
-            key = getKey(keyId, keyName)
+            key = keyManager.getKey(keyId, keyName, useDeployment)
             runAsync()
         }
     }
