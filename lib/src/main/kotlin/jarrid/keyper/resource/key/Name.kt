@@ -1,10 +1,10 @@
 package jarrid.keyper.resource.key
 
-import java.util.*
+import jarrid.keyper.resource.Base
 
 object Name {
-    fun getJarridKeyName(uuid: UUID): String {
-        return "jarrid-keyper-key-$uuid"
+    fun getJarridKeyName(key: Base): String {
+        return key.name ?: "jarrid-keyper-key-${key.id}"
     }
 
     fun getSanitizedAccountId(name: String): String {

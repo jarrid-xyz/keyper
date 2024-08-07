@@ -25,7 +25,7 @@ abstract class Base(
             projectId,
             region,
             key.deployment.name,
-            Name.getJarridKeyName(key.resource.base.id)
+            Name.getJarridKeyName(key.resource.base)
         )
     }
 }
