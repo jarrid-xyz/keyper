@@ -18,13 +18,26 @@ class Decrypt : KeySubcommand(help = "Decrypt data using key") {
         val decryptor = getDecryptor(backend, stack, payload)
 
         val decrypted = when {
-            ciphertext != null -> decryptor.run(ciphertext!!)
-            inputPath != null -> decryptor.run(inputPath!!.readText())
+            ciphertext != null -> decryptor.run(
+                ciphertext!!,
+                outputPath,
+                base64DecodeRead = true,
+                base64EncodeWrite = false
+            )
+
+            inputPath != null -> decryptor.run(
+                inputPath!!,
+                outputPath,
+                base64DecodeRead = true,
+                base64EncodeWrite = false
+            )
+
             else -> throw InputValidationException("Invalid input") // This should never happen due to the previous checks
         }
 
-        if (outputPath != null) {
-            outputPath!!.writeText(decrypted)
+        if (decrypted == null) {
+            logger.info("Write decrypted data to file $outputPath")
+            decrypted
         } else {
             echo("Decrypted value: $decrypted")
         }

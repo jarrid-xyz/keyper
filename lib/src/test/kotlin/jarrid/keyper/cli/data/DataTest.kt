@@ -79,7 +79,7 @@ class DataTest {
             val encryptedValue = "testEncryptedValue"
             val args = arrayOf("--plaintext", plaintext, "--key-id", keyId.toString())
 
-            coEvery { keyEncryptor.run(plaintext) } returns encryptedValue
+            coEvery { keyEncryptor.run(plaintext, null) } returns encryptedValue
 
             // Ensure the command arguments are correctly set up
             Helper.parseCommand(encryptCommand, args)
@@ -93,7 +93,7 @@ class DataTest {
             assertEquals("Encrypted value: $encryptedValue", output)
 
             // Verify the encryptor was called with the correct arguments
-            coVerify { keyEncryptor.run(plaintext) }
+            coVerify { keyEncryptor.run(plaintext, null) }
         }
     }
 
@@ -107,7 +107,14 @@ class DataTest {
         val key = Key(id = keyId)
         val payload = Model(resource = key, deployment = deployment)
 
-        coEvery { keyDecryptor.run(ciphertext) } returns decryptedValue
+        coEvery {
+            keyDecryptor.run(
+                ciphertext,
+                null,
+                base64DecodeRead = true,
+                base64EncodeWrite = false
+            )
+        } returns decryptedValue
 
         // Mock the getDecryptor method to return the mocked decryptor
         every { decryptCommand.getDecryptor(backend, stack, payload) } returns keyDecryptor
@@ -124,6 +131,6 @@ class DataTest {
         assertEquals("Decrypted value: $decryptedValue", output)
 
         // Verify the decryptor was called with the correct arguments
-        coVerify { keyDecryptor.run(ciphertext) }
+        coVerify { keyDecryptor.run(ciphertext, null, base64DecodeRead = true, base64EncodeWrite = false) }
     }
 }

@@ -24,39 +24,70 @@ abstract class Base(
     private val region = provider.region
     val keyName = getKeyName(key)
 
-    fun run(input: String): String {
-        return input.toByteString().run().toStringUtf8()
+    fun run(
+        input: String, output: File?,
+        base64DecodeRead: Boolean = false,
+        base64EncodeWrite: Boolean = true
+    ): String? {
+        return if (output != null) {
+            input.toByteString(base64Decode = base64DecodeRead).run().write(output, base64Decode = base64EncodeWrite)
+            null
+        } else {
+            input.toByteString(base64Decode = base64DecodeRead).run().toString(base64EncodeWrite)
+        }
     }
 
-    fun run(input: String, output: File) {
-        input.toByteString().run().write(output)
+    fun run(
+        input: File,
+        output: File?,
+        base64DecodeRead: Boolean = false,
+        base64EncodeWrite: Boolean = true
+    ): String? {
+        return if (output != null) {
+            input.toByteString(base64Decode = base64DecodeRead).run().write(output, base64Decode = base64EncodeWrite)
+            null
+        } else {
+            input.toByteString(base64Decode = base64DecodeRead).run().toString(base64EncodeWrite)
+        }
     }
 
-    fun run(input: File): String {
-        return input.toByteString().run().toStringUtf8()
+    private fun ByteString.write(output: File, base64Decode: Boolean = true) {
+        if (base64Decode) {
+            Files.write(output.toPath(), Base64.getEncoder().encode(this.toByteArray()))
+        } else {
+            Files.write(output.toPath(), this.toByteArray())
+        }
     }
 
-    fun run(input: File, output: File) {
-        input.toByteString().run().write(output)
+    private fun ByteString.toString(base64Encode: Boolean = true): String {
+        return if (base64Encode) {
+            this.toBase64String()
+        } else {
+            this.toStringUtf8()
+        }
     }
 
-    fun ByteString.write(output: File) {
-        Files.write(output.toPath(), Base64.getEncoder().encode(this.toByteArray()))
+    private fun String.toByteString(base64Decode: Boolean = false): ByteString {
+        return if (base64Decode) {
+            ByteString.copyFrom(Base64.getDecoder().decode(this))
+        } else {
+            ByteString.copyFromUtf8(this)
+        }
     }
 
-    fun String.toByteString(): ByteString {
-        return ByteString.copyFrom(Base64.getDecoder().decode(this))
+    private fun File.toByteString(base64Decode: Boolean = false): ByteString {
+        val file = Files.readAllBytes(this.toPath())
+        if (base64Decode) {
+            return ByteString.copyFrom(Base64.getDecoder().decode(file))
+        }
+        return ByteString.copyFrom(file)
     }
 
-    fun File.toByteString(): ByteString {
-        return ByteString.copyFrom(Base64.getDecoder().decode(Files.readAllBytes(this.toPath())))
-    }
-
-    fun ByteString.toBase64String(): String {
+    private fun ByteString.toBase64String(): String {
         return Base64.getEncoder().encodeToString(this.toByteArray())
     }
 
-    fun getKeyName(key: Model): CryptoKeyName {
+    private fun getKeyName(key: Model): CryptoKeyName {
         return CryptoKeyName.of(
             projectId,
             region,

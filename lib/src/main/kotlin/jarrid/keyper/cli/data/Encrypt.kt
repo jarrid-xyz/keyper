@@ -18,13 +18,23 @@ class Encrypt : KeySubcommand(help = "Encrypt data with using key") {
         val encryptor = getEncryptor(backend, stack, payload)
 
         val encrypted = when {
-            plaintext != null -> encryptor.run(plaintext!!)
-            inputPath != null -> encryptor.run(inputPath!!)
+            plaintext != null -> encryptor.run(
+                plaintext!!, outputPath,
+                base64DecodeRead = false,
+                base64EncodeWrite = true
+            )
+
+            inputPath != null -> encryptor.run(
+                inputPath!!, outputPath,
+                base64DecodeRead = false,
+                base64EncodeWrite = true
+            )
+
             else -> throw InputValidationException("Invalid input") // This should never happen due to the previous checks
         }
 
-        if (outputPath != null) {
-            outputPath!!.writeText(encrypted)
+        if (encrypted == null) {
+            logger.info("Write encrypted data to file $outputPath")
         } else {
             echo("Encrypted value: $encrypted")
         }

@@ -30,8 +30,14 @@ abstract class KeySubcommand(help: String = "") : BaseSubcommand(help = help) {
         "-n", "--key-name", help = "Key name to use"
     )
 
-    val inputPath: File? by option(help = "The input file path containing plaintext data to encrypt").file()
-    val outputPath: File? by option(help = "The output file path containing ciphertext").file()
+    val inputPath: File? by option(
+        "--input-path",
+        help = "The input file path containing plaintext data to encrypt"
+    ).file()
+    val outputPath: File? by option(
+        "--output-path",
+        help = "The output file path containing ciphertext"
+    ).file()
 
     private lateinit var useBackend: Backend
     lateinit var useDeployment: Deployment
