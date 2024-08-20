@@ -82,7 +82,7 @@ class AWS(
     }
 
 
-    private fun mapRoleToKeyPermissions(
+    fun mapRoleToKeyPermissions(
         keys: AwsCreateKeysOutput,
         tfvar: DeploymentStack
     ): Map<Role, KeyPermissions> {
