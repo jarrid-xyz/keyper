@@ -71,7 +71,7 @@ enum class Backend {
 enum class Stack {
     @SerialName("gcp")
     GCP {
-        override fun get(): KClass<out jarrid.keyper.tfcdk.Stack> = jarrid.keyper.tfcdk.gcp.stack.GCP::class
+        override fun get(): KClass<out jarrid.keyper.tfcdk.Stack> = jarrid.keyper.tfcdk.stack.gcp.GCP::class
         override fun getConfig(config: App): CloudProviderConfig = config.provider.gcp
     };
 

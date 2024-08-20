@@ -1,13 +1,10 @@
-package jarrid.keyper.tfcdk.gcp.stack
+package jarrid.keyper.tfcdk.stack.gcp
 
 import com.hashicorp.cdktf.providers.google.data_google_iam_policy.DataGoogleIamPolicy
 import com.hashicorp.cdktf.providers.google.kms_crypto_key.KmsCryptoKey
 import com.hashicorp.cdktf.providers.google.kms_crypto_key_iam_policy.KmsCryptoKeyIamPolicy
-import com.hashicorp.cdktf.providers.google.kms_key_ring.KmsKeyRing
 import com.hashicorp.cdktf.providers.google.service_account.ServiceAccount
 import java.util.*
-import jarrid.keyper.resource.iam.Model as Role
-import jarrid.keyper.resource.key.Model as Key
 
 data class KmsKeyRingVar(
     val deploymentId: UUID,
@@ -29,23 +26,12 @@ data class ServiceAccountVar(
     val description: String,
 )
 
-data class CreateKeysOutput(
-    val keyRing: KmsKeyRing,
-    val keys: Map<Key, KmsCryptoKey>
-)
-
-data class CreateRolesOutput(
-    val roles: Map<Role, ServiceAccount>
-)
 
 data class CreateIamPolicyOutput(
     val saIamPolicy: DataGoogleIamPolicy,
     val cryptoKeyIamPolicy: KmsCryptoKeyIamPolicy
 )
 
-data class CreatePermissionsOutput(
-    val policies: List<CreateIamPolicyOutput>,
-)
 
 data class IamPolicyVar(
     val saIamPolicyName: String,

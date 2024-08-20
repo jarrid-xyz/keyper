@@ -41,6 +41,7 @@ dependencies {
 
     implementation("com.hashicorp:cdktf:0.20.7")
     implementation("com.hashicorp:cdktf-provider-google:13.24.0")
+    implementation("com.hashicorp:cdktf-provider-aws:19.30.0")
     implementation("software.constructs:constructs:10.3.0")
     implementation("com.charleskorn.kaml:kaml:0.60.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")

@@ -2,9 +2,16 @@ package jarrid.keyper.tfcdk
 
 import com.hashicorp.cdktf.App
 import com.hashicorp.cdktf.AppConfig
+import com.hashicorp.cdktf.providers.aws.iam_role.IamRole
+import com.hashicorp.cdktf.providers.aws.kms_key.KmsKey
+import com.hashicorp.cdktf.providers.google.kms_crypto_key.KmsCryptoKey
+import com.hashicorp.cdktf.providers.google.kms_key_ring.KmsKeyRing
+import com.hashicorp.cdktf.providers.google.service_account.ServiceAccount
 import io.klogging.Klogging
 import jarrid.keyper.resource.Deployment
 import jarrid.keyper.tfcdk.Stack
+import jarrid.keyper.tfcdk.stack.aws.IamPolicyOutput
+import jarrid.keyper.tfcdk.stack.gcp.CreateIamPolicyOutput
 import jarrid.keyper.utils.file.Backend
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -12,14 +19,47 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 import com.hashicorp.cdktf.App as CdktfApp
 import jarrid.keyper.app.App as ResourceConfig
+import jarrid.keyper.resource.iam.Model as Role
 import jarrid.keyper.resource.key.Model as Key
 import jarrid.keyper.tfcdk.Stack as TfStack
+
+sealed class CreatePermissionsOutput
+
+data class GcpCreatePermissionsOutput(
+    val policies: List<CreateIamPolicyOutput>,
+) : CreatePermissionsOutput()
+
+data class AwsCreatePermissionsOutput(
+    val out: IamPolicyOutput
+) : CreatePermissionsOutput()
+
+sealed class CreateKeysOutput
+
+data class AwsCreateKeysOutput(
+    val keys: Map<Key, KmsKey>
+) : CreateKeysOutput()
+
+data class GcpCreateKeysOutput(
+    val keyRing: KmsKeyRing,
+    val keys: Map<Key, KmsCryptoKey>
+) : CreateKeysOutput()
+
+sealed class CreateRolesOutput
+
+data class GcpCreateRolesOutput(
+    val roles: Map<Role, ServiceAccount>
+) : CreateRolesOutput()
+
+data class AwsCreateRolesOutput(
+    val roles: Map<Role, IamRole>
+) : CreateRolesOutput()
+
 
 @Serializable
 data class DeploymentStack(
     @Contextual val deployment: Deployment,
     @Contextual val keys: List<Key>,
-    @Contextual val roles: List<jarrid.keyper.resource.iam.Model>,
+    @Contextual val roles: List<Role>,
 )
 
 class TfApp(val config: ResourceConfig) : Klogging {

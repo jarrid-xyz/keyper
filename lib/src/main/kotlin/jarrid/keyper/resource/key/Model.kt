@@ -7,6 +7,7 @@ import jarrid.keyper.resource.ResourceType
 import jarrid.keyper.utils.model.NewUUID
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import java.time.Duration
 import java.util.*
 
 @Serializable
@@ -47,6 +48,7 @@ data class Model(
 
     val ttl: Int = 7,
     val rotationPeriod: String = "7776000s", // 90 days
+    val rotationPeriodDays: Int = 90,
     var permission: Permission = Permission()
 ) : Resource(
     base = Base(id = id, name = name, context = context),
@@ -54,11 +56,15 @@ data class Model(
 ) {
     companion object {
         fun create(payload: BasePayload): Model {
+            val rotationPeriodSeconds = payload.getConfigAttribute("rotation_period", "7776000s") as String
+            val rotationPeriodDays =
+                Duration.ofSeconds(rotationPeriodSeconds.removeSuffix("s").toLong()).toDays().toInt()
             val out = Model(
                 id = payload.id ?: NewUUID.get(),
                 name = payload.name,
                 ttl = payload.getConfigAttribute("ttl", 7) as Int,
-                rotationPeriod = payload.getConfigAttribute("rotation_period", "7776000s") as String,
+                rotationPeriod = rotationPeriodSeconds,
+                rotationPeriodDays = rotationPeriodDays,
                 permission = Permission()
             )
             out.base.create()
