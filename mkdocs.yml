@@ -37,20 +37,24 @@ theme:
 nav:
   - Keyper:
       - index.md
+      - Getting Started: getting-started/index.md 
+      - Tutorial: https://github.com/jarrid-xyz/keyper-tutorial" target="_blank
       - development.md
       - API Docs: kdoc/index.html" target="_blank
       - Release: https://github.com/jarrid-xyz/keyper/releases" target="_blank
       - integration.md
       - About Jarrid: https://jarrid.xyz" target="_blank
   - Getting Started: getting-started/index.md
+  - Tutorial: https://github.com/jarrid-xyz/keyper-tutorial" target="_blank
+  - configuration/index.md
   - Resource:
       - resource/index.md
       - resource/key.md
       - resource/role.md
   - Deploy:
       - deploy/index.md
-      - deploy/configuration.md
       - deploy/cli.md
+      - deploy/aws.md
       - deploy/gcp.md
   - Data:
       - data/index.md

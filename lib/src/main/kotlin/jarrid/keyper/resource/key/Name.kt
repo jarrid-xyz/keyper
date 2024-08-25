@@ -7,7 +7,7 @@ object Name {
         return key.name ?: "jarrid-keyper-key-${key.id}"
     }
 
-    fun getSanitizedAccountId(name: String): String {
+    fun getSanitizedName(name: String): String {
         // Step 1: Convert to lowercase
         var cleaned = name.lowercase()
         // Step 2: Remove invalid characters

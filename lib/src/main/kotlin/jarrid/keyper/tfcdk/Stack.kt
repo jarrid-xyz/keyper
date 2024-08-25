@@ -76,7 +76,7 @@ abstract class Stack(
         )
     }
 
-    fun validate(role: Role, tfvar: DeploymentStack): String {
+    fun validateRole(role: Role, tfvar: DeploymentStack): String {
         val name = role.base.name ?: throw RoleNameIsUndefinedException()
         getRole(name, tfvar)
         return name

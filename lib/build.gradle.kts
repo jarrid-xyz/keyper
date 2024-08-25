@@ -82,6 +82,7 @@ tasks {
     // Helper function to create jar tasks
     fun createJarTask(name: String, classifier: String, mainClass: String): TaskProvider<Jar> {
         return register<Jar>(name) {
+            isZip64 = true
             dependsOn.addAll(listOf("compileJava", "compileKotlin", "processResources"))
             archiveClassifier.set(classifier)
             duplicatesStrategy = DuplicatesStrategy.EXCLUDE

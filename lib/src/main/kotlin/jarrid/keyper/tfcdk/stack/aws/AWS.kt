@@ -5,6 +5,7 @@ import com.hashicorp.cdktf.S3BackendConfig
 import com.hashicorp.cdktf.providers.aws.data_aws_iam_policy_document.DataAwsIamPolicyDocument
 import com.hashicorp.cdktf.providers.aws.data_aws_iam_policy_document.DataAwsIamPolicyDocumentConfig
 import com.hashicorp.cdktf.providers.aws.data_aws_iam_policy_document.DataAwsIamPolicyDocumentStatement
+import com.hashicorp.cdktf.providers.aws.data_aws_iam_policy_document.DataAwsIamPolicyDocumentStatementPrincipals
 import com.hashicorp.cdktf.providers.aws.iam_policy.IamPolicy
 import com.hashicorp.cdktf.providers.aws.iam_policy.IamPolicyConfig
 import com.hashicorp.cdktf.providers.aws.iam_role.IamRole
@@ -12,6 +13,7 @@ import com.hashicorp.cdktf.providers.aws.iam_role.IamRoleConfig
 import com.hashicorp.cdktf.providers.aws.kms_key.KmsKey
 import com.hashicorp.cdktf.providers.aws.kms_key.KmsKeyConfig
 import com.hashicorp.cdktf.providers.aws.provider.AwsProvider
+import com.hashicorp.cdktf.providers.aws.provider.AwsProviderAssumeRole
 import io.klogging.Klogging
 import jarrid.keyper.app.CloudProviderConfig
 import jarrid.keyper.resource.key.Name
@@ -27,7 +29,7 @@ class AWS(
 
     override val provider: CloudProviderConfig
         get() {
-            return config.provider.gcp
+            return config.provider.aws
         }
 
     override suspend fun useCloudBackend() {
@@ -41,9 +43,22 @@ class AWS(
     }
 
     override suspend fun useProvider() {
-        AwsProvider.Builder.create(this, "AWS")
+        val builder = AwsProvider.Builder.create(this, "AWS")
             .region(provider.region)
-            .build()
+
+        if (provider.credentials.isNotEmpty()) {
+            builder.sharedCredentialsFiles(listOf(provider.credentials))
+        }
+
+        if (provider.assumeRoleArn.isNotEmpty()) {
+            logger.info("AWS provider is configured with assume role: ${provider.assumeRoleArn}")
+            val assumeRole = AwsProviderAssumeRole.builder()
+                .roleArn(provider.assumeRoleArn)
+                .sessionName("keyper-tfcdk-session")
+                .build()
+            builder.assumeRole(listOf(assumeRole))
+        }
+        builder.build()
     }
 
     override fun createKeys(tfvar: DeploymentStack): AwsCreateKeysOutput {
@@ -56,7 +71,7 @@ class AWS(
                 .tags(getLabels(key, deployment = tfvar.deployment))
                 .build()
 
-            val kmsKey = KmsKey(this, key.base.id.toString(), keyConfig)
+            val kmsKey = KmsKey(this, "key-${key.base.id}", keyConfig)
             kmsKey
         }
 
@@ -64,17 +79,41 @@ class AWS(
     }
 
     private fun createIamRole(name: String, description: String): IamRole {
+        // Define the assume role policy as a DataAwsIamPolicyDocumentStatementPrincipals
+        val assumeRolePolicyPrincipals = DataAwsIamPolicyDocumentStatementPrincipals.builder()
+            .identifiers(listOf("ec2.amazonaws.com"))
+            .type("Service")
+            .build()
+
+        // Define the assume role policy as a DataAwsIamPolicyDocumentStatement
+        val assumeRolePolicyStatement = DataAwsIamPolicyDocumentStatement.builder()
+            .effect("Allow")
+            .actions(listOf("sts:AssumeRole"))
+            .sid("")
+            .principals(mutableListOf(assumeRolePolicyPrincipals))
+            .build()
+
+        // Create the assume role policy document
+        val assumeRolePolicy = DataAwsIamPolicyDocument(
+            this,
+            "AssumeRolePolicy-$name",
+            DataAwsIamPolicyDocumentConfig.builder()
+                .statement(listOf(assumeRolePolicyStatement))
+                .build()
+        )
+
         return IamRole(
             this, name, IamRoleConfig.builder()
                 .name(name)
                 .description(description)
+                .assumeRolePolicy(assumeRolePolicy.json)
                 .build()
         )
     }
 
     override fun createRoles(tfvar: DeploymentStack): AwsCreateRolesOutput {
         val out = tfvar.roles.associateWith { role ->
-            val name = validate(role, tfvar)
+            val name = validateRole(role, tfvar)
             val description = "jarrid-keyper IAM role. deployment-id: ${tfvar.deployment.base.id}"
             createIamRole(name, description)
         }
@@ -108,12 +147,12 @@ class AWS(
         return map
     }
 
-    fun getIamPolicy(
+    private fun getIamPolicy(
         role: Role,
         statements: List<DataAwsIamPolicyDocumentStatement>,
         tfvar: DeploymentStack,
     ): IamPolicy {
-        val name = validate(role, tfvar)
+        val name = validateRole(role, tfvar)
         val policy = DataAwsIamPolicyDocument(
             this,
             "jarrid-keyper KMS policy for role $name",
@@ -122,8 +161,7 @@ class AWS(
                 .build()
         )
         val out = IamPolicy(
-            this, Name.getSanitizedAccountId(name), IamPolicyConfig.builder()
-                .name(name)
+            this, "${Name.getSanitizedName(name)}-iam-policy", IamPolicyConfig.builder()
                 .description("jarrid-keyper role. deployment-id: ${tfvar.deployment.base.id}")
                 .policy(policy.json)
                 .build()

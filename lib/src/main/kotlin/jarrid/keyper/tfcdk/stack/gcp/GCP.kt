@@ -132,10 +132,10 @@ class GCP(
 
     override fun createRoles(tfvar: DeploymentStack): GcpCreateRolesOutput {
         val out = tfvar.roles.associateWith { role ->
-            val name = validate(role, tfvar)
+            val name = validateRole(role, tfvar)
             val sa = ServiceAccountVar(
                 name = name,
-                accountId = Name.getSanitizedAccountId(name),
+                accountId = Name.getSanitizedName(name),
                 displayName = name,
                 description = "jarrid-keyper service account. deployment-id: ${tfvar.deployment.base.id}"
 

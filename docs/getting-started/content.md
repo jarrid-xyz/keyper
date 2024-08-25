@@ -1,3 +1,9 @@
+## Tutorial
+
+For end to end tutorial, you can find it here: [https://github.com/jarrid-xyz/keyper-tutorial](https://github.com/jarrid-xyz/keyper-tutorial){:target="_blank"}
+
+## Quick Start
+
 ### Pull Docker Image
 
 Pull [Keyper's pre-packaged docker images](https://github.com/jarrid-xyz/keyper/pkgs/container/keyper){:target="_blank"}: `ghcr.io/jarrid-xyz/keyper:{{config.theme.extra.version}}`
@@ -10,7 +16,7 @@ docker pull ghcr.io/jarrid-xyz/keyper:{{config.theme.extra.version}}
 
 1. Follow [Keyper Configuration](../deploy/configuration.md) to create `app.<env>.yaml` to configure Terraform provider and backend accordingly.
 
-2. Follow [Create KMS Admin Service Account](../deploy/gcp.md#create-kms-admin-service-account) to create `.cdktf-sa-key.json`. This service account credential is needed to create actual resources via Terraform.
+2. Follow [Create GCP KMS Admin Service Account](../deploy/gcp.md#create-resource-admin-service-account) to create `.cdktf-sa-key.json`. This service account credential is needed to create actual resources via Terraform.
 
 ### Run Keyper Command
    
@@ -77,7 +83,16 @@ docker run -it --rm --name keyper-cli \
     -v ./cdktf.out:/home/keyper/cdktf.out \
     -v ./.cdktf-sa-key.json:/home/keyper/gcp.json \
     -v ./app.local.yaml:/home/keyper/app.local.yaml \
-    ghcr.io/jarrid-xyz/keyper:{{config.theme.extra.version}} deploy apply
+    ghcr.io/jarrid-xyz/keyper:{{config.theme.extra.version}} data encrypt -k <key-id> --plaintext <secret>
+```
+
+```bash
+docker run -it --rm --name keyper-cli \
+    -v ./configs:/home/keyper/configs \
+    -v ./cdktf.out:/home/keyper/cdktf.out \
+    -v ./.cdktf-sa-key.json:/home/keyper/gcp.json \
+    -v ./app.local.yaml:/home/keyper/app.local.yaml \
+    ghcr.io/jarrid-xyz/keyper:{{config.theme.extra.version}} data decrypt -k <key-id> --ciphertext <secret>
 ```
 
 You just successfully use KMS key to encrypt/decrypt data. :tada: 
