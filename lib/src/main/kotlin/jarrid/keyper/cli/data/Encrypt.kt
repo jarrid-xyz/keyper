@@ -6,7 +6,7 @@ import jarrid.keyper.app.Stack
 import jarrid.keyper.cli.resource.key.InputValidationException
 import jarrid.keyper.cli.resource.key.KeySubcommand
 import jarrid.keyper.resource.Model
-import jarrid.keyper.resource.key.data.Encrypt
+import jarrid.keyper.resource.key.data.gcp.Encrypt
 
 
 class Encrypt : KeySubcommand(help = "Encrypt data with using key") {

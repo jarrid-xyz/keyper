@@ -5,7 +5,7 @@ import jarrid.keyper.app.Backend
 import jarrid.keyper.app.Stack
 import jarrid.keyper.cli.resource.key.KeySubcommand
 import jarrid.keyper.resource.Model
-import jarrid.keyper.resource.key.data.Decrypt
+import jarrid.keyper.resource.key.data.gcp.Decrypt
 
 class InputValidationException(message: String = "") : Exception(message)
 

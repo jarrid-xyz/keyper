@@ -15,8 +15,8 @@ import java.util.*
 import kotlin.test.assertEquals
 import jarrid.keyper.resource.key.Manager as KeyManager
 import jarrid.keyper.resource.key.Model as Key
-import jarrid.keyper.resource.key.data.Decrypt as KeyDecrypt
-import jarrid.keyper.resource.key.data.Encrypt as KeyEncrypt
+import jarrid.keyper.resource.key.data.gcp.Decrypt as KeyDecrypt
+import jarrid.keyper.resource.key.data.gcp.Encrypt as KeyEncrypt
 import jarrid.keyper.utils.file.Backend as FileBackend
 
 class DataTest {
