@@ -10,6 +10,8 @@ import com.hashicorp.cdktf.providers.aws.iam_policy.IamPolicy
 import com.hashicorp.cdktf.providers.aws.iam_policy.IamPolicyConfig
 import com.hashicorp.cdktf.providers.aws.iam_role.IamRole
 import com.hashicorp.cdktf.providers.aws.iam_role.IamRoleConfig
+import com.hashicorp.cdktf.providers.aws.kms_alias.KmsAlias
+import com.hashicorp.cdktf.providers.aws.kms_alias.KmsAliasConfig
 import com.hashicorp.cdktf.providers.aws.kms_key.KmsKey
 import com.hashicorp.cdktf.providers.aws.kms_key.KmsKeyConfig
 import com.hashicorp.cdktf.providers.aws.provider.AwsProvider
@@ -72,6 +74,15 @@ class AWS(
                 .build()
 
             val kmsKey = KmsKey(this, "key-${key.base.id}", keyConfig)
+            val keyName = Name.getJarridKeyName(key.base)
+            val aliasName = "alias/$keyName"
+            KmsAlias(
+                this, "alias-$keyName",
+                KmsAliasConfig.builder()
+                    .name(aliasName)
+                    .targetKeyId(kmsKey.keyId)
+                    .build()
+            )
             kmsKey
         }
 

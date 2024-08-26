@@ -1,26 +1,39 @@
 package jarrid.keyper.resource.key.data.aws
 
-import com.amazonaws.services.kms.AWSKMS
-import com.amazonaws.services.kms.AWSKMSClientBuilder
-import com.amazonaws.services.kms.model.DecryptRequest
 import com.google.protobuf.ByteString
 import jarrid.keyper.app.Backend
 import jarrid.keyper.app.Stack
 import jarrid.keyper.resource.Model
+import jarrid.keyper.resource.key.Name
 import jarrid.keyper.resource.key.data.Base
-import java.nio.ByteBuffer
+import software.amazon.awssdk.core.SdkBytes
+import software.amazon.awssdk.services.kms.KmsClient
+import software.amazon.awssdk.services.kms.model.DecryptRequest
 
 class Decrypt(
     backend: Backend,
     stack: Stack,
     key: Model,
 ) : Base(backend, stack, key) {
+
     override fun ByteString.run(): ByteString {
-        val client: AWSKMS = AWSKMSClientBuilder.defaultClient()
-        val request = DecryptRequest()
-            .withCiphertextBlob(ByteBuffer.wrap(this.toByteArray())) // Convert ByteString to ByteBuffer
-            .withKeyId(keyName.toString())
+        val client: KmsClient = KmsClient.create()
+
+        // Convert ByteString to SdkBytes
+        val sdkBytes = SdkBytes.fromByteArray(this.toByteArray())
+
+        val request = DecryptRequest.builder()
+            .ciphertextBlob(sdkBytes)  // Use SdkBytes for ciphertext
+            .keyId(keyName as String)  // Use the key alias or ARN
+            .build()
+
         val response = client.decrypt(request)
-        return ByteString.copyFrom(response.plaintext) // Convert ByteBuffer to ByteString
+        // Convert SdkBytes back to ByteString
+        return ByteString.copyFrom(response.plaintext().asByteArray())
+    }
+
+    override fun getKeyName(key: Model): String {
+        val name = Name.getJarridKeyName(key.resource.base)
+        return "alias/$name"
     }
 }

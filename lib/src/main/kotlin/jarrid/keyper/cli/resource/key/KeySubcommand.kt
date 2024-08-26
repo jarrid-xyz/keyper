@@ -8,6 +8,7 @@ import jarrid.keyper.app.Stack
 import jarrid.keyper.cli.BaseSubcommand
 import jarrid.keyper.resource.Deployment
 import jarrid.keyper.resource.Model
+import jarrid.keyper.resource.key.data.UnsupportedStackException
 import jarrid.keyper.utils.file.Backend
 import jarrid.keyper.utils.model.toUUID
 import kotlinx.coroutines.runBlocking
@@ -22,9 +23,6 @@ import jarrid.keyper.resource.key.data.gcp.Decrypt as GcpDecrypt
 import jarrid.keyper.resource.key.data.gcp.Encrypt as GcpEncrypt
 
 class InputValidationException(message: String = "") : Exception(message)
-
-// Custom exception for unsupported stack type
-class UnsupportedStackException(message: String = "") : Exception(message)
 
 
 abstract class KeySubcommand(help: String = "") : BaseSubcommand(help = help) {

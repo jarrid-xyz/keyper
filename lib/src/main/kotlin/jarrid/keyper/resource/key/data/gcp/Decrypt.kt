@@ -23,4 +23,8 @@ class Decrypt(
             return response.plaintext
         }
     }
+
+    override fun getKeyName(key: Model): Any {
+        TODO("Not yet implemented")
+    }
 }

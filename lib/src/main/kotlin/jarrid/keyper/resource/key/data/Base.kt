@@ -1,16 +1,18 @@
 package jarrid.keyper.resource.key.data
 
-import com.google.cloud.kms.v1.CryptoKeyName
 import com.google.protobuf.ByteString
 import io.klogging.Klogging
 import jarrid.keyper.app.Backend
 import jarrid.keyper.app.Config
 import jarrid.keyper.app.Stack
 import jarrid.keyper.resource.Model
-import jarrid.keyper.resource.key.Name
 import java.io.File
 import java.nio.file.Files
 import java.util.*
+
+// Custom exception for unsupported stack type
+class UnsupportedStackException(message: String = "") : Exception(message)
+
 
 abstract class Base(
     val backend: Backend,
@@ -20,8 +22,8 @@ abstract class Base(
 
     private val app = Config().get()
     val provider = stack.getConfig(app)
-    private val projectId = provider.accountId
-    private val region = provider.region
+    val projectId = provider.accountId
+    val region = provider.region
     val keyName = getKeyName(key)
 
     fun run(
@@ -87,14 +89,7 @@ abstract class Base(
         return Base64.getEncoder().encodeToString(this.toByteArray())
     }
 
-    private fun getKeyName(key: Model): CryptoKeyName {
-        return CryptoKeyName.of(
-            projectId,
-            region,
-            key.deployment.name,
-            Name.getJarridKeyName(key.resource.base)
-        )
-    }
+    abstract fun getKeyName(key: Model): Any
 
     abstract fun ByteString.run(): ByteString
 }
