@@ -41,6 +41,7 @@ dependencies {
 
     implementation("com.hashicorp:cdktf:0.20.7")
     implementation("com.hashicorp:cdktf-provider-google:13.24.0")
+    implementation("com.hashicorp:cdktf-provider-aws:19.30.0")
     implementation("software.constructs:constructs:10.3.0")
     implementation("com.charleskorn.kaml:kaml:0.60.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
@@ -52,6 +53,7 @@ dependencies {
     implementation("com.typesafe:config:1.4.3")
     implementation("org.yaml:snakeyaml:2.2")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.2")
+    implementation("software.amazon.awssdk:kms:2.27.12")
 
     testImplementation("io.mockk:mockk:1.13.11")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
@@ -81,6 +83,7 @@ tasks {
     // Helper function to create jar tasks
     fun createJarTask(name: String, classifier: String, mainClass: String): TaskProvider<Jar> {
         return register<Jar>(name) {
+            isZip64 = true
             dependsOn.addAll(listOf("compileJava", "compileKotlin", "processResources"))
             archiveClassifier.set(classifier)
             duplicatesStrategy = DuplicatesStrategy.EXCLUDE

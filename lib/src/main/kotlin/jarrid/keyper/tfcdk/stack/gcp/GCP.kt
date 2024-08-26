@@ -1,9 +1,7 @@
-package jarrid.keyper.tfcdk.gcp.stack
+package jarrid.keyper.tfcdk.stack.gcp
 
 import com.hashicorp.cdktf.GcsBackend
 import com.hashicorp.cdktf.GcsBackendConfig
-import com.hashicorp.cdktf.LocalBackend
-import com.hashicorp.cdktf.LocalBackendConfig
 import com.hashicorp.cdktf.providers.google.data_google_iam_policy.DataGoogleIamPolicy
 import com.hashicorp.cdktf.providers.google.data_google_iam_policy.DataGoogleIamPolicyBinding
 import com.hashicorp.cdktf.providers.google.data_google_iam_policy.DataGoogleIamPolicyConfig
@@ -18,15 +16,10 @@ import com.hashicorp.cdktf.providers.google.service_account.ServiceAccount
 import com.hashicorp.cdktf.providers.google.service_account.ServiceAccountConfig
 import io.klogging.Klogging
 import jarrid.keyper.app.CloudProviderConfig
-import jarrid.keyper.app.TfBackendType
-import jarrid.keyper.resource.Deployment
-import jarrid.keyper.resource.iam.MultipleRolesFoundException
-import jarrid.keyper.resource.iam.RoleNameIsUndefinedException
 import jarrid.keyper.resource.iam.RoleNotFoundException
 import jarrid.keyper.resource.key.KeyNotFoundException
 import jarrid.keyper.resource.key.Name
-import jarrid.keyper.tfcdk.DeploymentStack
-import jarrid.keyper.tfcdk.Stack
+import jarrid.keyper.tfcdk.*
 import software.constructs.Construct
 import jarrid.keyper.resource.iam.Model as Role
 import jarrid.keyper.resource.key.Model as Key
@@ -36,52 +29,29 @@ class GCP(
     stackName: String,
 ) : Klogging, Stack(scope, stackName = stackName) {
 
-    private val provider: CloudProviderConfig
+    override val provider: CloudProviderConfig
         get() {
             return config.provider.gcp
         }
 
-    override suspend fun useBackend() {
+    override suspend fun useCloudBackend() {
         logger.info("GCP provider credentials is set to ${provider.credentials}")
-        logger.info("Backend is set to ${provider.backend}")
-        when (provider.backend.type) {
-            TfBackendType.LOCAL -> {
-                LocalBackend(
-                    this, LocalBackendConfig.builder()
-                        .path("terraform.tfstate")
-                        .build()
-                )
-            }
-
-            TfBackendType.CLOUD -> {
-                // Example: GcsBackend
-                GcsBackend(
-                    this, GcsBackendConfig.builder()
-                        .credentials(provider.credentials)
-                        .bucket(provider.backend.bucket)
-                        .prefix("terraform/state/$stackName")
-                        .build()
-                )
-            }
-        }
+        GcsBackend(
+            this, GcsBackendConfig.builder()
+                .credentials(provider.credentials)
+                .bucket(provider.backend.bucket)
+                .prefix("terraform/state/$stackName")
+                .build()
+        )
     }
 
     override suspend fun useProvider() {
-        // val credJsonPath = System.getenv("GOOGLE_CLOUD_KEYFILE_JSON")
         logger.info("GCP provider credentials is set to ${provider.credentials}")
         GoogleProvider.Builder.create(this, "Google")
             .credentials(provider.credentials)
             .project(provider.accountId)
             .region(provider.region)
             .build()
-    }
-
-    private fun getLabels(key: Key, deployment: Deployment): Map<String, String> {
-        return mapOf(
-            "stack-name" to stackName,
-            "key-id" to key.base.id.toString(),
-            "deployment-id" to deployment.base.id.toString()
-        )
     }
 
     private fun createServiceAccount(serviceAccount: ServiceAccountVar): ServiceAccount {
@@ -141,7 +111,7 @@ class GCP(
         )
     }
 
-    private fun createKeys(tfvar: DeploymentStack): CreateKeysOutput {
+    override fun createKeys(tfvar: DeploymentStack): CreateKeysOutput {
         val keyRingPayload = KmsKeyRingVar(
             deploymentId = tfvar.deployment.id,
             keyRingName = tfvar.deployment.name
@@ -157,38 +127,24 @@ class GCP(
             )
             createSymmetricKey(keyPayload, keyRing)
         }
-        return CreateKeysOutput(keyRing = keyRing, keys = keys)
+        return GcpCreateKeysOutput(keyRing = keyRing, keys = keys)
     }
 
-    private fun validate(role: Role, tfvar: DeploymentStack): String {
-        val name = role.base.name ?: throw RoleNameIsUndefinedException()
-        getRole(name, tfvar)
-        return name
-    }
-
-    private fun createRoles(tfvar: DeploymentStack): CreateRolesOutput {
+    override fun createRoles(tfvar: DeploymentStack): GcpCreateRolesOutput {
         val out = tfvar.roles.associateWith { role ->
-            val name = validate(role, tfvar)
+            val name = validateRole(role, tfvar)
             val sa = ServiceAccountVar(
                 name = name,
-                accountId = Name.getSanitizedAccountId(name),
+                accountId = Name.getSanitizedName(name),
                 displayName = name,
                 description = "jarrid-keyper service account. deployment-id: ${tfvar.deployment.base.id}"
 
             )
             createServiceAccount(sa)
         }
-        return CreateRolesOutput(roles = out)
+        return GcpCreateRolesOutput(roles = out)
     }
 
-    fun getRole(name: String, tfvar: DeploymentStack): Role {
-        val filtered = tfvar.roles.filter { role -> role.base.name == name }
-        return when {
-            filtered.isEmpty() -> throw RoleNotFoundException(name)
-            filtered.size > 1 -> throw MultipleRolesFoundException(name)
-            else -> filtered.first()
-        }
-    }
 
     private fun Map<Role, ServiceAccount>.getOrThrow(role: Role): ServiceAccount {
         return this[role] ?: throw RoleNotFoundException(role.base.name!!)
@@ -200,8 +156,8 @@ class GCP(
 
     fun getIamPolicyVar(
         key: Key,
-        keys: CreateKeysOutput,
-        roles: CreateRolesOutput,
+        keys: GcpCreateKeysOutput,
+        roles: GcpCreateRolesOutput,
         tfvar: DeploymentStack,
     ): IamPolicyVar {
 
@@ -221,22 +177,20 @@ class GCP(
         )
     }
 
-    fun createPermissions(
+    override fun createPermissions(
         tfvar: DeploymentStack,
         keys: CreateKeysOutput,
         roles: CreateRolesOutput
     ): CreatePermissionsOutput {
         val policies = tfvar.keys.map { key ->
-            val iamPolicyVar = getIamPolicyVar(key, keys, roles, tfvar)
+            val iamPolicyVar = getIamPolicyVar(
+                key,
+                keys as GcpCreateKeysOutput,
+                roles as GcpCreateRolesOutput,
+                tfvar
+            )
             createIamPolicy(iamPolicyVar)
         }
-        return CreatePermissionsOutput(policies)
-    }
-
-    override suspend fun create(tfvar: DeploymentStack) {
-        val createKeys = createKeys(tfvar)
-        val createRoles = createRoles(tfvar)
-        createPermissions(tfvar, createKeys, createRoles)
-        logger.info("Created GCP terraform stack")
+        return GcpCreatePermissionsOutput(policies)
     }
 }

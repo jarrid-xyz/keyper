@@ -15,8 +15,8 @@ import java.util.*
 import kotlin.test.assertEquals
 import jarrid.keyper.resource.key.Manager as KeyManager
 import jarrid.keyper.resource.key.Model as Key
-import jarrid.keyper.resource.key.data.Decrypt as KeyDecrypt
-import jarrid.keyper.resource.key.data.Encrypt as KeyEncrypt
+import jarrid.keyper.resource.key.data.gcp.Decrypt as KeyDecrypt
+import jarrid.keyper.resource.key.data.gcp.Encrypt as KeyEncrypt
 import jarrid.keyper.utils.file.Backend as FileBackend
 
 class DataTest {
@@ -50,7 +50,7 @@ class DataTest {
 
         // Mock the getEncryptor method to return the mocked encryptor
         encryptCommand = spyk(Encrypt()) {
-            every { getEncryptor(any(), any(), any()) } returns keyEncryptor
+            every { getEncryptor(any()) } returns keyEncryptor
             every { getKeyManager() } returns keyManager
         }
 
@@ -59,7 +59,7 @@ class DataTest {
 
         // Mock the getDecryptor method to return the mocked decryptor
         decryptCommand = spyk(Decrypt()) {
-            every { getDecryptor(any(), any(), any()) } returns keyDecryptor
+            every { getDecryptor(any()) } returns keyDecryptor
             every { getKeyManager() } returns keyManager
         }
 
@@ -117,7 +117,7 @@ class DataTest {
         } returns decryptedValue
 
         // Mock the getDecryptor method to return the mocked decryptor
-        every { decryptCommand.getDecryptor(backend, stack, payload) } returns keyDecryptor
+        every { decryptCommand.getDecryptor(payload) } returns keyDecryptor
 
         // Ensure the command arguments are correctly set up
         Helper.parseCommand(decryptCommand, args)

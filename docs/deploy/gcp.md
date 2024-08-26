@@ -1,5 +1,5 @@
 ---
-title: Setup GCP
+title: GCP
 hide:
 ---
 
@@ -14,7 +14,7 @@ provider:
     region: "<region>"
 ```
 
-## Create KMS Admin Service Account
+## Create Resource Admin Service Account
 
 1. Create Service Account for Terraform:
 
@@ -76,7 +76,7 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 --role "roles/storage.objectUser"
 ```
 
-If the bucket you plan on using for remote Terraform state doesn't exist yet, create it as well
+If the bucket you plan on using for remote Terraform state doesn't exist yet, create it as well.
 
 ```bash
 gcloud storage buckets create gs://keyper-tf-state --location=us-east1

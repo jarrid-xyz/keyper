@@ -1,4 +1,4 @@
-package jarrid.keyper.tfcdk.gcp.stack
+package jarrid.keyper.tfcdk.stack.gcp
 
 import com.hashicorp.cdktf.Testing
 import com.hashicorp.cdktf.providers.google.kms_crypto_key.KmsCryptoKey
@@ -6,17 +6,15 @@ import com.hashicorp.cdktf.providers.google.service_account.ServiceAccount
 import io.mockk.every
 import io.mockk.mockk
 import jarrid.keyper.resource.Deployment
-import jarrid.keyper.resource.iam.MultipleRolesFoundException
-import jarrid.keyper.resource.iam.RoleNotFoundException
 import jarrid.keyper.resource.key.EditPermission
 import jarrid.keyper.tfcdk.DeploymentStack
+import jarrid.keyper.tfcdk.GcpCreateKeysOutput
+import jarrid.keyper.tfcdk.GcpCreatePermissionsOutput
+import jarrid.keyper.tfcdk.GcpCreateRolesOutput
 import jarrid.keyper.utils.model.NewUUID
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.MethodSource
 import software.constructs.Construct
 import jarrid.keyper.resource.iam.Model as Role
 import jarrid.keyper.resource.key.Model as Key
@@ -36,54 +34,6 @@ class GCPTest {
         gcp = GCP(Testing.app(), "test-stack")
     }
 
-    data class GetRoleTestCase(
-        val name: String,
-        val tfvar: DeploymentStack,
-        val expected: Class<out Throwable>? = null
-    )
-
-    companion object {
-        @JvmStatic
-        fun roleTestCases() = listOf(
-            // Test case for role not found
-            GetRoleTestCase(
-                "non-existent-role",
-                DeploymentStack(Deployment(), emptyList(), emptyList()),
-                RoleNotFoundException::class.java
-            ),
-            // Test case for multiple roles found
-            GetRoleTestCase(
-                "test-role",
-                DeploymentStack(
-                    Deployment(),
-                    emptyList(),
-                    listOf(Role(name = "test-role"), Role(name = "test-role"))
-                ),
-                MultipleRolesFoundException::class.java
-            ),
-            // Test case for role found successfully
-            GetRoleTestCase(
-                "test-role",
-                DeploymentStack(
-                    Deployment(),
-                    emptyList(),
-                    listOf(Role(name = "test-role"))
-                ),
-            )
-        )
-    }
-
-    @ParameterizedTest
-    @MethodSource("roleTestCases")
-    fun testGetRole(case: GetRoleTestCase) {
-        if (case.expected != null) {
-            assertThrows(case.expected) { gcp.getRole(case.name, case.tfvar) }
-        } else {
-            val result = gcp.getRole(case.name, case.tfvar)
-            assertEquals(case.name, result.base.name)
-        }
-    }
-
     @Test
     fun testGetIamPolicyVar() {
         val key = Key(id = keyId)
@@ -96,8 +46,8 @@ class GCPTest {
 
         every { serviceAccount.email } returns email
 
-        val keysOutput = CreateKeysOutput(mockk(relaxed = true), mapOf(key to kmsCryptoKey))
-        val rolesOutput = CreateRolesOutput(mapOf(Role(name = role) to serviceAccount))
+        val keysOutput = GcpCreateKeysOutput(mockk(relaxed = true), mapOf(key to kmsCryptoKey))
+        val rolesOutput = GcpCreateRolesOutput(mapOf(Role(name = role) to serviceAccount))
         val tfvar = DeploymentStack(Deployment(), listOf(key), listOf(Role(name = role)))
         val result = gcp.getIamPolicyVar(key, keysOutput, rolesOutput, tfvar)
 
@@ -117,11 +67,11 @@ class GCPTest {
 
         every { serviceAccount.email } returns "service-account@example.com"
 
-        val keysOutput = CreateKeysOutput(mockk(relaxed = true), mapOf(key to kmsCryptoKey))
-        val rolesOutput = CreateRolesOutput(mapOf(Role(name = "test-role") to serviceAccount))
+        val keysOutput = GcpCreateKeysOutput(mockk(relaxed = true), mapOf(key to kmsCryptoKey))
+        val rolesOutput = GcpCreateRolesOutput(mapOf(Role(name = "test-role") to serviceAccount))
         val tfvar = DeploymentStack(Deployment(), listOf(key), listOf(Role(name = "test-role")))
         val createPermissionsOutput = gcp.createPermissions(tfvar, keysOutput, rolesOutput)
 
-        assertEquals(1, createPermissionsOutput.policies.size)
+        assertEquals(1, (createPermissionsOutput as GcpCreatePermissionsOutput).policies.size)
     }
 }

@@ -1,4 +1,4 @@
-package jarrid.keyper.resource.key.data
+package jarrid.keyper.resource.key.data.gcp
 
 import com.google.cloud.kms.v1.DecryptRequest
 import com.google.cloud.kms.v1.KeyManagementServiceClient
@@ -6,6 +6,7 @@ import com.google.protobuf.ByteString
 import jarrid.keyper.app.Backend
 import jarrid.keyper.app.Stack
 import jarrid.keyper.resource.Model
+import jarrid.keyper.resource.key.data.Base
 
 class Decrypt(
     backend: Backend,
@@ -21,5 +22,9 @@ class Decrypt(
             val response = client.decrypt(request)
             return response.plaintext
         }
+    }
+
+    override fun getKeyName(key: Model): Any {
+        TODO("Not yet implemented")
     }
 }

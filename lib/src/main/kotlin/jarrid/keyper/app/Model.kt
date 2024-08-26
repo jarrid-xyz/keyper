@@ -1,9 +1,11 @@
 package jarrid.keyper.app
 
+import jarrid.keyper.tfcdk.Stack
 import jarrid.keyper.utils.file.Local
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.reflect.KClass
+import jarrid.keyper.app.Stack as AppStack
 import jarrid.keyper.utils.file.Backend as FileBackend
 
 @Serializable
@@ -12,6 +14,8 @@ data class CloudProviderConfig(
     val region: String = "global",
     val backend: TfBackend = TfBackend(),
     val credentials: String = "",
+    @SerialName("assume_role_arn")
+    val assumeRoleArn: String = ""
 )
 
 enum class TfBackendType {
@@ -32,7 +36,7 @@ data class TfBackend(
 
 @Serializable
 data class Tfcdk(
-    val stack: Stack = Stack.GCP,
+    val stack: AppStack = AppStack.GCP,
     val path: String = "cdktf.out",
 )
 
@@ -71,17 +75,17 @@ enum class Backend {
 enum class Stack {
     @SerialName("gcp")
     GCP {
-        override fun get(): KClass<out jarrid.keyper.tfcdk.Stack> = jarrid.keyper.tfcdk.gcp.stack.GCP::class
+        override fun get(): KClass<out Stack> = jarrid.keyper.tfcdk.stack.gcp.GCP::class
         override fun getConfig(config: App): CloudProviderConfig = config.provider.gcp
+    },
+
+    @SerialName("aws")
+    AWS {
+        override fun get(): KClass<out Stack> = jarrid.keyper.tfcdk.stack.aws.AWS::class
+        override fun getConfig(config: App): CloudProviderConfig = config.provider.aws
     };
 
-//    @SerialName("aws")
-//    AWS {
-//        override fun get(): KClass<out KeyStack> = AWSKeyStackImpl::class
-//        override fun getConfig(config: App): CloudProviderConfig? = provider.aws
-//    };
-
-    abstract fun get(): KClass<out jarrid.keyper.tfcdk.Stack>
+    abstract fun get(): KClass<out Stack>
     abstract fun getConfig(config: App): CloudProviderConfig
 }
 
