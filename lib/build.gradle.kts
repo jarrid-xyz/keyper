@@ -53,6 +53,7 @@ dependencies {
     implementation("com.typesafe:config:1.4.3")
     implementation("org.yaml:snakeyaml:2.2")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.2")
+    implementation("com.amazonaws:aws-java-sdk-kms:1.12.770") // Replace with the latest version if needed
 
     testImplementation("io.mockk:mockk:1.13.11")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
