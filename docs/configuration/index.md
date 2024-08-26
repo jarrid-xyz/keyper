@@ -21,6 +21,7 @@ provider:                      # terraform provider options
       type: cloud              # use local or cloud backend, use s3 if cloud
       path: terraform.tfstate  # tfstate path (for both local and cloud)
       bucket: keyper-tf-state  # bucket to use (for cloud)
+    assume_role_arn:           # assume role arn to use for tf aws provider (optional)
   gcp:                         # gcp provider options
     accountId: "databoo"       # GCP project id
     region: us-east1           # provider region

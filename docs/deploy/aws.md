@@ -10,10 +10,9 @@ To deploy to the GCP stack, first create GCP provider configuration in `app.<env
 ```yaml
 provider:
   aws:
-    accountId: <projectId>
+    accountId: <aws account id>
     region: <region>
-    credentials: <path to credentials>
-    assume_role_arn: <assume role arn (optional)>
+    assume_role_arn: <assume role arn to use for tf aws provider (optional)>
 ```
 
 Read more about Keyper Configuration [here](../configuration/index.md).
@@ -53,11 +52,9 @@ Companies or organizations usually has pre-configured aws profile setup. If you 
         --assume-role-policy-document file://assume-role-policy.json
     ```
 
-    Add assume role policy to current user. ***Note: this setup is for demo purpose. Your company or organization will usually have ***
+    Add assume role policy to current user. ***Note: this setup is for demo purpose. Your company or organization should have default CI/CD setup.***
 
     ```json
-    ACCOUNT_ID=<>
-
     {
         "Version": "2012-10-17",
         "Statement": [
@@ -108,7 +105,7 @@ Companies or organizations usually has pre-configured aws profile setup. If you 
         --policy-document file://kms-policy.json
     ```
 
-1. Add IAM Admin Permission
+3. Add IAM Admin Permission
 
     ```bash
     SERVICE=keyper
@@ -117,15 +114,6 @@ Companies or organizations usually has pre-configured aws profile setup. If you 
         --policy-arn arn:aws:iam::aws:policy/IAMFullAccess
     ```
 
-2. Get IAM Role Credentials
-
-    ```bash
-    SERVICE=keyper
-    aws get-role-credentials
-        --role-name $SERVICE-cdktf-role
-        --account-id <value>
-        --access-token <value>
-    ```
 
 
 ## Add S3 Permission
