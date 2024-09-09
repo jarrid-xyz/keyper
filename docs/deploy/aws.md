@@ -27,7 +27,7 @@ Companies or organizations usually has pre-configured aws profile setup. If you 
 
     You can easily add relevant resources and permissions via Terraform following this [spacelift guide](https://spacelift.io/blog/terraform-iam-role). However, here's a quick CLI way without Terraform.
 
-    Create an `assume-role-policy.json`:
+    Create an `assume-role-policy.json` with assume role policy to current user. ***Note: this setup is for demo purpose. Your company or organization should have default CI/CD setup.***
 
     ```json
     {
@@ -39,25 +39,7 @@ Companies or organizations usually has pre-configured aws profile setup. If you 
                 "Service": "ec2.amazonaws.com"
             },
             "Action": "sts:AssumeRole"
-            }
-        ]
-    }
-    ```
-
-
-    ```bash
-    SERVICE=keyper
-    aws iam create-role \
-        --role-name $SERVICE-cdktf-role \
-        --assume-role-policy-document file://assume-role-policy.json
-    ```
-
-    Add assume role policy to current user. ***Note: this setup is for demo purpose. Your company or organization should have default CI/CD setup.***
-
-    ```json
-    {
-        "Version": "2012-10-17",
-        "Statement": [
+            },
             {
             "Effect": "Allow",
             "Principal": {
@@ -74,6 +56,13 @@ Companies or organizations usually has pre-configured aws profile setup. If you 
             }
         ]
     }
+    ```
+
+    ```bash
+    SERVICE=keyper
+    aws iam create-role \
+        --role-name $SERVICE-cdktf-role \
+        --assume-role-policy-document file://assume-role-policy.json
     ```
 
 
