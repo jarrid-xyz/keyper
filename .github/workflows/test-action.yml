@@ -1,0 +1,23 @@
+name: Test Keyper Action
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: List directory contents
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Contents:"
+          ls -la
+      - name: Run Keyper Action (Deploy Plan)
+        uses: ./
+        with:
+          args: "--help"

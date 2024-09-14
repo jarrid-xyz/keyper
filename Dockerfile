@@ -35,11 +35,13 @@ COPY settings.gradle.kts ./
 COPY gradlew ./gradlew
 COPY gradlew.bat ./gradlew.bat
 COPY cdktf.json ./cdktf.json
+COPY entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
 
 # Ensure gradlew is executable and build the application
 RUN ./gradlew clean build
 
-RUN chown -R keyper:keyper /home/keyper
+RUN chown -R keyper:keyper /home/keyperdock
 RUN chmod 755 /home/keyper
 
 # Set environment variables
@@ -48,5 +50,5 @@ ENV CDKTF_HOME=/tmp/.cdktf
 
 USER keyper
 
-ENTRYPOINT ["java", "-jar", "lib/build/libs/lib-cli.jar"]
+ENTRYPOINT ["./entrypoint.sh"]
 CMD ["sh"]
