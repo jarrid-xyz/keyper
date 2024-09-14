@@ -1,0 +1,13 @@
+name: 'Keyper Action'
+description: 'Run Keyper commands using a Docker container'
+inputs:
+  args:
+    description: 'Keyper args to run (e.g., deploy, plan)'
+    required: true
+    default: '--help'
+runs:
+  using: 'docker'
+  image: 'docker://ghcr.io/jarrid-xyz/keyper:latest'
+  entrypoint: /home/keyper/entrypoint.sh
+  args:
+    - ${{ inputs.args }}

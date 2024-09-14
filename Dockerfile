@@ -35,6 +35,8 @@ COPY settings.gradle.kts ./
 COPY gradlew ./gradlew
 COPY gradlew.bat ./gradlew.bat
 COPY cdktf.json ./cdktf.json
+COPY entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
 
 # Ensure gradlew is executable and build the application
 RUN ./gradlew clean build

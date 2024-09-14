@@ -1,0 +1,17 @@
+name: Test Keyper Action
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-keyper:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Keyper Action (Deploy Plan)
+        uses: ./
+        with:
+          args: "--help"
