@@ -7,7 +7,7 @@ inputs:
     default: '--help'
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/jarrid-xyz/keyper:add-github-action-deployment'
+  image: 'docker://ghcr.io/jarrid-xyz/keyper:v0.0.3'
   entrypoint: /home/keyper/entrypoint.sh
   args:
     - ${{ inputs.args }}
