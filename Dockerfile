@@ -41,7 +41,7 @@ RUN chmod +x ./entrypoint.sh
 # Ensure gradlew is executable and build the application
 RUN ./gradlew clean build
 
-RUN chown -R keyper:keyper /home/keyperdock
+RUN chown -R keyper:keyper /home/keyper
 RUN chmod 755 /home/keyper
 
 # Set environment variables
