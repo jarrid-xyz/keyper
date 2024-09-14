@@ -7,7 +7,7 @@ inputs:
     default: '--help'
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/jarrid-xyz/keyper:v0.0.3'
+  image: 'docker://ghcr.io/jarrid-xyz/keyper:latest'
   entrypoint: /home/keyper/entrypoint.sh
   args:
     - ${{ inputs.args }}
