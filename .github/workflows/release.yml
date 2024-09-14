@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'New version number (e.g., v0.0.5)'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Update action.yml
+        run: |
+          sed -i 's|ghcr.io/jarrid-xyz/keyper:[^"]*|ghcr.io/jarrid-xyz/keyper:${{ github.event.inputs.version }}|' action.yml
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add action.yml
+          git commit -m "Update version to ${{ github.event.inputs.version }}"
+
+      - name: Push changes
+        run: git push
+
+      - name: Generate release notes
+        id: generate_notes
+        uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          config-name: release-drafter.yml
+          version: ${{ github.event.inputs.version }}
+
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          release_name: Release ${{ github.event.inputs.version }}
+          body: ${{ steps.generate_notes.outputs.body }}
+          draft: false
+          prerelease: false
+
+      - name: Update major version tag
+        run: |
+          git push origin :refs/tags/v${{ github.event.inputs.version[1] }}
+          git tag -fa v${{ github.event.inputs.version[1] }} -m "Update v${{ github.event.inputs.version[1] }} tag"
+          git push origin v${{ github.event.inputs.version[1] }}
