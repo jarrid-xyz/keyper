@@ -4,54 +4,49 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'New version number (e.g., v0.0.5)'
+        description: "New version number (e.g., v0.0.5)"
         required: true
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Switch to or create release branch
+        run: |
+          git checkout release || git checkout -b release
+          git pull origin release || true
 
       - name: Update action.yml
         run: |
           sed -i 's|ghcr.io/jarrid-xyz/keyper:[^"]*|ghcr.io/jarrid-xyz/keyper:${{ github.event.inputs.version }}|' action.yml
 
+      - name: Pull latest changes from remote release branch
+        run: |
+          git pull --rebase origin release || true
+
       - name: Commit changes
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add action.yml
           git commit -m "Update version to ${{ github.event.inputs.version }}"
 
       - name: Push changes
-        run: git push
+        run: git push origin release
 
       - name: Generate release notes
         id: generate_notes
-        uses: release-drafter/release-drafter@v5
+        uses: release-drafter/release-drafter@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           config-name: release-drafter.yml
           version: ${{ github.event.inputs.version }}
-
-      - name: Create release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.event.inputs.version }}
-          release_name: Release ${{ github.event.inputs.version }}
-          body: ${{ steps.generate_notes.outputs.body }}
-          draft: false
-          prerelease: false
-
-      - name: Update major version tag
-        run: |
-          git push origin :refs/tags/v${{ github.event.inputs.version[1] }}
-          git tag -fa v${{ github.event.inputs.version[1] }} -m "Update v${{ github.event.inputs.version[1] }} tag"
-          git push origin v${{ github.event.inputs.version[1] }}
