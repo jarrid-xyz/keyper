@@ -4,8 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'New version number (e.g., v0.0.5)'
+        description: "New version number (e.g., v0.0.5)"
         required: true
+  push:
+    branches:
+      - add-release-action
 
 jobs:
   release:
