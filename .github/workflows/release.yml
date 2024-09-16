@@ -42,6 +42,11 @@ jobs:
       - name: Push changes
         run: git push origin release
 
+      - name: Create or update tag
+        run: |
+          git tag -fa ${{ github.event.inputs.version }} -m "Release ${{ github.event.inputs.version }}"
+          git push origin ${{ github.event.inputs.version }} --force
+
       - name: Generate release notes
         id: generate_notes
         uses: release-drafter/release-drafter@v6
