@@ -1,6 +1,6 @@
 name-template: 'v$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
-commitish: 'refs/heads/v$RESOLVED_VERSION'
+commitish: 'refs/tags/v$RESOLVED_VERSION'
 
 template: |
   ## What’s Changed
