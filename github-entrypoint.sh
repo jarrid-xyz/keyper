@@ -5,9 +5,9 @@ set -e
 output=$(java -jar /home/keyper/lib/build/libs/lib-cli.jar "$@")
 
 # Set the output using GitHub Actions Workflow Commands
-echo "stdout<<EOF" >> $GITHUB_OUTPUT
-echo "$output" >> $GITHUB_OUTPUT
-echo "EOF" >> $GITHUB_OUTPUT
+echo "stdout<<EOF" >> $GITHUB_STEP_SUMMARY
+echo "$output" >> $GITHUB_STEP_SUMMARY
+echo "EOF" >> $GITHUB_STEP_SUMMARY
 
 # Output to console as well (this will be visible in the action logs)
 echo "$output"
