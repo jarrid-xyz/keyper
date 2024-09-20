@@ -12,6 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run Keyper Action (Deploy Plan)
+        id: keyper
         uses: ./
         with:
           args: "--help"
