@@ -12,6 +12,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run Keyper Action (Deploy Plan)
+        id: keyper
         uses: ./
         with:
           args: "--help"
+
+      - name: Create Step Summary
+        run: |
+          echo "## Keyper Action Output" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.keyper.outputs.stdout }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Set output
+        run: echo "stdout=${{ steps.keyper.outputs.stdout }}" >> $GITHUB_OUTPUT

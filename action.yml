@@ -1,10 +1,16 @@
 name: 'Keyper Action'
 description: 'Run Keyper commands using a Docker container'
+branding:
+  icon: 'lock'
+  color: 'black'
 inputs:
   args:
     description: 'Keyper args to run (e.g., deploy, plan)'
     required: true
     default: '--help'
+outputs:
+  stdout:
+    description: 'The stdout from the Keyper command'
 runs:
   using: 'docker'
   image: 'docker://ghcr.io/jarrid-xyz/keyper:latest'
