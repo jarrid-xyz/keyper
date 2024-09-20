@@ -13,7 +13,7 @@ outputs:
     description: 'The stdout from the Keyper command'
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/jarrid-xyz/keyper:fix-keyper-action'
+  image: 'docker://ghcr.io/jarrid-xyz/keyper:latest'
   entrypoint: /home/keyper/github-entrypoint.sh
   args:
     - ${{ inputs.args }}
