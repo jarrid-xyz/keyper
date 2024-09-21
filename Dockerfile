@@ -1,8 +1,8 @@
-FROM node:22 as node
+FROM node:22 AS node
 
 RUN npm install --global cdktf-cli@latest
 
-FROM ubuntu:latest as terraform
+FROM ubuntu:latest AS terraform
 
 RUN \
     # Update
@@ -15,7 +15,7 @@ RUN \
 RUN wget https://releases.hashicorp.com/terraform/1.9.1/terraform_1.9.1_linux_amd64.zip
 RUN unzip terraform_1.9.1_linux_amd64.zip
 
-FROM gradle:jdk21 as gradle
+FROM gradle:jdk21 AS gradle
 
 ## Copy node binaries and modules from the node stage
 COPY --from=node /usr/local/include/node /usr/local/include/node
