@@ -1,8 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
+IFS=' ' read -ra ADDR <<< "$1"
+
 # Capture the output of the Java command
-output=$(java -jar /home/keyper/lib/build/libs/lib-cli.jar "$@")
+output=$(java -jar /home/keyper/lib/build/libs/lib-cli.jar "${ADDR[@]}")
 
 # Set the output using GitHub Actions Workflow Commands
 echo "## Keyper Command Output" >> $GITHUB_STEP_SUMMARY
