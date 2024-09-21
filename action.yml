@@ -16,4 +16,4 @@ runs:
   image: 'docker://ghcr.io/jarrid-xyz/keyper:v0.0.4'
   entrypoint: /home/keyper/github-entrypoint.sh
   args:
-    - ${{ inputs.args }}
+    - ${{ inputs.args.split(' ') }}
