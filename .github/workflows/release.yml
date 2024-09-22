@@ -29,7 +29,7 @@ jobs:
 
       - name: Update action.yml
         run: |
-          sed -i 's|ghcr.io/jarrid-xyz/keyper:[^"]*|ghcr.io/jarrid-xyz/keyper:${{ github.event.inputs.version }}|' action.yml
+          sed -i'' -E 's|ghcr.io/jarrid-xyz/keyper:[^"]*"|ghcr.io/jarrid-xyz/keyper:${{ github.event.inputs.version }}"|' action.yml
 
       - name: Commit changes
         run: |
