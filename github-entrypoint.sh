@@ -6,7 +6,7 @@ IFS=' ' read -r -a ADDR <<< "$@"
 LOG_FILE="/home/keyper/keyper.log"
 
 # Update app path in cdktf.json, this is only needed in github action
-sed -i '' 's|"app": "java -jar lib/build/libs/lib-main.jar"|"app": "java -jar /home/keyper/lib/build/libs/lib-main.jar"|' cdktf.json
+sed -i '' 's|"app": "java -jar lib/build/libs/lib-main.jar"|"app": "java -jar /home/keyper/lib/build/libs/lib-main.jar"|' /home/kerper/cdktf.json
 
 # Capture stdout and stderr from the Keyper command
 java -jar /home/keyper/lib/build/libs/lib-cli.jar "${ADDR[@]}" &> $LOG_FILE || true
