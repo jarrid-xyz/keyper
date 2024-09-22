@@ -15,4 +15,4 @@ jobs:
         id: keyper
         uses: ./
         with:
-          args: "deploy plan"
+          args: deploy plan
