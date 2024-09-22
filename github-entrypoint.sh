@@ -1,15 +1,15 @@
 #!/bin/bash
 set -e
 
-ADDR=("$@")
+IFS=' ' read -r -a ADDR <<< "$@"
 
 LOG_FILE="/home/keyper/keyper.log"
 
 # Capture stdout and stderr from the Keyper command
-# Set the output using GitHub Actions Workflow Commands
 java -jar /home/keyper/lib/build/libs/lib-cli.jar "${ADDR[@]}" &> $LOG_FILE || true
 status=$?
 
+# Set the output using GitHub Actions Workflow Commands
 echo "## Keyper Command Output" >> $GITHUB_STEP_SUMMARY
 cat $LOG_FILE >> $GITHUB_STEP_SUMMARY
 
