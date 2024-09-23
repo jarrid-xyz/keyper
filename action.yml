@@ -14,6 +14,6 @@ outputs:
 runs:
   using: "docker"
   image: "docker://ghcr.io/jarrid-xyz/keyper:latest"
-  entrypoint: "/home/keyper/github-entrypoint.sh"
+  entrypoint: "/github/workspace/github-entrypoint.sh"
   args:
     - ${{ inputs.args }}
