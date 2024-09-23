@@ -1,11 +1,10 @@
 {
   "language": "java",
-  "app": "java -jar lib/build/libs/lib-main.jar",
+  "app": "./cdktf-app.sh",
   "projectId": "25a6a20e-00d6-4ac9-9388-7f3954f7db71",
   "sendCrashReports": "true",
   "codeMakerOutput": "imports",
   "terraformProviders": [],
   "terraformModules": [],
-  "context": {
-  }
+  "context": {}
 }

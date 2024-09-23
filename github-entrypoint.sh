@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+export IS_DOCKER=true
+
 IFS=' ' read -r -a ADDR <<< "$@"
 
 LOG_FILE="/home/keyper/keyper.log"

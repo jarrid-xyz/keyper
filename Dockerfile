@@ -35,6 +35,8 @@ COPY settings.gradle.kts ./
 COPY gradlew ./gradlew
 COPY gradlew.bat ./gradlew.bat
 COPY cdktf.json ./cdktf.json
+COPY github-entrypoint.sh ./github-entrypoint.sh
+COPY cdktf-app.sh ./cdktf-app.sh
 
 # Ensure gradlew is executable and build the application
 RUN ./gradlew clean build
@@ -46,9 +48,6 @@ RUN chmod 755 /home/keyper
 RUN mkdir -p /github/workspace && \
     chown -R keyper:keyper /github/workspace && \
     chmod 755 /github/workspace
-
-COPY github-entrypoint.sh /home/keyper/github-entrypoint.sh
-RUN chmod +x /home/keyper/github-entrypoint.sh
 
 # Set environment variables
 ENV TF_PLUGIN_CACHE_DIR=/tmp/.terraform.d
