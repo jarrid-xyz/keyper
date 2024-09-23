@@ -1,17 +1,22 @@
 #!/bin/bash
 set -e
 
-IFS=' ' read -ra ADDR <<< "$1"
+IFS=' ' read -r -a ADDR <<< "$@"
 
-# Capture the output of the Java command
-output=$(java -jar /home/keyper/lib/build/libs/lib-cli.jar "${ADDR[@]}")
+LOG_FILE="/home/keyper/keyper.log"
+
+# Update app path in cdktf.json, this is only needed in github action
+sed -i 's|"app": "java -jar lib/build/libs/lib-main.jar"|"app": "java -jar /home/keyper/lib/build/libs/lib-main.jar"|' cdktf.json
+
+# Capture stdout and stderr from the Keyper command
+java -jar /home/keyper/lib/build/libs/lib-cli.jar "${ADDR[@]}" &> $LOG_FILE || status=$?
 
 # Set the output using GitHub Actions Workflow Commands
 echo "## Keyper Command Output" >> $GITHUB_STEP_SUMMARY
-echo "$output" >> $GITHUB_STEP_SUMMARY
+cat $LOG_FILE >> $GITHUB_STEP_SUMMARY
 
 # Output to console as well (this will be visible in the action logs)
-echo "$output"
+cat $LOG_FILE
 
-# Exit with the same status as the Java command
-exit $?
+# Exit with the same status as the Keyper command
+exit $status
