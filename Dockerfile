@@ -47,8 +47,8 @@ RUN mkdir -p /github/workspace && \
     chown -R keyper:keyper /github/workspace && \
     chmod 755 /github/workspace
 
-COPY github-entrypoint.sh /github/workspace/github-entrypoint.sh
-RUN chmod +x /github/workspace/github-entrypoint.sh
+COPY github-entrypoint.sh /home/keyper/github-entrypoint.sh
+RUN chmod +x /home/keyper/github-entrypoint.sh
 
 # Set environment variables
 ENV TF_PLUGIN_CACHE_DIR=/tmp/.terraform.d
