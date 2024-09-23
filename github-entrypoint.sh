@@ -7,7 +7,7 @@ LOG_FILE="/home/keyper/keyper.log"
 
 
 # Create cdktf.json file, this is only needed in github action
-cat << EOF > cdktf.json
+cat << EOF > /home/keyper/cdktf.json
 {
   "language": "java",
   "app": "java -jar /home/keyper/lib/build/libs/lib-main.jar",
