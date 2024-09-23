@@ -9,8 +9,7 @@ LOG_FILE="/home/keyper/keyper.log"
 sed -i 's|"app": "java -jar lib/build/libs/lib-main.jar"|"app": "java -jar /home/keyper/lib/build/libs/lib-main.jar"|' cdktf.json
 
 # Capture stdout and stderr from the Keyper command
-java -jar /home/keyper/lib/build/libs/lib-cli.jar "${ADDR[@]}" &> $LOG_FILE || true
-status=$?
+java -jar /home/keyper/lib/build/libs/lib-cli.jar "${ADDR[@]}" &> $LOG_FILE || status=$?
 
 # Set the output using GitHub Actions Workflow Commands
 echo "## Keyper Command Output" >> $GITHUB_STEP_SUMMARY
