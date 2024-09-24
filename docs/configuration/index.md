@@ -47,7 +47,7 @@ docker run -it --rm --name keyper-cli \
     -v ./cdktf.out:/home/keyper/cdktf.out \
     -v ./.cdktf-sa-key.json:/home/keyper/gcp.json \
     -v ./app.local.yaml:/home/keyper/app.local.yaml \
-    ghcr.io/jarrid-xyz/keyper:v0.0.3 -h
+    ghcr.io/jarrid-xyz/keyper:{{config.theme.extra.version}} -h
 ```
 
 ### Jar
