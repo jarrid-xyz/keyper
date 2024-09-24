@@ -1,10 +1,45 @@
-## Tutorial
+### Tutorial
 
-For end to end tutorial, you can find it here: [https://github.com/jarrid-xyz/keyper-tutorial](https://github.com/jarrid-xyz/keyper-tutorial){:target="_blank"}
+For full Keyper tutorial, you can find it here: [https://github.com/jarrid-xyz/keyper-tutorial](https://github.com/jarrid-xyz/keyper-tutorial){:target="_blank"}
 
-## Quick Start
+### Keyper Github Action
 
-### Pull Docker Image
+We've created the [Keyper Github Action](https://github.com/jarrid-xyz/keyper-action){:target="_blank"} to automate Keyper deployment using [GitOps](https://github.com/topics/gitops){:target="_blank"} flow. This makes Keyper resource management fully configuration-driven. Both technical and non-technical teams can either edit the configuration files directly or use the [Keyper CLI](#keyper-docker-cli) to manage resources and the [Keyper Github Action](https://github.com/jarrid-xyz/keyper-action){:target="_blank"} will handle the rest of the CI/CD process.
+
+➡️ [Go to Keyper Github Action Tutorial](https://github.com/jarrid-xyz/keyper-tutorial/tree/main/6-use-cases/6-4-deploy-keyper-via-github-action){:target="_blank"}.
+
+The easiest way to set it up is to copy our [example workflow](https://github.com/jarrid-xyz/keyper-tutorial/blob/main/.github/workflows/keyper-cicd.yml){:target="_blank"} into your own repository and modify the configurations accordingly:
+
+```yaml
+name: Keyper Action (Deploy Plan/Apply)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  keyper-action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Keyper Action (Deploy Plan)
+        id: keyper-plan
+        uses: jarrid-xyz/keyper@{{config.theme.extra.version}}
+        with:
+          args: deploy plan
+      - name: Run Keyper Action (Deploy Apply)
+        id: keyper-apply
+        uses: jarrid-xyz/keyper@{{config.theme.extra.version}}
+        with:
+          args: deploy apply
+        if: github.ref == 'refs/heads/main' # Only run if merge to main
+```
+
+### Keyper Docker CLI
+
+#### Pull Docker Image
 
 Pull [Keyper's pre-packaged docker images](https://github.com/jarrid-xyz/keyper/pkgs/container/keyper){:target="_blank"}: `ghcr.io/jarrid-xyz/keyper:{{config.theme.extra.version}}`
 
@@ -12,7 +47,7 @@ Pull [Keyper's pre-packaged docker images](https://github.com/jarrid-xyz/keyper/
 docker pull ghcr.io/jarrid-xyz/keyper:{{config.theme.extra.version}}
 ```
 
-### Create App Configuration and Credentials
+#### Create App Configuration and Credentials
 
 1. Follow [Keyper Configuration](../deploy/configuration.md) to create `app.<env>.yaml` to configure Terraform provider and backend accordingly.
 
@@ -31,7 +66,7 @@ docker run -it --rm --name keyper-cli \
     ghcr.io/jarrid-xyz/keyper:{{config.theme.extra.version}} -h
 ```
 
-### Create Deployment, Role and Key
+#### Create Deployment, Role and Key
 
 Create the resource configurations locally.
 
@@ -62,7 +97,7 @@ docker run -it --rm --name keyper-cli \
     ghcr.io/jarrid-xyz/keyper:{{config.theme.extra.version}} resource create -t key
 ```
 
-### Deploy via Terraform
+#### Deploy via Terraform
 
 Provision resource on the cloud based on the resource configurations.
 
@@ -75,7 +110,7 @@ docker run -it --rm --name keyper-cli \
     ghcr.io/jarrid-xyz/keyper:{{config.theme.extra.version}} deploy apply
 ```
 
-### Encrypt/Decrypt Data with Key
+#### Encrypt/Decrypt Data with Key
 
 ```bash
 docker run -it --rm --name keyper-cli \

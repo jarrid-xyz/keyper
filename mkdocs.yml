@@ -5,7 +5,7 @@ repo_url: https://github.com/jarrid-xyz/keyper
 
 theme:
   extra:
-    version: v0.0.3
+    version: v0.0.4
   font:
     text: Ubuntu
   name: material
@@ -38,6 +38,7 @@ nav:
   - Keyper:
       - index.md
       - Getting Started: getting-started/index.md 
+      - Github Actions: https://github.com/jarrid-xyz/keyper/actions" target="_blank
       - Tutorial: https://github.com/jarrid-xyz/keyper-tutorial" target="_blank
       - development.md
       - API Docs: kdoc/index.html" target="_blank
