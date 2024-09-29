@@ -1,0 +1,2015 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Keyper by Jarrid is a suite of crypto key management APIs that simplify key creation, management, deployment, and encryption/decryption. It supports file-based operations for easy automation and tracking via GitOps. Fully integrated with cloud KMS services like AWS KMS and GCP KMS, Keyper reduces infrastructure maintenance.">
+      
+      
+      
+        <link rel="canonical" href="https://jarrid.xyz/keyper/data/terminology/">
+      
+      
+        <link rel="prev" href="../secure-data-flow/">
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.38">
+    
+    
+      
+        <title>Terminology - Keyper</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Ubuntu";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-2VNWJJB7P7"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-2VNWJJB7P7",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-2VNWJJB7P7",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+      
+        <meta  property="og:type"  content="website" >
+      
+        <meta  property="og:title"  content="Terminology - Keyper" >
+      
+        <meta  property="og:description"  content="Keyper by Jarrid is a suite of crypto key management APIs that simplify key creation, management, deployment, and encryption/decryption. It supports file-based operations for easy automation and tracking via GitOps. Fully integrated with cloud KMS services like AWS KMS and GCP KMS, Keyper reduces infrastructure maintenance." >
+      
+        <meta  property="og:image"  content="https://jarrid.xyz/keyper/assets/images/social/data/terminology.png" >
+      
+        <meta  property="og:image:type"  content="image/png" >
+      
+        <meta  property="og:image:width"  content="1200" >
+      
+        <meta  property="og:image:height"  content="630" >
+      
+        <meta  property="og:url"  content="https://jarrid.xyz/keyper/data/terminology/" >
+      
+        <meta  name="twitter:card"  content="summary_large_image" >
+      
+        <meta  name="twitter:title"  content="Terminology - Keyper" >
+      
+        <meta  name="twitter:description"  content="Keyper by Jarrid is a suite of crypto key management APIs that simplify key creation, management, deployment, and encryption/decryption. It supports file-based operations for easy automation and tracking via GitOps. Fully integrated with cloud KMS services like AWS KMS and GCP KMS, Keyper reduces infrastructure maintenance." >
+      
+        <meta  name="twitter:image"  content="https://jarrid.xyz/keyper/assets/images/social/data/terminology.png" >
+      
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#cryptography-algorithms" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Keyper" class="md-header__button md-logo" aria-label="Keyper" data-md-component="logo">
+      
+  <img src="../../assets/images/favicon.ico" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Keyper
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Terminology
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="dark" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jarrid-xyz/keyper" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
+          
+  
+  Keyper
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../getting-started/" class="md-tabs__link">
+        
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://github.com/jarrid-xyz/keyper-tutorial" target="_blank" class="md-tabs__link">
+        
+  
+    
+  
+  Tutorial
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../configuration/" class="md-tabs__link">
+        
+  
+    
+  
+  Configuration
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../resource/" class="md-tabs__link">
+          
+  
+  Resource
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../deploy/" class="md-tabs__link">
+          
+  
+  Deploy
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  Data
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://jarrid.xyz" target="_blank" class="md-tabs__link">
+        
+  
+    
+  
+  Jarrid
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Keyper" class="md-nav__button md-logo" aria-label="Keyper" data-md-component="logo">
+      
+  <img src="../../assets/images/favicon.ico" alt="logo">
+
+    </a>
+    Keyper
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jarrid-xyz/keyper" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Keyper
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Keyper
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/marketplace/actions/keyper-action" target="_blank" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Github Actions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/jarrid-xyz/keyper-tutorial" target="_blank" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tutorial
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Development
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../kdoc/index.html" target="_blank" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API Docs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/jarrid-xyz/keyper/releases" target="_blank" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Release
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Integration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://jarrid.xyz" target="_blank" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About Jarrid
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/jarrid-xyz/keyper-tutorial" target="_blank" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tutorial
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Resource
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Resource
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../resource/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../resource/key/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Key
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../resource/role/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Role
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Deploy
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Deploy
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Deploy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/aws/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AWS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/gcp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GCP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Data
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Data
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../secure-data-flow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Secure Data Flow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Terminology
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Terminology
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cryptography-algorithms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cryptography Algorithms
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cryptography Algorithms">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aes-advanced-encryption-standard" class="md-nav__link">
+    <span class="md-ellipsis">
+      AES (Advanced Encryption Standard)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rsa-rivest-shamir-adleman" class="md-nav__link">
+    <span class="md-ellipsis">
+      RSA (Rivest-Shamir-Adleman)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#symmetric-encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      Symmetric Encryption
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asymmetric-encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      Asymmetric Encryption
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Asymmetric Encryption">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#public-private-key-pairs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Public-Private Key Pairs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#symmetric-and-asymmetric-encryption-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Symmetric and Asymmetric Encryption Comparison
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aes-and-rsa-encryption-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      AES and RSA Encryption Comparison
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deterministic-encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deterministic Encryption
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deterministic Encryption">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deterministic-aes-encryption-for-analytics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deterministic AES Encryption for Analytics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#access-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      Access Control
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Access Control">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#identity-and-access-management-iam" class="md-nav__link">
+    <span class="md-ellipsis">
+      Identity and Access Management (IAM)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#confidential-computing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Confidential Computing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Confidential Computing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tee-trusted-execution-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      TEE (Trusted Execution Environment)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-integrity-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Integrity Checks
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Integrity Checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mac-message-authentication-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      MAC (Message Authentication Code)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hmac-hash-based-message-authentication-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      HMAC (Hash-based Message Authentication Code)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#digital-signatures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Digital Signatures
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-exchange" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Exchange
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Exchange">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diffie-hellman-dh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Diffie-Hellman (DH)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ecdsa-elliptic-curve-digital-signature-algorithm-and-ecdh-elliptic-curve-diffie-hellman" class="md-nav__link">
+    <span class="md-ellipsis">
+      ECDSA (Elliptic Curve Digital Signature Algorithm) and ECDH (Elliptic Curve Diffie-Hellman)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mac-digital-signature-key-exchange-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      MAC, Digital Signature, Key Exchange Comparison
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-tls-transport-layer-security" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: TLS (Transport Layer Security)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://jarrid.xyz" target="_blank" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Jarrid
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cryptography-algorithms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cryptography Algorithms
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cryptography Algorithms">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aes-advanced-encryption-standard" class="md-nav__link">
+    <span class="md-ellipsis">
+      AES (Advanced Encryption Standard)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rsa-rivest-shamir-adleman" class="md-nav__link">
+    <span class="md-ellipsis">
+      RSA (Rivest-Shamir-Adleman)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#symmetric-encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      Symmetric Encryption
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asymmetric-encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      Asymmetric Encryption
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Asymmetric Encryption">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#public-private-key-pairs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Public-Private Key Pairs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#symmetric-and-asymmetric-encryption-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Symmetric and Asymmetric Encryption Comparison
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aes-and-rsa-encryption-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      AES and RSA Encryption Comparison
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deterministic-encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deterministic Encryption
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deterministic Encryption">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deterministic-aes-encryption-for-analytics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deterministic AES Encryption for Analytics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#access-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      Access Control
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Access Control">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#identity-and-access-management-iam" class="md-nav__link">
+    <span class="md-ellipsis">
+      Identity and Access Management (IAM)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#confidential-computing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Confidential Computing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Confidential Computing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tee-trusted-execution-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      TEE (Trusted Execution Environment)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-integrity-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Integrity Checks
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Integrity Checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mac-message-authentication-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      MAC (Message Authentication Code)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hmac-hash-based-message-authentication-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      HMAC (Hash-based Message Authentication Code)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#digital-signatures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Digital Signatures
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-exchange" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Exchange
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Exchange">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diffie-hellman-dh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Diffie-Hellman (DH)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ecdsa-elliptic-curve-digital-signature-algorithm-and-ecdh-elliptic-curve-diffie-hellman" class="md-nav__link">
+    <span class="md-ellipsis">
+      ECDSA (Elliptic Curve Digital Signature Algorithm) and ECDH (Elliptic Curve Diffie-Hellman)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mac-digital-signature-key-exchange-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      MAC, Digital Signature, Key Exchange Comparison
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-tls-transport-layer-security" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: TLS (Transport Layer Security)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+  <h1>Terminology</h1>
+
+<h2 id="cryptography-algorithms">Cryptography Algorithms<a class="headerlink" href="#cryptography-algorithms" title="Permanent link">&para;</a></h2>
+<h3 id="aes-advanced-encryption-standard">AES (Advanced Encryption Standard)<a class="headerlink" href="#aes-advanced-encryption-standard" title="Permanent link">&para;</a></h3>
+<p><a href="https://en.wikipedia.org/wiki/Advanced_Encryption_Standard" target="_blank">AES</a> is a <a href="#symmetric-encryption">symmetric encryption</a> algorithm widely used for securing data. It encrypts data using a single key for both encryption and decryption. While AES itself is deterministic, it is often used in modes of operation that introduce randomness to make the encryption non-deterministic. AES is known for its efficiency and security.</p>
+<h3 id="rsa-rivest-shamir-adleman">RSA (Rivest-Shamir-Adleman)<a class="headerlink" href="#rsa-rivest-shamir-adleman" title="Permanent link">&para;</a></h3>
+<p><a href="https://en.wikipedia.org/wiki/RSA_(cryptosystem)" target="_blank">RSA</a> is an <a href="#asymmetric-encryption">asymmetric encryption</a> algorithm used for secure data transmission. It uses a pair of keys: a <a href="#public-private-key-pairs">public key</a> for encryption and a <a href="#public-private-key-pairs">private key</a> for decryption. RSA is widely used for securing data transmission and digital signatures.</p>
+<h3 id="symmetric-encryption">Symmetric Encryption<a class="headerlink" href="#symmetric-encryption" title="Permanent link">&para;</a></h3>
+<p><a href="https://en.wikipedia.org/wiki/Symmetric-key_algorithm" target="_blank">Symmetric encryption</a> uses the same key for both encryption and decryption. It is efficient and suitable for encrypting large amounts of data. Examples include <a href="#aes-advanced-encryption-standard">AES</a> and <a href="https://en.wikipedia.org/wiki/Data_Encryption_Standard" target="_blank">DES</a>.</p>
+<h3 id="asymmetric-encryption">Asymmetric Encryption<a class="headerlink" href="#asymmetric-encryption" title="Permanent link">&para;</a></h3>
+<p><a href="https://en.wikipedia.org/wiki/Public-key_cryptography" target="_blank">Asymmetric encryption</a> uses a pair of keys: a <a href="#public-private-key-pairs">public key</a> for encryption and a <a href="#public-private-key-pairs">private key</a> for decryption. It provides enhanced security features like data confidentiality, integrity, authenticity, and non-repudiation. Examples include <a href="#rsa-rivest-shamir-adleman">RSA</a> and <a href="https://en.wikipedia.org/wiki/Elliptic-curve_cryptography" target="_blank">ECC</a>.</p>
+<h4 id="public-private-key-pairs">Public-Private Key Pairs<a class="headerlink" href="#public-private-key-pairs" title="Permanent link">&para;</a></h4>
+<p>In <a href="#asymmetric-encryption">asymmetric encryption</a>, a public key is used to encrypt data, while a private key is used to decrypt it. The public key is shared openly, while the private key is kept secret. This key pair mechanism ensures secure data transmission and authentication.</p>
+<h3 id="symmetric-and-asymmetric-encryption-comparison">Symmetric and Asymmetric Encryption Comparison<a class="headerlink" href="#symmetric-and-asymmetric-encryption-comparison" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Symmetric Encryption</th>
+<th>Asymmetric Encryption</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Key Usage</strong></td>
+<td>Same key for both encryption and decryption</td>
+<td><a href="#public-private-key-pairs">Public key</a> for encryption, <a href="#public-private-key-pairs">private key</a> for decryption</td>
+</tr>
+<tr>
+<td><strong>Performance</strong></td>
+<td>Faster and more efficient</td>
+<td>Slower and computationally intensive</td>
+</tr>
+<tr>
+<td><strong>Key Management</strong></td>
+<td>Requires secure sharing and management of the secret key</td>
+<td>Easier to manage as the public key can be shared openly</td>
+</tr>
+<tr>
+<td><strong>Use Cases</strong></td>
+<td>Encrypting large amounts of data, secure storage</td>
+<td>Secure data transmission, digital signatures, key exchange</td>
+</tr>
+<tr>
+<td><strong>Confidentiality</strong></td>
+<td>Ensures data confidentiality</td>
+<td>Ensures data confidentiality</td>
+</tr>
+<tr>
+<td><strong>Integrity &amp; Authenticity</strong></td>
+<td>Does not inherently provide integrity and authenticity</td>
+<td>Provides integrity and authenticity when used for digital signatures</td>
+</tr>
+<tr>
+<td><strong>Algorithm Complexity</strong></td>
+<td>Relatively simple algorithm</td>
+<td>Complex algorithm based on mathematical problems (e.g., factoring large numbers)</td>
+</tr>
+<tr>
+<td><strong>Examples</strong></td>
+<td><a href="#aes-advanced-encryption-standard">AES</a>, <a href="https://en.wikipedia.org/wiki/Data_Encryption_Standard" target="_blank">DES</a></td>
+<td><a href="#rsa-rivest-shamir-adleman">RSA</a>, <a href="https://en.wikipedia.org/wiki/Elliptic-curve_cryptography" target="_blank">ECC</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="aes-and-rsa-encryption-comparison">AES and RSA Encryption Comparison<a class="headerlink" href="#aes-and-rsa-encryption-comparison" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th><a href="#aes-advanced-encryption-standard">AES (Advanced Encryption Standard)</a></th>
+<th><a href="#rsa-rivest-shamir-adleman">RSA (Rivest-Shamir-Adleman)</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Type</strong></td>
+<td><a href="#symmetric-encryption">Symmetric Encryption</a></td>
+<td><a href="#asymmetric-encryption">Asymmetric Encryption</a></td>
+</tr>
+<tr>
+<td><strong>Key Usage</strong></td>
+<td>Same key for both encryption and decryption</td>
+<td>Public key for encryption, private key for decryption</td>
+</tr>
+<tr>
+<td><strong>Performance</strong></td>
+<td>Faster and more efficient, suitable for encrypting large amounts of data</td>
+<td>Slower and computationally intensive</td>
+</tr>
+<tr>
+<td><strong>Key Length</strong></td>
+<td>Commonly 128, 192, or 256 bits</td>
+<td>Commonly 2048 or 4096 bits</td>
+</tr>
+<tr>
+<td><strong>Security Level</strong></td>
+<td>High security with shorter key lengths</td>
+<td>High security but requires longer key lengths</td>
+</tr>
+<tr>
+<td><strong>Encryption Speed</strong></td>
+<td>Very fast and efficient</td>
+<td>Slower due to complex mathematical operations</td>
+</tr>
+<tr>
+<td><strong>Decryption Speed</strong></td>
+<td>Very fast and efficient</td>
+<td>Slower due to complex mathematical operations</td>
+</tr>
+<tr>
+<td><strong>Key Management</strong></td>
+<td>Requires secure sharing and management of the secret key</td>
+<td>Easier to manage as the public key can be shared openly</td>
+</tr>
+<tr>
+<td><strong>Use Cases</strong></td>
+<td>Encrypting large amounts of data, secure storage</td>
+<td>Secure data transmission, digital signatures, key exchange</td>
+</tr>
+<tr>
+<td><strong>Algorithm Complexity</strong></td>
+<td>Relatively simple algorithm</td>
+<td>Complex algorithm based on mathematical problems (e.g., factoring large numbers)</td>
+</tr>
+<tr>
+<td><strong>Confidentiality</strong></td>
+<td>Ensures data confidentiality</td>
+<td>Ensures data confidentiality</td>
+</tr>
+<tr>
+<td><strong>Integrity &amp; Authenticity</strong></td>
+<td>Does not inherently provide integrity and authenticity</td>
+<td>Provides integrity and authenticity when used for digital signatures</td>
+</tr>
+<tr>
+<td><strong>Common Applications</strong></td>
+<td>Disk encryption, file encryption, VPNs</td>
+<td>Secure email, SSL/TLS, digital signatures</td>
+</tr>
+</tbody>
+</table>
+<h3 id="deterministic-encryption">Deterministic Encryption<a class="headerlink" href="#deterministic-encryption" title="Permanent link">&para;</a></h3>
+<p><a href="https://en.wikipedia.org/wiki/Deterministic_encryption" target="_blank">Deterministic encryption</a> produces the same ciphertext for any given plaintext and key. This predictability can be useful in certain applications, such as database indexing and searching, but it also makes it vulnerable to certain types of attacks compared to non-deterministic encryption methods. AES itself is deterministic, but when used in modes like CBC, CTR, or GCM, it can achieve non-deterministic encryption.</p>
+<h4 id="deterministic-aes-encryption-for-analytics">Deterministic AES Encryption for Analytics<a class="headerlink" href="#deterministic-aes-encryption-for-analytics" title="Permanent link">&para;</a></h4>
+<p>For analytics use cases, you can use AES in a mode that does not introduce randomness or use a consistent initialization vector (IV). Common methods include using ECB mode or a fixed IV with CBC mode. For more details, refer to the external <a href="https://en.wikipedia.org/wiki/Deterministic_encryption" target="_blank">Deterministic encryption</a> page.</p>
+<h2 id="access-control">Access Control<a class="headerlink" href="#access-control" title="Permanent link">&para;</a></h2>
+<h3 id="identity-and-access-management-iam">Identity and Access Management (IAM)<a class="headerlink" href="#identity-and-access-management-iam" title="Permanent link">&para;</a></h3>
+<p><a href="https://en.wikipedia.org/wiki/Identity_management" target="_blank">Identity and Access Management (IAM)</a> is a framework of policies and technologies for ensuring that the right individuals have access to the right resources at the right times for the right reasons. It is a crucial part of modern security infrastructure.</p>
+<h2 id="confidential-computing">Confidential Computing<a class="headerlink" href="#confidential-computing" title="Permanent link">&para;</a></h2>
+<h3 id="tee-trusted-execution-environment">TEE (Trusted Execution Environment)<a class="headerlink" href="#tee-trusted-execution-environment" title="Permanent link">&para;</a></h3>
+<p>A <a href="https://en.wikipedia.org/wiki/Trusted_execution_environment" target="_blank">Trusted Execution Environment (TEE)</a> is a secure area of a main processor. It ensures that sensitive data is stored, processed, and protected in an isolated and trusted environment. The TEE protects data from unauthorized access and tampering, providing a higher level of security for sensitive operations.</p>
+<h2 id="data-integrity-checks">Data Integrity Checks<a class="headerlink" href="#data-integrity-checks" title="Permanent link">&para;</a></h2>
+<h3 id="mac-message-authentication-code">MAC (Message Authentication Code)<a class="headerlink" href="#mac-message-authentication-code" title="Permanent link">&para;</a></h3>
+<p><a href="https://en.wikipedia.org/wiki/Message_authentication_code" target="_blank">MAC</a> is a cryptographic code that provides data integrity and authenticity. It is generated using a secret key and the data to be authenticated. The recipient can verify the MAC to ensure that the data has not been tampered with and is from an authenticated source.</p>
+<h3 id="hmac-hash-based-message-authentication-code">HMAC (Hash-based Message Authentication Code)<a class="headerlink" href="#hmac-hash-based-message-authentication-code" title="Permanent link">&para;</a></h3>
+<p><a href="https://en.wikipedia.org/wiki/HMAC" target="_blank">HMAC</a> is a type of <a href="#mac-message-authentication-code">MAC</a> that uses a cryptographic hash function along with a secret key to provide data integrity and authenticity. It is commonly used in various secure communication protocols.</p>
+<h3 id="digital-signatures">Digital Signatures<a class="headerlink" href="#digital-signatures" title="Permanent link">&para;</a></h3>
+<p><a href="https://en.wikipedia.org/wiki/Digital_signature" target="_blank">Digital signatures</a> use <a href="#asymmetric-encryption">asymmetric encryption</a> to verify the authenticity and integrity of a message or document. The sender signs the data with their <a href="#public-private-key-pairs">private key</a>, and the recipient verifies the signature using the sender's <a href="#public-private-key-pairs">public key</a>.</p>
+<h2 id="key-exchange">Key Exchange<a class="headerlink" href="#key-exchange" title="Permanent link">&para;</a></h2>
+<h3 id="diffie-hellman-dh">Diffie-Hellman (DH)<a class="headerlink" href="#diffie-hellman-dh" title="Permanent link">&para;</a></h3>
+<p><a href="https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange" target="_blank">Diffie-Hellman</a> is a method of securely exchanging cryptographic keys over a public channel. It allows two parties to establish a shared secret key, which can then be used for symmetric encryption.</p>
+<h3 id="ecdsa-elliptic-curve-digital-signature-algorithm-and-ecdh-elliptic-curve-diffie-hellman">ECDSA (Elliptic Curve Digital Signature Algorithm) and ECDH (Elliptic Curve Diffie-Hellman)<a class="headerlink" href="#ecdsa-elliptic-curve-digital-signature-algorithm-and-ecdh-elliptic-curve-diffie-hellman" title="Permanent link">&para;</a></h3>
+<p><a href="https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm" target="_blank">ECDSA</a> is an elliptic curve implementation of the Digital Signature Algorithm (DSA) that uses the mathematics of elliptic curves to provide a high level of security with smaller key sizes. <a href="https://en.wikipedia.org/wiki/Elliptic-curve_Diffie%E2%80%93Hellman" target="_blank">ECDH</a> is a variant of the Diffie-Hellman key exchange protocol that uses elliptic curve cryptography to establish a shared secret over an insecure channel.</p>
+<h2 id="mac-digital-signature-key-exchange-comparison">MAC, Digital Signature, Key Exchange Comparison<a class="headerlink" href="#mac-digital-signature-key-exchange-comparison" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>MAC</th>
+<th>Digital Signature</th>
+<th>Key Exchange</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Purpose</strong></td>
+<td>Ensures data integrity and authenticity</td>
+<td>Ensures data integrity, authenticity, and non-repudiation</td>
+<td>Securely exchanges cryptographic keys over a public channel</td>
+</tr>
+<tr>
+<td><strong>Key Type</strong></td>
+<td><a href="#symmetric-encryption">Symmetric</a></td>
+<td><a href="#asymmetric-encryption">Asymmetric</a></td>
+<td><a href="#asymmetric-encryption">Asymmetric</a></td>
+</tr>
+<tr>
+<td><strong>Key Usage</strong></td>
+<td>Uses a single shared secret key for both generating and verifying the MAC</td>
+<td>Uses a pair of keys: a private key for signing and a public key for verifying the signature</td>
+<td>Establishes a shared secret key between two parties</td>
+</tr>
+<tr>
+<td><strong>Integrity</strong></td>
+<td>Provides integrity by verifying that the data has not been altered</td>
+<td>Provides integrity by verifying that the data has not been altered</td>
+<td>Provides a shared key which can be used with HMAC or digital signatures for integrity</td>
+</tr>
+<tr>
+<td><strong>Authenticity</strong></td>
+<td>Confirms the authenticity of the message if the secret key is known only to the communicating parties</td>
+<td>Confirms the authenticity of the message and the identity of the sender</td>
+<td>Does not inherently provide authenticity; additional mechanisms like digital signatures are needed</td>
+</tr>
+<tr>
+<td><strong>Non-Repudiation</strong></td>
+<td>Does not provide non-repudiation, as both parties share the same secret key</td>
+<td>Provides non-repudiation, as only the sender has the private key used to generate the signature</td>
+<td>Does not provide non-repudiation; it is primarily used for key exchange</td>
+</tr>
+<tr>
+<td><strong>Performance</strong></td>
+<td>Faster and more efficient, suitable for high-performance requirements</td>
+<td>Slower due to the computational overhead of asymmetric cryptography</td>
+<td>Efficient for key exchange but involves computational overhead during key establishment</td>
+</tr>
+<tr>
+<td><strong>Key Management</strong></td>
+<td>Requires secure sharing and management of the secret key</td>
+<td>Public key can be shared openly, while the private key must be kept secure</td>
+<td>Each party generates their own public/private key pair and shares the public key</td>
+</tr>
+<tr>
+<td><strong>Use Cases</strong></td>
+<td>Used in secure communication protocols (e.g., TLS, IPsec), data integrity checks, and API authentication</td>
+<td>Used in digital certificates, secure email (e.g., S/MIME), software distribution, and blockchain transactions</td>
+<td>Used in secure key exchange for protocols like TLS, SSH, and other cryptographic systems</td>
+</tr>
+<tr>
+<td><strong>Examples</strong></td>
+<td>HMAC-SHA256, HMAC-SHA1</td>
+<td>RSA Digital Signature, <a href="#ecdsa-elliptic-curve-digital-signature-algorithm-and-ecdh-elliptic-curve-diffie-hellman">ECDSA (Elliptic Curve Digital Signature Algorithm)</a></td>
+<td><a href="#diffie-hellman-dh">DH key exchange</a>, <a href="#ecdsa-elliptic-curve-digital-signature-algorithm-and-ecdh-elliptic-curve-diffie-hellman">ECDH (Elliptic Curve Diffie-Hellman)</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="example-tls-transport-layer-security">Example: TLS (Transport Layer Security)<a class="headerlink" href="#example-tls-transport-layer-security" title="Permanent link">&para;</a></h2>
+<p>The <a href="https://en.wikipedia.org/wiki/Transport_Layer_Security" target="_blank">TLS (Transport Layer Security)</a> protocol is an example of how these cryptographic mechanisms are combined to provide secure communication over a network.</p>
+<ol>
+<li>
+<p><strong>Key Exchange:</strong></p>
+<p>Asymmetric encryption (e.g., RSA or Diffie-Hellman) is used to securely exchange a symmetric session key between the client and server.</p>
+</li>
+<li>
+<p><strong>Data Encryption:</strong></p>
+<p>Once the session key is established, symmetric encryption (e.g., AES) is used for encrypting the data during transmission. This ensures data confidentiality and efficiency.</p>
+</li>
+<li>
+<p><strong>Data Integrity:</strong></p>
+<p>HMAC is used to ensure the integrity and authenticity of the transmitted data. Each message includes an HMAC, which the recipient can verify to ensure the data has not been tampered with.</p>
+</li>
+</ol>
+<p>By combining these techniques, TLS ensures that data is encrypted and transmitted securely while also being protected against tampering and ensuring the authenticity of the communication parties. For a detailed explanation of the TLS Handshake, refer to <a href="https://dev.to/techschoolguru/a-complete-overview-of-ssl-tls-and-its-cryptographic-system-36pd#10-tls-13-handshake-protocol" target="_blank">this link</a>.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../secure-data-flow/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Secure Data Flow">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Secure Data Flow
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/jarrid-xyz" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.instagram.com/jarrid.xyz" target="_blank" rel="noopener" title="www.instagram.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141m0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7m146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8m76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8M398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/company/apiobuild/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="mailto:luluc@jarrid.xyz" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4l217.6 163.2c11.4 8.5 27 8.5 38.4 0l217.6-163.2c12.1-9.1 19.2-23.3 19.2-38.4 0-26.5-21.5-48-48-48zM0 176v208c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V176L294.4 339.2a63.9 63.9 0 0 1-76.8 0z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.footer"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d6f25eb3.min.js"></script>
+      
+    
+  </body>
+</html>
