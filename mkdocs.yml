@@ -38,7 +38,7 @@ nav:
   - Keyper:
       - index.md
       - Getting Started: getting-started/index.md 
-      - Github Actions: https://github.com/jarrid-xyz/keyper/actions" target="_blank
+      - Github Actions: https://github.com/marketplace/actions/keyper-action" target="_blank
       - Tutorial: https://github.com/jarrid-xyz/keyper-tutorial" target="_blank
       - development.md
       - API Docs: kdoc/index.html" target="_blank
